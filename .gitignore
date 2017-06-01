@@ -12,6 +12,9 @@
 # source material
 /_raw
 
+# compiled css-files
+/src/*.css
+
 # misc
 .DS_Store
 .env.local
