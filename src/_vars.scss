@@ -22,5 +22,12 @@ $menuTextColor: #7e4759;
 $mainTextColor: #382941;
 $warningTextColor: #b35c7a;
 
+
 //============== Sizes ============== 
 $mainFontSize: 18px;
+
+//============== Title styles ============== 
+.h2 {
+	color: $mainTextColor;
+	font-size: 28px;
+}

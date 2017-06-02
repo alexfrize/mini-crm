@@ -7,14 +7,13 @@ export default class Menu extends Component {
 
 	render() {
 		return (
-		<div>
-		
-			<ul className="Menu">
-				<li><img src={menu__addUser} alt="icon" />Add user</li>
-				<li><img src={menu__allUsers} alt="icon" />All users</li>
-				<li><img src={menu__tasks} alt="icon" />Tasks</li>
-			</ul>
-		</div>
+			<div>
+				<ul className="Menu">
+					<li><img src={menu__addUser} alt="icon" />Add user</li>
+					<li><img src={menu__allUsers} alt="icon" />All users</li>
+					<li><img src={menu__tasks} alt="icon" />Tasks</li>
+				</ul>
+			</div>
 		);
 	}
 }

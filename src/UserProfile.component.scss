@@ -1,0 +1,39 @@
+@import 'vars';
+
+.UserProfile {
+	clear: both;
+	display: flex;
+	flex-direction: column;
+}
+
+.ProgressItem {
+	margin-top: 30px;
+	display: flex;
+	align-items: center;
+	.ProgressItem__img-and-text {
+		width: 120px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		.ProgressItem__img {
+			height: 60px;
+			width: 60px;
+			isplay: flex;
+			flex-direction: column;
+		}
+		.ProgressItem__img-caption {
+			margin-bottom: 0;
+			text-align: center;
+			display: flex;
+			flex-direction: column;
+			font-size: 14px;
+		}
+	}
+	.ProgressItem__comment-textarea {
+		resize: none;
+		width: 350px;
+		height: 80px;
+		background: $inputMainColor;
+		border: 1px solid $inputBorderColor;
+	}	
+}
