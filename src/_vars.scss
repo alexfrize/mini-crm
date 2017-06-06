@@ -31,8 +31,12 @@ $mainFontSize: 18px;
 	color: $mainTextColor;
 	font-size: 28px;
 }
-
+.button-container {
+	display: flex;
+	justify-content: flex-end;
+}
 .button {
+	transition: 0.5s;
 	display: block;
 	background: $buttonMainColor;
 	color: $buttonTextColor;
@@ -40,4 +44,10 @@ $mainFontSize: 18px;
 	font-size: 18px;
 	width: 125px;
 	height: 35px;
+	&:hover {
+		background: $buttonBorderColor;
+		color: $buttonTextColor;
+		border: 1px solid $buttonBorderColor;		
+		cursor: pointer;
+	}
 }

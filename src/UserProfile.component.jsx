@@ -53,6 +53,9 @@ export default class UserProfile extends Component {
 						</div>
 						<textarea className="ProgressItem__comment-textarea" />					
 					</div>	
+					<div className="UserProfile__progress__form__button-container">
+						<button className="UserProfile__progress__form__button">Save</button>
+					</div>					
 				</div>
 
 				<div className="UserProfile__profile">

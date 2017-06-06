@@ -2,7 +2,12 @@
   color: #382941;
   font-size: 28px; }
 
+.button-container {
+  display: flex;
+  justify-content: flex-end; }
+
 .button {
+  transition: 0.5s;
   display: block;
   background: #fbf6e3;
   color: #7e4759;
@@ -10,6 +15,11 @@
   font-size: 18px;
   width: 125px;
   height: 35px; }
+  .button:hover {
+    background: #d8c7cd;
+    color: #7e4759;
+    border: 1px solid #d8c7cd;
+    cursor: pointer; }
 
 * {
   outline: 0 !important; }
