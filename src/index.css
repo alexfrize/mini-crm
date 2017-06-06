@@ -2,6 +2,15 @@
   color: #382941;
   font-size: 28px; }
 
+.button {
+  display: block;
+  background: #fbf6e3;
+  color: #7e4759;
+  border: 1px solid #d8c7cd;
+  font-size: 18px;
+  width: 125px;
+  height: 35px; }
+
 * {
   outline: 0 !important; }
 
