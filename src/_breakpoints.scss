@@ -1,0 +1,13 @@
+// Breakpoints
+$xsSize: 544px;
+$smSize: 768px;
+$mdSize: 992px;
+$lgSize: 1200px;
+
+// breakpoint mixins
+@mixin breakpoint($bpoint) {
+	@media (min-width: $bpoint) { 
+		@content; 
+	}
+}
+

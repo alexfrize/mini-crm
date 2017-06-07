@@ -57,19 +57,42 @@ export default class UserProfile extends Component {
 						<button className="UserProfile__progress__form__button">Save</button>
 					</div>					
 				</div>
+				<div className="UserProfile__column2">
+					<div className="UserProfile__profile">
+						<h2 className="h2">Profile:</h2>
+						<form className="UserProfile__profile__form">
+							<input className="UserProfile__profile__form__input" placeholder="Name:"/>
+							<input className="UserProfile__profile__form__input" placeholder="E-mail:"/>
+							<input className="UserProfile__profile__form__input" placeholder="Phone:"/>
+							<textarea className="UserProfile__profile__form__textarea" placeholder="Description:" />
+							<div className="UserProfile__profile__form__button-container">
+								<button className="UserProfile__profile__form__button">Save</button>
+							</div>
+						</form>
+					</div>
+					<div className="UserProfile__tasks">
+						<h2 className="h2">Tasks:</h2>
+							<div className="UserProfile__tasks__task">
+								<div className="UserProfile__tasks__task__input-group">
+									<input className="UserProfile__tasks__task__input" placeholder="Name:"/>
+									<select className="UserProfile__tasks__task__input">
+									  <option value="12:00 AM">12:00 AM</option>
+									  <option value="12:30 AM">12:30 AM</option>
+									  <option value="01:00 AM">01:00 AM</option>
+									  <option value="01:30 AM">01:30 AM</option>
+									</select>
 
-				<div className="UserProfile__profile">
-					<h2 className="h2">Profile:</h2>
-					<form className="UserProfile__profile__form">
-						<input className="UserProfile__profile__form__input" placeholder="Name:"/>
-						<input className="UserProfile__profile__form__input" placeholder="E-mail:"/>
-						<input className="UserProfile__profile__form__input" placeholder="Phone:"/>
-						<textarea className="UserProfile__profile__form__textarea" placeholder="Description:" />
-						<div className="UserProfile__profile__form__button-container">
-							<button className="UserProfile__profile__form__button">Save</button>
-						</div>
-					</form>
-				</div>
+								</div>
+								<textarea className="UserProfile__tasks__task__task-description" placeholder="Task description:" />
+							</div>
+							<div className="UserProfile__tasks__form__button-container">
+								<button className="UserProfile__tasks__form__button">Add task</button>
+							</div>
+							<div className="UserProfile__tasks__form__button-container">
+								<button className="UserProfile__tasks__form__button">Save</button>
+							</div>						
+					</div>
+				</div>				
 			</div>
 		);
 	}

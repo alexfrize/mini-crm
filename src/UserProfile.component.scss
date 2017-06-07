@@ -64,28 +64,25 @@
 		}		
 	}
 
-	/* --------- Profile --------- */
-	.UserProfile__profile {
+	/* --------- Column 2 --------- */
+	.UserProfile__column2 {
 		width: 50%;
+		box-sizing: border-box;
+	}
+	/* --------- Profile --------- */
+
+	.UserProfile__profile {
+		width: 100%;
 		box-sizing: border-box;
 		padding-left: 5%;
 		.UserProfile__profile__form {
 			.UserProfile__profile__form__input {
-				box-sizing: border-box;
-				margin-bottom: 10px;
-				padding: 8px;
+				@extend .input;
 				width: 100%;
-				background: $inputMainColor;
-				border: 1px solid $inputBorderColor;
-				font-size: 18px;
-				color: $inputTextColor;
-				&::placeholder {
-					color: $inputPlaceholderColor;
-				}
 			}
 			.UserProfile__profile__form__textarea {
-				@extend .UserProfile__profile__form__input;
-				resize: none;
+				@extend .input;
+				width: 100%;
 				height: 80px;
 			}				
 		}
@@ -94,6 +91,43 @@
 			.UserProfile__profile__form__button {
 				@extend .button;
 			}
+		}
+	}
+
+
+	.UserProfile__tasks {
+		width: 100%;
+		box-sizing: border-box;
+		padding-left: 5%;
+		.UserProfile__tasks__task {
+			display:flex;
+			flex-direction: row;
+			
+			.UserProfile__tasks__task__input-group {
+				display: flex;
+				flex-direction: column;
+				width: 25%;
+				//height: 80px;
+				.UserProfile__tasks__task__input {
+					@extend .input;
+				}
+			}
+			.UserProfile__tasks__task__task-description {
+				@extend .input;
+				margin-left: 5%;
+				width: 70%;
+				resize: none;
+				height: 80px;
+			}				
+		}
+		.UserProfile__tasks__form__button-container {
+			@extend .button-container;
+			.UserProfile__tasks__form__button {
+				@extend .button;
+			}
+		}
+		.UserProfile__tasks__form__button-container+.UserProfile__tasks__form__button-container {
+			margin-top: 10px;
 		}
 	}
 

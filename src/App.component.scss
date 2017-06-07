@@ -1,4 +1,19 @@
+@import 'breakpoints';
+
 .App {
   margin: 0 auto;
-  width: 1200px;  
+  width: 320px;
+  @include breakpoint($xsSize) {
+  	width: $xsSize; 
+  }    
+  @include breakpoint($smSize) {
+  	width: $smSize; 
+  }  
+  @include breakpoint($mdSize) {
+  	width: $mdSize; 
+  }
+  @include breakpoint($lgSize) {
+  	width: $lgSize; 
+  }  
+
 }
