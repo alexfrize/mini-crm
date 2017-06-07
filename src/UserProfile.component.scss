@@ -110,6 +110,10 @@
 				//height: 80px;
 				.UserProfile__tasks__task__input {
 					@extend .input;
+					width: 100%;
+					&:hover {
+						cursor: pointer;
+					}
 				}
 			}
 			.UserProfile__tasks__task__task-description {
