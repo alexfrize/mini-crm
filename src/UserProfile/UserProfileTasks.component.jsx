@@ -114,11 +114,17 @@ export default class UserProfileTasks extends Component {
 
 	/* ============================================================================================================ */
 	addNewTask() {
-		var tasksDates = this.state.taskStartDate;
-		tasksDates.push(moment());
-		this.setState({
-			taskStartDate: tasksDates
-		});
+		var dateArr = this.state.taskStartDate;
+		dateArr.push(moment());
+		var timeArr = this.state.taskStartTime;
+		timeArr.push("12:00 AM");
+		var taskDescriptionArr = this.state.taskDescription;
+		taskDescriptionArr.push("");
+		this.setState ({
+			taskStartDate: dateArr,
+			taskStartTime: timeArr,
+			taskDescription: taskDescriptionArr
+		});				
 	}
 
 	/* ============================================================================================================ */
@@ -129,18 +135,16 @@ export default class UserProfileTasks extends Component {
 	/* ============================================================================================================ */
 	render() {
 		return (
-					<div className="UserProfile__tasks">
-						<h2 className="h2">Tasks:</h2>
-
-							{this.renderTaskItems()}
-
-							<div className="UserProfile__tasks__form__button-container">
-								<button onClick={this.addNewTask} className="UserProfile__tasks__form__button">Add task</button>
-							</div>
-							<div className="UserProfile__tasks__form__button-container">
-								<button onClick={this.saveTasks} className="UserProfile__tasks__form__button">Save</button>
-							</div>						
-					</div>
+				<div className="UserProfile__tasks">
+					<h2 className="h2">Tasks:</h2>
+						{this.renderTaskItems()}
+						<div className="UserProfile__tasks__form__button-container">
+							<button onClick={this.addNewTask} className="UserProfile__tasks__form__button">Add task</button>
+						</div>
+						<div className="UserProfile__tasks__form__button-container">
+							<button onClick={this.saveTasks} className="UserProfile__tasks__form__button">Save</button>
+						</div>						
+				</div>
 		);
 	}
 }
