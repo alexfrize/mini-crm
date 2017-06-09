@@ -8,18 +8,49 @@ import './UserProfileTasks.component.css';
 export default class UserProfileTasks extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {startDate: moment()}; 
-		this.handleChange = this.handleChange.bind(this);
+		var dateArr = [moment()];
+		var timeArr = ["12:00 AM"];
+		var taskDescriptionArr = [""];
+		this.state = {
+			taskStartDate: dateArr,
+			taskStartTime: timeArr,
+			taskDescription: taskDescriptionArr
+		}; 
+		this.handleDateChange = this.handleDateChange.bind(this);
+		this.addNewTask = this.addNewTask.bind(this);
+		this.saveTasks = this.saveTasks.bind(this);
+		this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+		this.handleTimeChange = this.handleTimeChange.bind(this);
+		console.log("dateArr==",dateArr);
 	}
-
-	handleChange(date) {
+	
+	/* ============================================================================================================ */
+	handleDateChange(taskItemNum, date) {
+		var dateArr = this.state.taskStartDate;
+		dateArr[taskItemNum] = date;
 		this.setState({
-			startDate: date
+			taskStartDate: dateArr
 		});
-		console.log(date);
 	}
 
-	render_UserProfile__tasks__select() {
+	/* ============================================================================================================ */
+	handleDescriptionChange(taskItemNum, event) {
+		var taskDescriptionArr = this.state.taskDescription;
+		taskDescriptionArr[taskItemNum] = event.target.value;
+		this.setState({taskDescription : taskDescriptionArr});
+	}
+
+	/* ============================================================================================================ */
+	handleTimeChange(taskItemNum, event) {
+		var timeArr = this.state.taskStartTime;
+		timeArr[taskItemNum] = event.target.value;
+		this.setState({
+			taskStartTime: timeArr
+		});
+	}
+
+	/* ============================================================================================================ */
+	render_UserProfile__tasks__select(taskItemNum) {
 		var options = [];
 		var val = new Array(4);
 		var am_pm = "";
@@ -50,31 +81,64 @@ export default class UserProfileTasks extends Component {
 			}
 		}
 		return (
-			<select className="UserProfile__tasks__task__input">
+			<select onChange={this.handleTimeChange.bind(this,taskItemNum)} className="UserProfile__tasks__task__input">
 				{options}
 			</select>
 		);
 	}
 
+	/* ============================================================================================================ */
+	renderTaskItems() {
+		var taskItems = [];
+		var totalTasks = this.state.taskStartDate.length;
+		for (let i=0; i<totalTasks; i++) {
+			taskItems.push(
+				<div key={"taskItem"+i} className="UserProfile__tasks__task">
+					<div className="UserProfile__tasks__task__input-group">
+						<DatePicker className="UserProfile__tasks__task__input"
+						    selected={this.state.taskStartDate[i]}
+						    onChange={this.handleDateChange.bind(this,i)}
+						/>
+						{this.render_UserProfile__tasks__select(i)}
+					</div>
+					<textarea onChange={this.handleDescriptionChange.bind(this,i)} className="UserProfile__tasks__task__task-description" placeholder="Task description:" />
+				</div>
+			);
+		}
+		return (
+			<div>
+				{taskItems}
+			</div>
+			);
+	}
+
+	/* ============================================================================================================ */
+	addNewTask() {
+		var tasksDates = this.state.taskStartDate;
+		tasksDates.push(moment());
+		this.setState({
+			taskStartDate: tasksDates
+		});
+	}
+
+	/* ============================================================================================================ */
+	saveTasks() {
+		console.log(this.state);
+	}
+
+	/* ============================================================================================================ */
 	render() {
 		return (
 					<div className="UserProfile__tasks">
 						<h2 className="h2">Tasks:</h2>
-							<div className="UserProfile__tasks__task">
-								<div className="UserProfile__tasks__task__input-group">
-									<DatePicker className="UserProfile__tasks__task__input"
-									    selected={this.state.startDate}
-									    onChange={this.handleChange}
-									/>
-									{this.render_UserProfile__tasks__select()}
-								</div>
-								<textarea className="UserProfile__tasks__task__task-description" placeholder="Task description:" />
+
+							{this.renderTaskItems()}
+
+							<div className="UserProfile__tasks__form__button-container">
+								<button onClick={this.addNewTask} className="UserProfile__tasks__form__button">Add task</button>
 							</div>
 							<div className="UserProfile__tasks__form__button-container">
-								<button className="UserProfile__tasks__form__button">Add task</button>
-							</div>
-							<div className="UserProfile__tasks__form__button-container">
-								<button className="UserProfile__tasks__form__button">Save</button>
+								<button onClick={this.saveTasks} className="UserProfile__tasks__form__button">Save</button>
 							</div>						
 					</div>
 		);
