@@ -1,0 +1,13 @@
+@import '../vars';
+
+.UserProfile {
+	clear: both;
+	display: flex;
+	flex-direction: row;
+
+	/* --------- Column 2 --------- */
+	.UserProfile__column2 {
+		width: 50%;
+		box-sizing: border-box;
+	}
+}

@@ -14,7 +14,9 @@
 
 # compiled css-files
 /src/*.css
-/src/datepicker/*.css
+/src/Menu/*.css
+/src/UserProfile/*.css
+/src/UserProfile/datepicker/*.css
 
 # misc
 .DS_Store

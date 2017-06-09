@@ -1,0 +1,41 @@
+@import '../vars';
+
+.UserProfile__tasks {
+	width: 100%;
+	box-sizing: border-box;
+	padding-left: 5%;
+	.UserProfile__tasks__task {
+		display:flex;
+		flex-direction: row;
+		
+		.UserProfile__tasks__task__input-group {
+			display: flex;
+			flex-direction: column;
+			width: 25%;
+			//height: 80px;
+			.UserProfile__tasks__task__input {
+				@extend .input;
+				width: 100%;
+				&:hover {
+					cursor: pointer;
+				}
+			}
+		}
+		.UserProfile__tasks__task__task-description {
+			@extend .input;
+			margin-left: 5%;
+			width: 70%;
+			resize: none;
+			height: 80px;
+		}				
+	}
+	.UserProfile__tasks__form__button-container {
+		@extend .button-container;
+		.UserProfile__tasks__form__button {
+			@extend .button;
+		}
+	}
+	.UserProfile__tasks__form__button-container+.UserProfile__tasks__form__button-container {
+		margin-top: 10px;
+	}
+}

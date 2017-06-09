@@ -1,0 +1,56 @@
+@import '../vars';
+
+.UserProfile__progress {
+	width: 50%;
+	clear: both;
+	display: flex;
+	flex-direction: column;
+	.ProgressItem {
+		display: flex;
+		align-items: center;
+		margin-bottom: 30px;
+		.ProgressItem__img-and-text {
+			width: 120px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			.ProgressItem__img {
+				height: 60px;
+				width: 60px;
+				isplay: flex;
+				flex-direction: column;
+			}
+			.ProgressItem__img-caption {
+				margin-bottom: 0;
+				text-align: center;
+				display: flex;
+				flex-direction: column;
+				font-size: 14px;
+			}
+		}
+		.ProgressItem__comment-textarea {
+			resize: none;
+			width: 100%;
+			height: 80px;
+			background: $inputMainColor;
+			border: 1px solid $inputBorderColor;
+			font-size: 14px;
+			color: $inputTextColor;
+			&::placeholder {
+				color: $inputPlaceholderColor;
+			}
+			&:focus {
+				&::placeholder {
+					transition: 0.5s;
+					color: transparent;
+				}					
+			}				
+		}	
+	}
+	.UserProfile__progress__form__button-container {
+		@extend .button-container;
+		.UserProfile__progress__form__button {
+			@extend .button;
+		}
+	}		
+}
