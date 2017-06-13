@@ -5,6 +5,53 @@
 	clear: both;
 	display: flex;
 	flex-direction: column;
+	
+	.UserProfile__progress__progress-scheme {
+		width: 100%;
+		padding-top: 10px;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		border: 1px solid $inputBorderColor;
+		background: $inputMainColor;
+		margin-bottom: 30px;
+		
+		.UserProfile__progress__progress-scheme__item {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+
+			.UserProfile__progress__progress-scheme__item__figure {
+				padding: 10px;
+				
+				.UserProfile__progress__progress-scheme__item__figure__img {
+					margin: 0 auto ;
+					display: block;
+					width: 50px;
+				}
+				.UserProfile__progress__progress-scheme__item__figure__text {
+					text-align: center;
+					font-size: 12px;
+				}
+				&:hover {
+					cursor: pointer;
+					opacity: 1;
+				}
+			}
+
+			.UserProfile__progress__progress-scheme__item__arrow {
+				max-width: 20px;
+
+			}
+		}
+		.UserProfile__progress__progress-scheme__item_non-active {
+			opacity: 0.4;
+		}
+		.UserProfile__progress__progress-scheme__item_active {
+			opacity: 1;
+		}		
+	}
+
 	.ProgressItem {
 		display: flex;
 		align-items: center;
