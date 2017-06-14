@@ -43,12 +43,23 @@ export default class UserProfileProgress extends Component {
 		console.log(this.state.progressDescription);
 	}
 
+	
+	/* ============================================================================================================ */
+	getClassOfProgressItemElement(i) {
+		const baseClassName = "ProgressItem";
+		return (i <= this.state.activeProgressStep) ? 
+			baseClassName + " " + baseClassName + "_active" : 
+			baseClassName + " " + baseClassName + "_non-active";		
+	}
+
 	/* ============================================================================================================ */
 	renderProgressItems() {
+
+		this.getClassOfProgressItemElement();
 		var progressItemsJSX = [];
 		for (let i=0; i < progressItems_static.images.length; i++) {
 			progressItemsJSX.push(
-					<div key={"progressItem"+i} className="ProgressItem">
+					<div key={"progressItem"+i} className={this.getClassOfProgressItemElement(i)}>
 						<div className="ProgressItem__img-and-text">
 							<img className="ProgressItem__img" src={progressItems_static.images[i]} alt="" />
 							<p className="ProgressItem__img-caption">{progressItems_static.captions[i]}</p>

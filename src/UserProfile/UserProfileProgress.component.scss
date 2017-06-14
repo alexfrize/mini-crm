@@ -64,7 +64,7 @@
 			.ProgressItem__img {
 				height: 60px;
 				width: 60px;
-				isplay: flex;
+				display: flex;
 				flex-direction: column;
 			}
 			.ProgressItem__img-caption {
@@ -94,6 +94,13 @@
 			}				
 		}	
 	}
+	.ProgressItem_non-active {
+		display: none;
+	}
+	.ProgressItem_active {
+		display: flex;
+	}	
+	
 	.UserProfile__progress__form__button-container {
 		@extend .button-container;
 		.UserProfile__progress__form__button {
