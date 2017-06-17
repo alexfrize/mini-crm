@@ -1,0 +1,20 @@
+[{
+	"profile": {
+		"_id" : "",
+		"name": "" ,
+		"email": "",
+		"phone": "",
+		"description" : ""
+	},
+	"tasks" : [{
+		"date" :"",
+		"time" : "",
+		"description" : "",
+		"status" : ""
+	}],
+	"progress" : [{
+			"isActive": "",
+			"description" : ""
+		
+	}]
+}]

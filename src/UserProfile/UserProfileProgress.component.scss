@@ -20,6 +20,7 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
+			transition: 0.5s;
 
 			.UserProfile__progress__progress-scheme__item__figure {
 				padding: 10px;
@@ -33,15 +34,15 @@
 					text-align: center;
 					font-size: 12px;
 				}
-				&:hover {
-					cursor: pointer;
-					opacity: 1;
-				}
 			}
 
 			.UserProfile__progress__progress-scheme__item__arrow {
 				max-width: 20px;
 
+			}
+			&:hover {
+				cursor: pointer;
+				opacity: 1;
 			}
 		}
 		.UserProfile__progress__progress-scheme__item_non-active {

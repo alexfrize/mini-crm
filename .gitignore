@@ -17,6 +17,7 @@
 /src/Menu/*.css
 /src/UserProfile/*.css
 /src/UserProfile/datepicker/*.css
+/src/AllTasks/*.css
 
 # misc
 .DS_Store
