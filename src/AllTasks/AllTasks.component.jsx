@@ -43,19 +43,10 @@ export default class AllTasks extends Component {
 			if (moment(date1).isSame(date2)) {
 				let time1 = moment(task1.task.time, 'hh:mm');
 				let time2 = moment(task2.task.time, 'hh:mm');
-				if (moment(time1).isBefore(time2)){
-					return -1;
-					}
-				else {
-					return 1;
-
-				}
+				if (moment(time1).isBefore(time2)) return -1; else return 1;
 			}
-			if (moment(date1).isBefore(date2))
-				return -1;
-			else return 1;
+			if (moment(date1).isBefore(date2)) return -1; else return 1;
 		});
-
 		return alltasks;
 	}
 
@@ -65,13 +56,61 @@ export default class AllTasks extends Component {
 	}
 
 	/* ============================================================================================================ */	
+	isOverdue(taskNum) {
+		var timeNow = moment();
+		let taskDate = moment(this.state.tasks[taskNum].task.date + " " + this.state.tasks[taskNum].task.time, 'MM/DD/YYYY hh:mm');
+		return (moment(timeNow).isAfter(taskDate));
+	}
+
+	/* ============================================================================================================ */	
+	isOverdueClassName(taskNum) {
+		return this.isOverdue(taskNum) ? "AllTasks__table__overdue" : "";
+	}
+
+	/* ============================================================================================================ */	
+	isOverdueText(taskNum) {
+		return this.isOverdue(taskNum) ? "Task is overdue!" : "";		
+	}
+
+	/* ============================================================================================================ */	
+	isOverdueClassName__smallWarning(taskNum) {
+		return this.isOverdue(taskNum) ? "AllTasks__table__small-warning" : "AllTasks__table__display-none";
+	}
+
+	/* ============================================================================================================ */	
+	getOverdueTasks() {
+		let overdueTasks=0;
+		for (let i=0; i < this.state.tasks.length; i++) {
+			if (this.isOverdue(i)) overdueTasks++;
+		}
+		
+		console.log("overdueTasks",overdueTasks);
+		return (overdueTasks !== 0) ?
+			(
+				<span className="AllTasks__table__overdue">
+					({overdueTasks}) overdue tasks!
+				</span>
+			) :
+			(
+				<span>
+					({this.state.tasks.length})
+				</span>
+			)
+	}
+
+	/* ============================================================================================================ */	
 	render() {
 		var tasksTable = [];
 		for (let i=0; i<this.state.tasks.length; i++) {
 			tasksTable.push(
 						<tr key={"tablerow"+i}>
-							<td>{this.state.tasks[i].task.time}</td>
-							<td>{this.state.tasks[i].task.date}</td>
+							<td className={this.isOverdueClassName(i)}>{this.state.tasks[i].task.time}</td>
+							<td className={this.isOverdueClassName(i)}>
+								{this.state.tasks[i].task.date}
+								<p className={this.isOverdueClassName__smallWarning(i)}>
+									{this.isOverdueText(i)}
+								</p>
+							</td>
 							<td>{this.state.tasks[i].task.description}
 								<table className="AllTasks__table__sub-table">
 									<tbody>
@@ -95,7 +134,7 @@ export default class AllTasks extends Component {
 		return (
 			<div className="AllTasks">
 				<div className="AllTasks__header">
-					<h2 className="h2">All tasks:</h2>
+					<h2 className="h2">All tasks: {this.getOverdueTasks()}</h2>
 					<div className="AllTasks__search-box">
 						<input className="AllTasks__search-box__input" type="input" placeholder="Search"/>
 					</div>

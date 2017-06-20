@@ -22,8 +22,6 @@ class App extends Component {
 
   /* ============================================================================================================ */	
   componentDidMount() {
-	console.log("APP: _state === ", this.state.users);
-
   	/*
   	var _url = "./data/users.json"; 
   	fetch(_url)

@@ -81,3 +81,11 @@
     .AllTasks .AllTasks__table .AllTasks__table__img:hover {
       opacity: 0.6;
       cursor: pointer; }
+  .AllTasks .AllTasks__table .AllTasks__table__overdue {
+    color: #b35c7a; }
+  .AllTasks .AllTasks__table .AllTasks__table__display-none {
+    display: none; }
+  .AllTasks .AllTasks__table .AllTasks__table__small-warning {
+    color: #b35c7a;
+    text-align: center;
+    font-size: 10px; }

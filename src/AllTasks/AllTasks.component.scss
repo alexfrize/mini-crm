@@ -75,5 +75,18 @@
 				cursor: pointer;
 			}
 		}
+		.AllTasks__table__overdue {
+			color: $warningTextColor;
+		}
+
+		.AllTasks__table__display-none {
+			display: none;
+		}
+
+		.AllTasks__table__small-warning {
+			color: $warningTextColor;
+			text-align: center;
+			font-size: 10px;
+		}
 	}
 }
