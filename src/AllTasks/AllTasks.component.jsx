@@ -10,8 +10,12 @@ export default class AllTasks extends Component {
 		super(props);
 		this.state = {
 			users : [],
-			tasks: []
+			tasks: [],
+			isEditMode : false,
+			editTask : null
 		};
+		this.editTask = this.editTask.bind(this);
+		
 	}
 
 	/* ============================================================================================================ */	
@@ -87,17 +91,37 @@ export default class AllTasks extends Component {
 		console.log("overdueTasks",overdueTasks);
 		return (overdueTasks !== 0) ?
 			(
-				<span className="AllTasks__table__overdue">
-					({overdueTasks}) overdue tasks!
+				<span>{this.state.tasks.length}
+					&nbsp;&nbsp;&nbsp;
+					<span className="AllTasks__header__overdue-tasks">
+						Overdue tasks: {overdueTasks}
+					</span>
 				</span>
 			) :
 			(
 				<span>
-					({this.state.tasks.length})
+					{this.state.tasks.length}
 				</span>
 			)
 	}
 
+	/* ============================================================================================================ */	
+	editTask(taskNum, event) {
+		console.log(this.state.tasks[taskNum]);
+		this.setState({
+			isEditMode : !this.state.isEditMode,
+			editTask : taskNum
+		});
+		
+	}
+
+	/* ============================================================================================================ */	
+	getUserName(taskNum) {
+		return (this.state.isEditMode && this.state.editTask === taskNum) ? 
+			<td><input className="AllTasks__table__editmode__input" value={this.state.tasks[taskNum].user.name} /></td> :
+			<td>{this.state.tasks[taskNum].user.name}</td>
+			
+	}
 	/* ============================================================================================================ */	
 	render() {
 		var tasksTable = [];
@@ -115,7 +139,7 @@ export default class AllTasks extends Component {
 								<table className="AllTasks__table__sub-table">
 									<tbody>
 										<tr>
-											<td>{this.state.tasks[i].user.name}</td>
+											{this.getUserName(i)}
 											<td>{this.state.tasks[i].user.phone}</td>
 											<td>{this.state.tasks[i].user.email}</td>
 										</tr>
@@ -123,7 +147,7 @@ export default class AllTasks extends Component {
 								</table>
 							</td>
 							<td>
-								<img className="AllTasks__table__img" src={allTasks__edit} alt="" />
+								<img onClick={this.editTask.bind(this,i)} className="AllTasks__table__img" src={allTasks__edit} alt="" />
 								<img className="AllTasks__table__img" src={allTasks__profile} alt="" />
 								<img className="AllTasks__table__img" src={allTasks__done} alt="" />
 							</td>
