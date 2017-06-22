@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
-import './datepicker/datepicker.css';
+import './../datepicker/datepicker.css';
 import moment from 'moment';
 
 import './UserProfileTasks.component.css';

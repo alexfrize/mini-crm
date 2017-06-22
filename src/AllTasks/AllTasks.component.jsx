@@ -5,6 +5,9 @@ import allTasks__edit from './img/all-tasks__edit.svg';
 import allTasks__profile from './img/all-tasks__profile.svg';
 import moment from 'moment';
 
+import DatePicker from 'react-datepicker';
+import './../datepicker/datepicker.css';
+
 export default class AllTasks extends Component {
 	constructor(props) {
 		super(props);
@@ -12,10 +15,15 @@ export default class AllTasks extends Component {
 			users : [],
 			tasks: [],
 			isEditMode : false,
-			editTask : null
+			editTask : {
+				taskNum : null
+			}
 		};
 		this.editTask = this.editTask.bind(this);
-		
+		this.getTaskTime__handleChange = this.getTaskTime__handleChange.bind(this);
+		this.getTaskDate__handleChange = this.getTaskDate__handleChange.bind(this);
+		this.getTaskDescription__handleChange = this.getTaskDescription__handleChange.bind(this);
+	
 	}
 
 	/* ============================================================================================================ */	
@@ -89,6 +97,7 @@ export default class AllTasks extends Component {
 		}
 		
 		console.log("overdueTasks",overdueTasks);
+		console.log("getOverdueTasks() :: this.state.isEditMode",this.state.isEditMode);
 		return (overdueTasks !== 0) ?
 			(
 				<span>{this.state.tasks.length}
@@ -107,39 +116,109 @@ export default class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	editTask(taskNum, event) {
-		console.log(this.state.tasks[taskNum]);
+		let isEditMode;
+		if (taskNum !== this.state.editTask.taskNum) isEditMode = true;
+		else isEditMode = !this.state.isEditMode;
+
+		let editTask = {
+			taskNum: taskNum,
+			time: this.state.tasks[taskNum].task.time,
+			date: moment(this.state.tasks[taskNum].task.date, 'MM/DD/YYYY'),
+			description: this.state.tasks[taskNum].task.description,
+		};
+
 		this.setState({
-			isEditMode : !this.state.isEditMode,
-			editTask : taskNum
+			isEditMode,
+			editTask
 		});
-		
+		// setTimeout(()=>console.log("isEditMode is now:", this.state.isEditMode),500);
+		// setTimeout(()=>console.log("this.state.editTask:", this.state.editTask),500);
+		// console.log('----------')
 	}
 
 	/* ============================================================================================================ */	
-	getUserName(taskNum) {
-		return (this.state.isEditMode && this.state.editTask === taskNum) ? 
-			<td><input className="AllTasks__table__editmode__input" value={this.state.tasks[taskNum].user.name} /></td> :
-			<td>{this.state.tasks[taskNum].user.name}</td>
-			
+	getTaskTime__handleChange(event) {
+		console.log(event.target.value);
 	}
+
+	/* ============================================================================================================ */	
+	getTaskTime(taskNum) {
+		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ? 
+			(<td><select className="AllTasks__table__edit-mode__input" onChange={this.getTaskTime__handleChange} value={this.state.editTask.time}>
+				<option>{this.state.editTask.time}</option>
+				</select>
+			</td>) :
+			<td className={this.isOverdueClassName(taskNum)}><div className="AllTasks__table__view-mode__input">{this.state.tasks[taskNum].task.time}</div></td>
+	
+	}
+	
+	/* ============================================================================================================ */	
+	getTaskDate__handleChange(date) {
+		console.log("date:",date);
+		console.log('this.state.editTask.date ==',this.state.editTask.date);
+		this.setState({
+			editTask: {
+				date : date
+			}
+		});
+		setTimeout(()=>console.log(this.state.editTask.date),500);
+	}
+	
+	/* ============================================================================================================ */	
+	getTaskDate(taskNum) {
+		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ?
+			(
+				<td>
+					<DatePicker className="AllTasks__table__edit-mode__input"
+					    selected={this.state.editTask.date}
+					    onChange={this.getTaskDate__handleChange}
+					/>
+				</td>
+			) :
+			(
+
+				<td className={this.isOverdueClassName(taskNum)}>
+					{this.state.tasks[taskNum].task.date}
+					<p className={this.isOverdueClassName__smallWarning(taskNum)}>
+						{this.isOverdueText(taskNum)}
+					</p>
+				</td>
+			);
+	}
+
+	/* ============================================================================================================ */	
+	getTaskDescription__handleChange(event) {
+		this.setState({
+			editTask: {
+				description: event.target.value
+			}
+		});
+		console.log(event.target.value);
+	}
+
+	/* ============================================================================================================ */	
+	getTaskDescription(taskNum) {
+		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ?
+		(
+			<textarea className="AllTasks__table__edit-mode__textarea" value={this.state.editTask.description} onChange={this.getTaskDescription__handleChange}></textarea> 
+		) :
+			<div className="AllTasks__table__view-mode__textarea">{this.state.tasks[taskNum].task.description}</div>;
+	}
+
 	/* ============================================================================================================ */	
 	render() {
 		var tasksTable = [];
 		for (let i=0; i<this.state.tasks.length; i++) {
 			tasksTable.push(
 						<tr key={"tablerow"+i}>
-							<td className={this.isOverdueClassName(i)}>{this.state.tasks[i].task.time}</td>
-							<td className={this.isOverdueClassName(i)}>
-								{this.state.tasks[i].task.date}
-								<p className={this.isOverdueClassName__smallWarning(i)}>
-									{this.isOverdueText(i)}
-								</p>
-							</td>
-							<td>{this.state.tasks[i].task.description}
+							{this.getTaskTime(i)}
+							{this.getTaskDate(i)}
+							<td>
+								{this.getTaskDescription(i)}
 								<table className="AllTasks__table__sub-table">
 									<tbody>
 										<tr>
-											{this.getUserName(i)}
+											<td>{this.state.tasks[i].user.name}</td>
 											<td>{this.state.tasks[i].user.phone}</td>
 											<td>{this.state.tasks[i].user.email}</td>
 										</tr>

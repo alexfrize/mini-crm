@@ -53,6 +53,7 @@ $mainFontSize: 18px;
 }
 
 .input {
+	font-family: sans-serif;
 	box-sizing: border-box;
 	margin-bottom: 10px;
 	padding: 8px;
@@ -63,6 +64,15 @@ $mainFontSize: 18px;
 	&::placeholder {
 		color: $inputPlaceholderColor;
 	}
+}
+
+.input_view-mode {
+	box-sizing: border-box;
+	margin-bottom: 10px;
+	padding: 8px;
+	background: none;
+	border: 1px solid transparent;
+	font-size: 18px;
 }
 
 .display-none {
