@@ -3,6 +3,7 @@ import './AllTasks.component.css';
 import allTasks__done from './img/all-tasks__done.svg';
 import allTasks__edit from './img/all-tasks__edit.svg';
 import allTasks__profile from './img/all-tasks__profile.svg';
+import allTasks__cancel from './img/all-tasks__cancel.svg';
 import moment from 'moment';
 
 import DatePicker from 'react-datepicker';
@@ -15,15 +16,21 @@ export default class AllTasks extends Component {
 			users : [],
 			tasks: [],
 			isEditMode : false,
+			activeModal: {
+				id: null,
+				answer : null
+			},
 			editTask : {
 				taskNum : null
 			}
 		};
 		this.editTask = this.editTask.bind(this);
+		this.cancelTask = this.cancelTask.bind(this);
+
 		this.getTaskTime__handleChange = this.getTaskTime__handleChange.bind(this);
 		this.getTaskDate__handleChange = this.getTaskDate__handleChange.bind(this);
 		this.getTaskDescription__handleChange = this.getTaskDescription__handleChange.bind(this);
-	
+		this.MODALSaveChanges__setAnswer = this.MODALSaveChanges__setAnswer.bind(this);
 	}
 
 	/* ============================================================================================================ */	
@@ -95,9 +102,7 @@ export default class AllTasks extends Component {
 		for (let i=0; i < this.state.tasks.length; i++) {
 			if (this.isOverdue(i)) overdueTasks++;
 		}
-		
-		console.log("overdueTasks",overdueTasks);
-		console.log("getOverdueTasks() :: this.state.isEditMode",this.state.isEditMode);
+
 		return (overdueTasks !== 0) ?
 			(
 				<span>{this.state.tasks.length}
@@ -131,22 +136,60 @@ export default class AllTasks extends Component {
 			isEditMode,
 			editTask
 		});
-		// setTimeout(()=>console.log("isEditMode is now:", this.state.isEditMode),500);
-		// setTimeout(()=>console.log("this.state.editTask:", this.state.editTask),500);
-		// console.log('----------')
 	}
 
 	/* ============================================================================================================ */	
 	getTaskTime__handleChange(event) {
-		console.log(event.target.value);
+		let editTask = this.state.editTask;
+		editTask.time = event.target.value;
+		this.setState({
+			editTask
+		});		
+	}
+
+	/* ============================================================================================================ */
+	render__getTaskTime__timeValues() {
+		var options = [];
+		var val = new Array(4);
+		var am_pm = "";
+		var timeHour = 0;
+		for (let i=0; i<=23; i++) {
+			if (i < 12) {
+				am_pm = " AM";
+				timeHour = i;
+			}
+			else {
+				am_pm = " PM";
+				timeHour = i - 12; 
+			}
+			if (timeHour === 0) {
+				val[0] = "12:00" + am_pm;
+				val[1] = "12:15" + am_pm;
+				val[2] = "12:30" + am_pm;
+				val[3] = "12:45" + am_pm;
+			}
+			else {
+				val[0] = (timeHour >= 10) ? timeHour+":00" + am_pm : "0"+timeHour+":00" + am_pm;
+				val[1] = (timeHour >= 10) ? timeHour+":15" + am_pm : "0"+timeHour+":15" + am_pm;
+				val[2] = (timeHour >= 10) ? timeHour+":30" + am_pm : "0"+timeHour+":30" + am_pm;
+				val[3] = (timeHour >= 10) ? timeHour+":45" + am_pm : "0"+timeHour+":45" + am_pm;												
+			}
+			for (let c=0; c<4; c++) {
+				options.push(<option key={i+"0"+c} value={val[c]}>{val[c]}</option>);
+			}
+		}
+		return (
+			<select className="AllTasks__table__edit-mode__input" onChange={this.getTaskTime__handleChange} value={this.state.editTask.time}>
+				{options}
+			</select>
+		);
 	}
 
 	/* ============================================================================================================ */	
 	getTaskTime(taskNum) {
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ? 
-			(<td><select className="AllTasks__table__edit-mode__input" onChange={this.getTaskTime__handleChange} value={this.state.editTask.time}>
-				<option>{this.state.editTask.time}</option>
-				</select>
+			(<td>
+				{this.render__getTaskTime__timeValues()}
 			</td>) :
 			<td className={this.isOverdueClassName(taskNum)}><div className="AllTasks__table__view-mode__input">{this.state.tasks[taskNum].task.time}</div></td>
 	
@@ -156,12 +199,11 @@ export default class AllTasks extends Component {
 	getTaskDate__handleChange(date) {
 		console.log("date:",date);
 		console.log('this.state.editTask.date ==',this.state.editTask.date);
+		let editTask = this.state.editTask;
+		editTask.date = date;
 		this.setState({
-			editTask: {
-				date : date
-			}
+			editTask
 		});
-		setTimeout(()=>console.log(this.state.editTask.date),500);
 	}
 	
 	/* ============================================================================================================ */	
@@ -188,12 +230,11 @@ export default class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getTaskDescription__handleChange(event) {
+		let editTask = this.state.editTask;
+		editTask.description = event.target.value;
 		this.setState({
-			editTask: {
-				description: event.target.value
-			}
+			editTask
 		});
-		console.log(event.target.value);
 	}
 
 	/* ============================================================================================================ */	
@@ -205,6 +246,150 @@ export default class AllTasks extends Component {
 			<div className="AllTasks__table__view-mode__textarea">{this.state.tasks[taskNum].task.description}</div>;
 	}
 
+
+	showModal(modalId, event) {
+		this.setState({
+			activeModal : {
+				id: modalId,
+				answer: null
+			}
+		});
+		/* IMPORTANT: CHECK ALL CHANGES IN initModal() */
+	}
+
+	hideModal() {
+		this.setState({
+			activeModal : {
+				id: null,
+				answer: null
+			}
+		});
+	}
+
+	/* ============================================================================================================ */	
+	cancelTask() {
+		let editTask = {
+			taskNum : null,
+			date: null,
+			time: null,
+			description : null
+		}
+		this.setState({
+			editTask
+		});
+	}
+
+	/* ============================================================================================================ */	
+	saveTask() {
+
+		console.log(this.state.editTask);
+		let taskNum = this.state.editTask.taskNum;
+		var tasks = this.state.tasks;
+		tasks[taskNum].task = {
+			time : this.state.editTask.time,
+			date : this.state.editTask.date.format("MM/DD/YYYY"),
+			description: this.state.editTask.description
+		}
+
+		/*
+			******************************
+
+			IMPORTANT!
+			Dont' forget to modify users array and save it to DB!
+
+			******************************
+		*/
+
+		let editTask = {
+			taskNum : null,
+			date: null,
+			time: null,
+			description : null
+		}
+		this.setState({
+			tasks,
+			editTask
+		});
+
+	}
+
+	/* ============================================================================================================ */	
+	getSmallIcons(taskNum) {
+		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ? 
+			(
+				<td>
+					<img onClick={this.showModal.bind(this, "MODAL::SaveChanges")} className="AllTasks__table__img" src={allTasks__done} alt="" />
+					<img onClick={this.cancelTask} className="AllTasks__table__img" src={allTasks__cancel} alt="" />
+				</td>
+			) :
+			(
+				<td>
+					<img onClick={this.editTask.bind(this,taskNum)} className="AllTasks__table__img" src={allTasks__edit} alt="" />
+					<img className="AllTasks__table__img" src={allTasks__profile} alt="" />
+					<img className="AllTasks__table__img" src={allTasks__done} alt="" />
+				</td>
+			);
+	}
+
+	/* ============================================================================================================ */	
+	MODALSaveChanges__setAnswer(answer, event) {
+		let activeModal = this.state.activeModal;
+		activeModal = {
+			answer : answer,
+			id: null
+		}
+		this.setState({
+			activeModal
+		});
+		
+		if (answer.toUpperCase() === "YES") this.saveTask();
+		else this.cancelTask();
+		this.hideModal();
+	}
+
+	/* ============================================================================================================ */	
+	initModal() {
+		let activeModalHTML;
+				if (this.state.activeModal.id === "MODAL::MarkAsDone")
+			activeModalHTML = (
+				<div className="overlay">
+					<div className="modal">
+				 		<p>
+				 			Are you sure you want to mark this task as done?
+				 		</p>
+				 		<div className="modal__button-container">
+				 			<button className="modal__button">
+				 				Yes
+				 			</button>
+				 			<button className="modal__button">
+				 				No
+				 			</button>			 			
+				 		</div>
+					</div>
+				</div>
+			);
+		else
+		if (this.state.activeModal.id === "MODAL::SaveChanges")
+			activeModalHTML = (
+				<div className="overlay">
+					<div className="modal">
+				 		<p>
+				 			Do you want to save changes?
+				 		</p>
+				 		<div className="modal__button-container">
+				 			<button onClick={this.MODALSaveChanges__setAnswer.bind(this, "yes")} className="modal__button">
+				 				Yes
+				 			</button>
+				 			<button onClick={this.MODALSaveChanges__setAnswer.bind(this, "no")} className="modal__button">
+				 				No
+				 			</button>			 			
+				 		</div>
+					</div>
+				</div>
+			);				
+		else activeModalHTML = <div></div>;
+		return activeModalHTML;
+	}
 	/* ============================================================================================================ */	
 	render() {
 		var tasksTable = [];
@@ -225,23 +410,24 @@ export default class AllTasks extends Component {
 									</tbody>
 								</table>
 							</td>
-							<td>
-								<img onClick={this.editTask.bind(this,i)} className="AllTasks__table__img" src={allTasks__edit} alt="" />
-								<img className="AllTasks__table__img" src={allTasks__profile} alt="" />
-								<img className="AllTasks__table__img" src={allTasks__done} alt="" />
-							</td>
+							{this.getSmallIcons(i)}
 						</tr>
 			)
 		}
 
 		return (
+			
 			<div className="AllTasks">
+
+				{this.initModal()}
+
 				<div className="AllTasks__header">
 					<h2 className="h2">All tasks: {this.getOverdueTasks()}</h2>
 					<div className="AllTasks__search-box">
 						<input className="AllTasks__search-box__input" type="input" placeholder="Search"/>
 					</div>
 				</div>
+				
 				<table className="AllTasks__table">
 					<tbody>
 						{ tasksTable }																				

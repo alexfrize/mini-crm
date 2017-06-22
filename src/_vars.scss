@@ -26,6 +26,14 @@ $warningTextColor: #b35c7a;
 //============== Sizes ============== 
 $mainFontSize: 18px;
 
+// ============== Modal Window Constants ============== 
+$modalWidth: 500px;
+$modalMinHeight: 100px;
+$modalContentPadding: 30px;
+$modalMainColor: #fbf6e3;
+$modalBorderColor: #efe5dd;
+$modalTextColor: #7e4759;
+
 //============== Title styles ============== 
 .h2 {
 	color: $mainTextColor;
@@ -77,4 +85,39 @@ $mainFontSize: 18px;
 
 .display-none {
 	display: none;
+}
+
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0,0,0,0.5);
+	z-index: 150;
+}
+
+.modal {
+	position: fixed;
+	width: $modalWidth;
+	min-height: $modalMinHeight;
+	top: 50%;
+	left: 50%;
+	margin-left: -$modalWidth/2 - $modalContentPadding;
+	margin-top: -$modalMinHeight - $modalContentPadding;
+	background: $modalMainColor;
+	border: 1px solid $modalBorderColor;
+	color: $modalTextColor;
+	z-index: 151;
+	text-align: justify;
+	padding: $modalContentPadding;
+
+	.modal__button-container {
+		margin-top: 60px;
+		display: flex;
+		justify-content: space-around;
+	}
+	.modal__button {
+		@extend .button;
+	}
 }

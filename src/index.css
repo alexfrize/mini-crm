@@ -6,7 +6,7 @@
   display: flex;
   justify-content: flex-end; }
 
-.button {
+.button, .modal .modal__button {
   transition: 0.5s;
   display: block;
   background: #fbf6e3;
@@ -15,7 +15,7 @@
   font-size: 18px;
   width: 125px;
   height: 35px; }
-  .button:hover {
+  .button:hover, .modal .modal__button:hover {
     background: #d8c7cd;
     color: #7e4759;
     border: 1px solid #d8c7cd;
@@ -43,6 +43,34 @@
 
 .display-none {
   display: none; }
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 150; }
+
+.modal {
+  position: fixed;
+  width: 500px;
+  min-height: 100px;
+  top: 50%;
+  left: 50%;
+  margin-left: -280px;
+  margin-top: -130px;
+  background: #fbf6e3;
+  border: 1px solid #efe5dd;
+  color: #7e4759;
+  z-index: 151;
+  text-align: justify;
+  padding: 30px; }
+  .modal .modal__button-container {
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-around; }
 
 * {
   outline: 0 !important; }
