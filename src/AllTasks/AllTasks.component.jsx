@@ -15,7 +15,9 @@ export default class AllTasks extends Component {
 		this.state = {
 			users : [],
 			tasks: [],
+			tasks_untouched: [],
 			isEditMode : false,
+			searchFilter : "",
 			activeModal: {
 				id: null,
 				answer : null
@@ -36,6 +38,8 @@ export default class AllTasks extends Component {
 		this.getTaskDate__handleChange = this.getTaskDate__handleChange.bind(this);
 		this.getTaskDescription__handleChange = this.getTaskDescription__handleChange.bind(this);
 		this.MODALSaveChanges__setAnswer = this.MODALSaveChanges__setAnswer.bind(this);
+
+		this.filterTasks = this.filterTasks.bind(this);
 	}
 
 	/* ============================================================================================================ */	
@@ -402,7 +406,28 @@ export default class AllTasks extends Component {
 		this.hideModal();
 	}
 
+	/* ============================================================================================================ */	
+	filterTasks(event) {
+		var tasks_untouched;
+		if (!this.state.tasks_untouched.length) {
+			tasks_untouched = this.state.tasks;
+		} 
+		else tasks_untouched = this.state.tasks_untouched;
+		console.log(tasks_untouched);
+		let searchFilter = event.target.value;
+		var tasks = tasks_untouched.filter(element => {
+			return (element.task.description.toUpperCase().search(searchFilter.toUpperCase()) !== -1);
+	 	});
 
+		console.log(searchFilter);
+		console.log("tasks==",tasks);
+
+		this.setState({
+			searchFilter,
+			tasks_untouched,
+			tasks
+		});
+	}
 
 
 	/* ============================================================================================================ */	
@@ -450,6 +475,11 @@ export default class AllTasks extends Component {
 	}
 	/* ============================================================================================================ */	
 	render() {
+		var this_state = this.state;
+		function allOrFiltered() {
+			if (this_state.tasks_untouched.length === 0) return "All tasks:";
+			return (this_state.tasks.length === this_state.tasks_untouched.length) ? "All tasks:" : "Filtered tasks:";
+		}
 		var tasksTable = [];
 		for (let i=0; i<this.state.tasks.length; i++) {
 			tasksTable.push(
@@ -480,9 +510,9 @@ export default class AllTasks extends Component {
 				{this.initModal()}
 
 				<div className="AllTasks__header">
-					<h2 className="h2">All tasks: {this.getOverdueTasks()}</h2>
+					<h2 className="h2">{allOrFiltered()} {this.getOverdueTasks()}</h2>
 					<div className="AllTasks__search-box">
-						<input className="AllTasks__search-box__input" type="input" placeholder="Search"/>
+						<input onChange={this.filterTasks.bind(this)} value={this.state.searchFilter}className="AllTasks__search-box__input" type="input" placeholder="Search"/>
 					</div>
 				</div>
 				
