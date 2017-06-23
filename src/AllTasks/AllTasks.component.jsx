@@ -22,11 +22,16 @@ export default class AllTasks extends Component {
 			},
 			editTask : {
 				taskNum : null
+			},
+			doneTask : {
+				taskNum : null
 			}
 		};
 		this.editTask = this.editTask.bind(this);
 		this.cancelTask = this.cancelTask.bind(this);
-
+		this.confirmIfTaskIsDone = this.confirmIfTaskIsDone.bind(this);
+		this.markTaskAsDone = this.markTaskAsDone.bind(this);
+		this.dontMarkTaskAsDone = this.dontMarkTaskAsDone.bind(this);
 		this.getTaskTime__handleChange = this.getTaskTime__handleChange.bind(this);
 		this.getTaskDate__handleChange = this.getTaskDate__handleChange.bind(this);
 		this.getTaskDescription__handleChange = this.getTaskDescription__handleChange.bind(this);
@@ -246,7 +251,7 @@ export default class AllTasks extends Component {
 			<div className="AllTasks__table__view-mode__textarea">{this.state.tasks[taskNum].task.description}</div>;
 	}
 
-
+	/* ============================================================================================================ */	
 	showModal(modalId, event) {
 		this.setState({
 			activeModal : {
@@ -257,6 +262,7 @@ export default class AllTasks extends Component {
 		/* IMPORTANT: CHECK ALL CHANGES IN initModal() */
 	}
 
+	/* ============================================================================================================ */	
 	hideModal() {
 		this.setState({
 			activeModal : {
@@ -277,6 +283,55 @@ export default class AllTasks extends Component {
 		this.setState({
 			editTask
 		});
+	}
+
+	/* ============================================================================================================ */	
+	clearDoneTaskInfo() {
+		let doneTask = {
+			taskNum : null
+		}
+		this.setState({
+			doneTask
+		});
+	}
+	/* ============================================================================================================ */	
+	markTaskAsDone() {
+		let taskNumToMarkAsDone = this.state.doneTask.taskNum;
+		console.log(`Task ${taskNumToMarkAsDone} is marked as done:`, this.state.tasks[taskNumToMarkAsDone]);
+		let tasks = this.state.tasks;
+		tasks.splice(taskNumToMarkAsDone,1);
+
+		/*
+			******************************
+
+			IMPORTANT!
+			Dont' forget to modify users array and save it to DB!
+
+			******************************
+		*/		
+		
+		this.clearDoneTaskInfo();
+		this.hideModal();
+		this.setState({
+			tasks
+		})
+	}
+
+	/* ============================================================================================================ */	
+	dontMarkTaskAsDone() {
+		this.clearDoneTaskInfo();
+		this.hideModal();
+	}
+
+	/* ============================================================================================================ */	
+	confirmIfTaskIsDone(taskNum, event) {
+		this.setState({
+			doneTask: {
+				taskNum
+			}
+		});
+		this.showModal("MODAL::MarkAsDone", event);
+		console.log("confirmIfTaskIsDone");
 	}
 
 	/* ============================================================================================================ */	
@@ -326,7 +381,7 @@ export default class AllTasks extends Component {
 				<td>
 					<img onClick={this.editTask.bind(this,taskNum)} className="AllTasks__table__img" src={allTasks__edit} alt="" />
 					<img className="AllTasks__table__img" src={allTasks__profile} alt="" />
-					<img className="AllTasks__table__img" src={allTasks__done} alt="" />
+					<img onClick={this.confirmIfTaskIsDone.bind(this, taskNum)} className="AllTasks__table__img" src={allTasks__done} alt="" />
 				</td>
 			);
 	}
@@ -347,6 +402,9 @@ export default class AllTasks extends Component {
 		this.hideModal();
 	}
 
+
+
+
 	/* ============================================================================================================ */	
 	initModal() {
 		let activeModalHTML;
@@ -358,10 +416,10 @@ export default class AllTasks extends Component {
 				 			Are you sure you want to mark this task as done?
 				 		</p>
 				 		<div className="modal__button-container">
-				 			<button className="modal__button">
+				 			<button onClick={this.markTaskAsDone} className="modal__button">
 				 				Yes
 				 			</button>
-				 			<button className="modal__button">
+				 			<button onClick={this.dontMarkTaskAsDone} className="modal__button">
 				 				No
 				 			</button>			 			
 				 		</div>
