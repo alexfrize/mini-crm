@@ -3,7 +3,7 @@ import './App.component.css';
 import Menu from './Menu/Menu.component.jsx';
 import UserProfile from './UserProfile/UserProfile.component.jsx';
 import AllTasks from './AllTasks/AllTasks.component.jsx';
-import userJSON from "./data/users.json"; 
+//import userJSON from "./data/users.json"; 
 
 class App extends Component {
   constructor() {
@@ -15,20 +15,19 @@ class App extends Component {
 
   /* ============================================================================================================ */	
   componentWillMount() {
-  	this.setState({
-	  		users: userJSON,
-	  	});
+    var _url = "/api/getusers/";
+    fetch(_url)
+    .then((response) => response.json())
+    .then(users => {
+      this.setState({ users });
+      console.log("Loaded data:", users);
+    })
+    .catch(error => console.error("Error loading data\r\n",error));
   }
 
   /* ============================================================================================================ */	
   componentDidMount() {
-  	/*
-  	var _url = "./data/users.json"; 
-  	fetch(_url)
-  	.then((res) => res.json())
-  	.then((res) => console.log(res))
-  	.catch((err) => console.error("Error loading data from JSON: ", err));
-  	*/
+
   }
 
   /* ============================================================================================================ */	

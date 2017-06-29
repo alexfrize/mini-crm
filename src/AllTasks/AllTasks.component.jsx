@@ -44,8 +44,30 @@ export default class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	componentWillMount() {
-		this.setState({tasks: this.getTasksArray()});
 	}
+
+	/* ============================================================================================================ */	
+	componentDidMount() {
+		// setTimeout(()=> {
+		// 	if (this.state.users.length !== this.props.users.length) {
+		// 		this.setState({
+		// 			users: this.props.users,
+		// 			tasks: this.getTasksArray()
+		// 		});
+		// 	}
+		//  }, 500);
+	}
+
+	componentWillReceiveProps(newProps){
+		console.log("nextProps===", newProps);
+		console.log("nextProps===", newProps.users);
+		this.setState({users: newProps.users});
+		setTimeout(()=> {
+		    this.setState({
+		        tasks: this.getTasksArray()
+		    })
+		}, 0);
+	}	
 
 	/* ============================================================================================================ */	
 	getTasksArray() {
@@ -76,11 +98,6 @@ export default class AllTasks extends Component {
 			if (moment(date1).isBefore(date2)) return -1; else return 1;
 		});
 		return alltasks;
-	}
-
-	/* ============================================================================================================ */	
-	componentDidMount() {
-		console.log("this.state.tasks===",this.state.tasks);
 	}
 
 	/* ============================================================================================================ */	
