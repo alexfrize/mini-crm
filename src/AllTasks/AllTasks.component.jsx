@@ -48,41 +48,35 @@ export default class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	componentDidMount() {
-		// setTimeout(()=> {
-		// 	if (this.state.users.length !== this.props.users.length) {
-		// 		this.setState({
-		// 			users: this.props.users,
-		// 			tasks: this.getTasksArray()
-		// 		});
-		// 	}
-		//  }, 500);
+
 	}
 
 	componentWillReceiveProps(newProps){
 		console.log("nextProps===", newProps);
 		console.log("nextProps===", newProps.users);
-		this.setState({users: newProps.users});
-		setTimeout(()=> {
-		    this.setState({
-		        tasks: this.getTasksArray()
-		    })
-		}, 0);
+		console.log("this.props===", this.props);
+
+		this.setState({
+			users: newProps.users,
+			tasks : this.getTasksArray(newProps)
+		})
+
 	}	
 
 	/* ============================================================================================================ */	
-	getTasksArray() {
+	getTasksArray(newProps) {
 		var alltasks = [];
 		var taskObject = {};
-		for (let userNum=0; userNum < this.props.users.length; userNum++ ) {
-			for (let taskNum=0; taskNum < this.props.users[userNum].tasks.length; taskNum++) {
-				if (this.props.users[userNum].tasks[taskNum].description !== "") {
+		for (let userNum=0; userNum < newProps.users.length; userNum++ ) {
+			for (let taskNum=0; taskNum < newProps.users[userNum].tasks.length; taskNum++) {
+				if (newProps.users[userNum].tasks[taskNum].description !== "") {
 					taskObject = {
-						task : this.props.users[userNum].tasks[taskNum],
-						user: this.props.users[userNum].profile
+						task : newProps.users[userNum].tasks[taskNum],
+						user: newProps.users[userNum].profile
 					};
 					alltasks.push(taskObject);
 				}
-				else console.log(`User "${this.props.users[userNum].profile.name}" has an empty task!`)
+				else console.log(`User "${newProps.users[userNum].profile.name}" has an empty task!`)
 			}
 		}		
 		console.log("alltasks===",alltasks);
@@ -153,6 +147,7 @@ export default class AllTasks extends Component {
 
 		let editTask = {
 			taskNum: taskNum,
+			task_id: this.state.tasks[taskNum].task.task_id,
 			time: this.state.tasks[taskNum].task.time,
 			date: moment(this.state.tasks[taskNum].task.date, 'MM/DD/YYYY'),
 			description: this.state.tasks[taskNum].task.description,
@@ -362,6 +357,7 @@ export default class AllTasks extends Component {
 		let taskNum = this.state.editTask.taskNum;
 		var tasks = this.state.tasks;
 		tasks[taskNum].task = {
+			task_id : this.state.editTask.task_id,
 			time : this.state.editTask.time,
 			date : this.state.editTask.date.format("MM/DD/YYYY"),
 			description: this.state.editTask.description
@@ -375,8 +371,18 @@ export default class AllTasks extends Component {
 
 			******************************
 		*/
+		var _url="/api/updatetaskbyid?task="+this.state.editTask.task_id;
+		var toSave = this.state.editTask;
+		fetch(_url, {
+			method: "PUT",
+			//header: "Content-type: application/json",
+			body: toSave
+
+		});
+		console.log("updating...", toSave);
 
 		let editTask = {
+			task_id : null,
 			taskNum : null,
 			date: null,
 			time: null,
