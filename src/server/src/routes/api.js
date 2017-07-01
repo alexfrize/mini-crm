@@ -45,26 +45,18 @@ router.get('/api/gettaskbyid', function(req, res) {
 
 });
 
-router.put('/api/updatetaskbyid', function(req, res) {
-	var _task_id = req.query.task;
-	// res.send(_task_id);
-
-	// if (!req.query || !_id) res.send("Error: No id specified");
-	// if (_id.length !== 24) res.send("Error: Incorrect id");
-	
+router.put('/api/updatetask', function(req, res) {
+	var _task_id = req.body.task_id;
 	var toFind = {"tasks" : { $elemMatch : {"task_id" : _task_id}}};
-	// var toFind = {"tasks" : { $elemMatch : {"time" : "12:00 PM"}}};
-	// var toFind = {"tasks" : { $not : { $elemMatch : {"description" : ""}}}};
-	// var toFind = {"tasks" : { $elemMatch : {"time" : "12:00 PM"}}};
-	console.log("req.body ===", req.body);
-	console.log("_task_id ===",_task_id);
-	res.send("ok");//
-	// var newObj = { $set : {"tasks.$.time" : "12:34 PM"} };
-	// db.users.update(toFind, newObj, (err, data) => {
-	// 	if (err) res.send("Error: DB error");
-	// 	else res.json(data);
-	// });
+	var newObj = { $set : {"tasks.$" : req.body} };
+	db.users.update(toFind, newObj, {});
+});
 
+router.put('/api/deletetask', function(req, res) {
+	var _task_id = req.body.task_id;
+	var toFind = {"tasks" : { $elemMatch : {"task_id" : _task_id}}};
+	db.users.update({}, {$pull : {"tasks" : {"task_id" : _task_id}}});	
+	console.log("_task_id === ", _task_id);
 });
 
 // router.get('/api/getone', function(req, res){

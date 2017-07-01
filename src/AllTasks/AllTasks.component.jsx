@@ -316,7 +316,8 @@ export default class AllTasks extends Component {
 		console.log(`Task ${taskNumToMarkAsDone} is marked as done:`, this.state.tasks[taskNumToMarkAsDone]);
 		let tasks = this.state.tasks;
 		tasks.splice(taskNumToMarkAsDone,1);
-
+		var taskToDelete = JSON.stringify(this.state.tasks[taskNumToMarkAsDone].task);
+		console.log("taskToDelete === ", taskToDelete);
 		/*
 			******************************
 
@@ -324,7 +325,15 @@ export default class AllTasks extends Component {
 			Dont' forget to modify users array and save it to DB!
 
 			******************************
-		*/		
+		*/
+		var _url = "/api/deletetask";
+		fetch(_url, {
+			method : "PUT",
+			headers: {
+				"Content-Type" : "application/json"
+			},
+			body: taskToDelete
+		});
 		
 		this.clearDoneTaskInfo();
 		this.hideModal();
@@ -353,7 +362,6 @@ export default class AllTasks extends Component {
 	/* ============================================================================================================ */	
 	saveTask() {
 
-		console.log(this.state.editTask);
 		let taskNum = this.state.editTask.taskNum;
 		var tasks = this.state.tasks;
 		tasks[taskNum].task = {
@@ -363,23 +371,20 @@ export default class AllTasks extends Component {
 			description: this.state.editTask.description
 		}
 
-		/*
-			******************************
+		var _url="/api/updatetask";
 
-			IMPORTANT!
-			Dont' forget to modify users array and save it to DB!
+		var dataToUpdate = JSON.stringify(tasks[taskNum].task);
 
-			******************************
-		*/
-		var _url="/api/updatetaskbyid?task="+this.state.editTask.task_id;
-		var toSave = this.state.editTask;
 		fetch(_url, {
 			method: "PUT",
-			//header: "Content-type: application/json",
-			body: toSave
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: dataToUpdate
 
 		});
-		console.log("updating...", toSave);
+		console.log("dataToUpdate === ", dataToUpdate);
+
 
 		let editTask = {
 			task_id : null,
