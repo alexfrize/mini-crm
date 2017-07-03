@@ -315,8 +315,8 @@ export default class AllTasks extends Component {
 		let taskNumToMarkAsDone = this.state.doneTask.taskNum;
 		console.log(`Task ${taskNumToMarkAsDone} is marked as done:`, this.state.tasks[taskNumToMarkAsDone]);
 		let tasks = this.state.tasks;
-		tasks.splice(taskNumToMarkAsDone,1);
 		var taskToDelete = JSON.stringify(this.state.tasks[taskNumToMarkAsDone].task);
+		tasks.splice(taskNumToMarkAsDone,1);
 		console.log("taskToDelete === ", taskToDelete);
 		/*
 			******************************
@@ -382,6 +382,10 @@ export default class AllTasks extends Component {
 			},
 			body: dataToUpdate
 
+		})
+		.catch(err => {
+			console.error(err);
+			
 		});
 		console.log("dataToUpdate === ", dataToUpdate);
 
