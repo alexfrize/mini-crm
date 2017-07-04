@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import progress__newLead from './img/progress__new-lead.svg';
+import progress__newLead from './img/progress__new-lead.svg'; // './img/progress__new-lead.svg';
 import progress__phoneCall from './img/progress__phone-call.svg';
 import progress__presentation from './img/progress__presentation.svg';
 import progress__contract from './img/progress__contract.svg';
