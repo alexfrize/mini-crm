@@ -3,7 +3,7 @@ import './App.component.css';
 import Menu from './Menu/Menu.component.jsx';
 import UserProfile from './UserProfile/UserProfile.component.jsx';
 import AllTasks from './AllTasks/AllTasks.component.jsx';
-//import userJSON from "./data/users.json"; 
+import AllUsers from './AllUsers/AllUsers.component.jsx';
 
 class App extends Component {
   constructor() {
@@ -35,6 +35,7 @@ class App extends Component {
     return (
       <div className="App">
         <Menu />
+        <AllUsers users={this.state.users} />
         <AllTasks users={this.state.users} />
         <UserProfile />
 

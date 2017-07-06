@@ -1,0 +1,132 @@
+@import '../vars';
+@import '../breakpoints';
+
+.AllUsers {
+	.AllUsers__header {
+		clear: both;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		.AllUsers__search-box {
+			display: flex;
+			.AllUsers__search-box__input {
+				@extend .input;
+				margin: 0;
+				text-align: right;
+			}
+
+		}
+		.AllUsers__header__overdue-tasks {
+			color: $warningTextColor;
+		}
+	}
+
+	.AllUsers__table {
+		display: table;
+		width: 100%;
+
+		tr {
+			td {
+				&:nth-child(1) {
+					width: 90%;
+					.AllUsers__table__sub-table {
+						width: 100%;
+						td {
+							padding: 20px;
+							background: transparent;
+							text-align: center;
+							width: 25%;
+							font-size: 18px;
+							background: $tableRowColor1;
+						}
+						.AllUsers__table__sub-table__description {
+							padding: 20px;
+							font-size: 14px;
+							text-align: justify;
+						}
+					}					
+				}
+				&:nth-child(2) {
+					padding: 0;
+					width: 10%;
+					text-align: center;
+				}
+			}
+			&:nth-child(2n+1) {
+				background: $tableRowColor1;
+			}
+			&:nth-child(2n) {
+				background: $tableRowColor2;
+				td {
+					&:nth-child(1) {
+						.AllUsers__table__sub-table {
+							td {
+								background: $tableRowColor2;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.AllUsers__table__img {
+			transition: 0.5s;
+			padding: 3px;
+			width: 20px;
+			&:hover {
+				opacity: 0.6;
+				cursor: pointer;
+			}
+		}
+
+		.AllUsers__table__progress-img {
+			vertical-align: middle;
+			transition: 0.5s;
+			padding: 3px;
+			width: 20px;
+		}
+
+		.AllUsers__table__progress-img-arrow {
+			@extend .AllUsers__table__progress-img;
+			width: 10px;
+		}
+
+		.AllUsers__table__overdue {
+			color: $warningTextColor;
+		}
+
+		.AllUsers__table__display-none {
+			display: none;
+		}
+
+		.AllUsers__table__small-warning {
+			color: $warningTextColor;
+			text-align: center;
+			font-size: 10px;
+		}
+
+		.AllUsers__table__edit-mode__input {
+			@extend .input;
+			color: black;
+			width: 100%;
+		}
+
+		.AllUsers__table__view-mode__input {
+			@extend .input_view-mode;
+		}		
+
+		.AllUsers__table__edit-mode__textarea {
+			@extend .input;
+			color: black;
+			width: 100%;
+			height: 100%;
+			resize: none;
+
+		}
+
+		.AllUsers__table__view-mode__textarea {
+			@extend .input_view-mode;
+			width: 100%;
+		}			
+	}
+}
