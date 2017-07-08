@@ -385,7 +385,6 @@ export default class AllTasks extends Component {
 		})
 		.catch(err => {
 			console.error(err);
-			
 		});
 		console.log("dataToUpdate === ", dataToUpdate);
 

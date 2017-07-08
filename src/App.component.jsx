@@ -6,8 +6,10 @@ import AllTasks from './AllTasks/AllTasks.component.jsx';
 import AllUsers from './AllUsers/AllUsers.component.jsx';
 
 class App extends Component {
-  constructor() {
-  	super();
+  constructor(props) {
+  	super(props);
+    console.log("constructor() :: ", this.props);
+     console.log("constructor() :: context ", this.context);
   	this.state = {
   		users : [],
   	};
@@ -27,7 +29,10 @@ class App extends Component {
 
   /* ============================================================================================================ */	
   componentDidMount() {
-
+    this.store = this.props.store;
+    const { store } = this.context;
+    console.log("store === ", store);
+    setTimeout(() => console.log("this.props.dispatch === ", this.props.dispatch), 1000);
   }
 
   /* ============================================================================================================ */	
