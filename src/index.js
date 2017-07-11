@@ -12,6 +12,9 @@ function mainReducer(state = [], action) {
 								break;
 		case 'DELETE_TASK_DB' : console.log("DELETE_TASK_DB");
 								break;
+
+		case 'LOADED_FROM_DB' : console.log("LOADED_FROM_DB");
+								break;								
 		default: return state;
 	}
 }
