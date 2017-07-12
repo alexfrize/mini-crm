@@ -4,6 +4,9 @@ import Menu from './Menu/Menu.component.jsx';
 import UserProfile from './UserProfile/UserProfile.component.jsx';
 import AllTasks from './AllTasks/AllTasks.component.jsx';
 import AllUsers from './AllUsers/AllUsers.component.jsx';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { test } from './actions';
 
 class App extends Component {
   constructor(props) {
@@ -30,6 +33,7 @@ class App extends Component {
   /* ============================================================================================================ */	
   componentDidMount() {
     this.store = this.props.store;
+    console.log("this.props === ", this.props);
     const { store } = this.context;
     console.log("store === ", store);
     setTimeout(() => console.log("this.props.dispatch === ", this.props.dispatch), 1000);
@@ -39,7 +43,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Menu />
+        <Menu onClick={ this.props.test } />
         <AllUsers users={this.state.users} />
         <AllTasks users={this.state.users} />
         <UserProfile />
@@ -47,6 +51,12 @@ class App extends Component {
       </div>
     );
   }
+
+  mapDispatchToProps(dispatch) {
+    return bindActionCreators( { test }, dispatch);
+  }
+
+
 }
 
-export default App;
+export default connect(null, this.mapDispatchToProps)(App);
