@@ -5,19 +5,8 @@ import { Provider } from 'react-redux';
 import App from './App.component.jsx';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
+import { mainReducer } from './reducers';
 
-function mainReducer(state = [], action) {
-	switch (action.type) {
-		case 'UPDATE_TASK_DB' : console.log("UPDATE_TASK_DB");
-								break;
-		case 'DELETE_TASK_DB' : console.log("DELETE_TASK_DB");
-								break;
-
-		case 'LOADED_FROM_DB' : console.log("LOADED_FROM_DB");
-								break;								
-		default: return state;
-	}
-}
 
 const store = createStore(mainReducer);
 

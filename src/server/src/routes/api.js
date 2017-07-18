@@ -39,13 +39,14 @@ router.get('/api/gettaskbyid', function(req, res) {
 
 router.put('/api/updatetask', function(req, res) {
 	var _task_id = req.body.task_id;
+	console.log("_task_id",_task_id);
 	var toFind = {"tasks" : { $elemMatch : {"task_id" : _task_id}}};
 	var newObj = { $set : {"tasks.$" : req.body} };
 	db.users.update(toFind, newObj, {});
 	res.json({"Data" : "OK"})	
 });
 
-router.put('/api/deletetask', function(req, res) {
+router.delete('/api/deletetask', function(req, res) {
 	var _task_id = req.body.task_id;
 	db.users.update({"tasks.task_id": _task_id}, {$pull : {"tasks" : {"task_id" : _task_id}}});
 	res.json({"Data" : "OK"})

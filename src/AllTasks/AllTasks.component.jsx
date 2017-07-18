@@ -4,12 +4,17 @@ import allTasks__done from './img/all-tasks__done.svg';
 import allTasks__edit from './img/all-tasks__edit.svg';
 import allTasks__profile from './img/all-tasks__profile.svg';
 import allTasks__cancel from './img/all-tasks__cancel.svg';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { action__deleteTaskFromDB } from '../actions';
+
 import moment from 'moment';
+
 
 import DatePicker from 'react-datepicker';
 import './../datepicker/datepicker.css';
 
-export default class AllTasks extends Component {
+class AllTasks extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -315,9 +320,12 @@ export default class AllTasks extends Component {
 		let taskNumToMarkAsDone = this.state.doneTask.taskNum;
 		console.log(`Task ${taskNumToMarkAsDone} is marked as done:`, this.state.tasks[taskNumToMarkAsDone]);
 		let tasks = this.state.tasks;
-		var taskToDelete = JSON.stringify(this.state.tasks[taskNumToMarkAsDone].task);
+		// let task_id_toDelete = this.state.tasks[taskNumToMarkAsDone].task.task_id;
+		// var taskToDelete = JSON.stringify(this.state.tasks[taskNumToMarkAsDone].task);
+		var taskToDelete = JSON.stringify({task_id : this.state.tasks[taskNumToMarkAsDone].task.task_id});
 		tasks.splice(taskNumToMarkAsDone,1);
 		console.log("taskToDelete === ", taskToDelete);
+		// console.log("----------------", task_id_toDelete);
 		/*
 			******************************
 
@@ -326,15 +334,11 @@ export default class AllTasks extends Component {
 
 			******************************
 		*/
-		var _url = "/api/deletetask";
-		fetch(_url, {
-			method : "PUT",
-			headers: {
-				"Content-Type" : "application/json"
-			},
-			body: taskToDelete
-		});
 		
+
+
+		this.props.action__deleteTaskFromDB(taskToDelete);
+
 		this.clearDoneTaskInfo();
 		this.hideModal();
 		this.setState({
@@ -557,3 +561,7 @@ export default class AllTasks extends Component {
 		);
 	}
 }
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({ action__deleteTaskFromDB }, dispatch);
+}
+export default connect(null, mapDispatchToProps)(AllTasks);

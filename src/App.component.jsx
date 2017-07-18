@@ -6,7 +6,7 @@ import AllTasks from './AllTasks/AllTasks.component.jsx';
 import AllUsers from './AllUsers/AllUsers.component.jsx';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { test } from './actions';
+import { action__loadedDataFromDB } from './actions';
 
 class App extends Component {
   constructor(props) {
@@ -24,39 +24,37 @@ class App extends Component {
     fetch(_url)
     .then((response) => response.json())
     .then(users => {
-      this.setState({ users });
-      console.log("Loaded data:", users);
+      this.props.action__loadedDataFromDB(users); // dispatch an action that data is loaded
+      this.setState({ users : this.props.users });
     })
-    .catch(error => console.error("Error loading data\r\n",error));
+    .catch(error => console.error("Error loading data: \r\n", error));
   }
 
   /* ============================================================================================================ */	
   componentDidMount() {
-    this.store = this.props.store;
-    console.log("this.props === ", this.props);
-    const { store } = this.context;
-    console.log("store === ", store);
-    setTimeout(() => console.log("this.props.dispatch === ", this.props.dispatch), 1000);
+
   }
 
   /* ============================================================================================================ */	
   render() {
     return (
       <div className="App">
-        <Menu onClick={ this.props.test } />
+        <Menu />
         <AllUsers users={this.state.users} />
         <AllTasks users={this.state.users} />
         <UserProfile />
-
       </div>
     );
   }
-
-  mapDispatchToProps(dispatch) {
-    return bindActionCreators( { test }, dispatch);
-  }
-
-
 }
 
-export default connect(null, this.mapDispatchToProps)(App);
+function mapDispatchToProps(dispatch) {
+   return bindActionCreators( { action__loadedDataFromDB }, dispatch);
+}
+
+function mapStateToProps(users) {
+  return { users }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
