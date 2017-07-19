@@ -4,48 +4,58 @@ import './../datepicker/datepicker.css';
 import moment from 'moment';
 
 import './UserProfileTasks.component.css';
+import { connect } from 'react-redux';
 
-export default class UserProfileTasks extends Component {
+
+class UserProfileTasks extends Component {
 	constructor(props) {
 		super(props);
-		var dateArr = [moment()];
 		var timeArr = ["12:00 AM"];
 		var taskDescriptionArr = [""];
-		this.state = {
-			taskStartDate: dateArr,
-			taskStartTime: timeArr,
-			taskDescription: taskDescriptionArr
-		}; 
+		var tasks = [{
+					task_id : this.generateTaskID(),
+					date: moment(),
+					time: "12:00 AM",
+					description: ""
+				}];
+		
+		this.state = { tasks }; 
+
 		this.handleDateChange = this.handleDateChange.bind(this);
 		this.addNewTask = this.addNewTask.bind(this);
 		this.saveTasks = this.saveTasks.bind(this);
 		this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
 		this.handleTimeChange = this.handleTimeChange.bind(this);
-		console.log("dateArr==",dateArr);
 	}
 	
 	/* ============================================================================================================ */
+	componentWillReceiveProps(nextProps) {
+		console.log("UUUUU :: nextProps", nextProps);
+
+	}
+
+	/* ============================================================================================================ */
 	handleDateChange(taskItemNum, date) {
-		var dateArr = this.state.taskStartDate;
-		dateArr[taskItemNum] = date;
+		var { tasks } = this.state;
+		tasks[taskItemNum].date = date;
 		this.setState({
-			taskStartDate: dateArr
+			tasks
 		});
 	}
 
 	/* ============================================================================================================ */
 	handleDescriptionChange(taskItemNum, event) {
-		var taskDescriptionArr = this.state.taskDescription;
-		taskDescriptionArr[taskItemNum] = event.target.value;
-		this.setState({taskDescription : taskDescriptionArr});
+		var { tasks } = this.state;
+		tasks[taskItemNum].description = event.target.value;
+		this.setState({ tasks });
 	}
 
 	/* ============================================================================================================ */
 	handleTimeChange(taskItemNum, event) {
-		var timeArr = this.state.taskStartTime;
-		timeArr[taskItemNum] = event.target.value;
+		var { tasks } = this.state;
+		tasks[taskItemNum].time = event.target.value;
 		this.setState({
-			taskStartTime: timeArr
+			tasks
 		});
 	}
 
@@ -90,13 +100,13 @@ export default class UserProfileTasks extends Component {
 	/* ============================================================================================================ */
 	renderTaskItems() {
 		var taskItems = [];
-		var totalTasks = this.state.taskStartDate.length;
+		var totalTasks = this.state.tasks.length;
 		for (let i=0; i<totalTasks; i++) {
 			taskItems.push(
 				<div key={"taskItem"+i} className="UserProfile__tasks__task">
 					<div className="UserProfile__tasks__task__input-group">
 						<DatePicker className="UserProfile__tasks__task__input"
-						    selected={this.state.taskStartDate[i]}
+						    selected={this.state.tasks[i].date}
 						    onChange={this.handleDateChange.bind(this,i)}
 						/>
 						{this.render_UserProfile__tasks__select(i)}
@@ -113,18 +123,27 @@ export default class UserProfileTasks extends Component {
 	}
 
 	/* ============================================================================================================ */
+	generateTaskID() {
+		var task_id = "";
+		for (let i=0; i < 8; i++) {
+			task_id += String.fromCharCode(Math.floor(Math.random()*26)+65);
+			task_id += String.fromCharCode(Math.floor(Math.random()*26)+97);
+			task_id += String.fromCharCode(Math.floor(Math.random()*10)+48);
+		}
+		console.log("New task_id === " , task_id); 
+		return task_id;
+	}
+
+	/* ============================================================================================================ */
 	addNewTask() {
-		var dateArr = this.state.taskStartDate;
-		dateArr.push(moment());
-		var timeArr = this.state.taskStartTime;
-		timeArr.push("12:00 AM");
-		var taskDescriptionArr = this.state.taskDescription;
-		taskDescriptionArr.push("");
-		this.setState ({
-			taskStartDate: dateArr,
-			taskStartTime: timeArr,
-			taskDescription: taskDescriptionArr
-		});				
+		var { tasks }= this.state;
+		tasks.push({
+			task_id : this.generateTaskID(),
+			date: moment(),
+			time: "12:00 AM",
+			description: ""
+		});
+		this.setState ({ tasks });
 	}
 
 	/* ============================================================================================================ */
@@ -148,3 +167,12 @@ export default class UserProfileTasks extends Component {
 		);
 	}
 }
+
+function mapStateToProps(data) {
+	return {
+		users : data.users,
+		userToEdit : data.userToEdit
+	}
+}
+
+export default connect(mapStateToProps, null)(UserProfileTasks);

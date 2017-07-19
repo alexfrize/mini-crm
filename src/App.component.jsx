@@ -11,8 +11,6 @@ import { action__loadedDataFromDB } from './actions';
 class App extends Component {
   constructor(props) {
   	super(props);
-    console.log("constructor() :: ", this.props);
-     console.log("constructor() :: context ", this.context);
   	this.state = {
   		users : [],
   	};
@@ -40,9 +38,9 @@ class App extends Component {
     return (
       <div className="App">
         <Menu />
-        <AllUsers users={this.state.users} />
-        <AllTasks users={this.state.users} />
         <UserProfile />
+        <AllUsers />
+        <AllTasks />
       </div>
     );
   }

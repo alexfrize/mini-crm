@@ -8,18 +8,13 @@ import UserProfileTasks from './UserProfileTasks.component.jsx';
 
 export default class UserProfile extends Component {
 	
-
 	render() {
 		return (
 			<div className="UserProfile">
 				<UserProfileProgress />
-
 				<div className="UserProfile__column2">
 					<UserProfileProfile />
-
 					<UserProfileTasks />
-
-
 				</div>				
 			</div>
 		);

@@ -10,14 +10,16 @@ import AllUsers__progress__done from './img/all-users__progress__done.svg';
 import AllUsers__progress__newLead from './img/all-users__progress__new-lead.svg';
 import AllUsers__progress__phoneCall from './img/all-users__progress__phone-call.svg';
 import AllUsers__progress__presentation from './img/all-users__progress__presentation.svg';
-
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { action__updateUserToEdit } from '../actions';
 
 import moment from 'moment';
 
 import DatePicker from 'react-datepicker';
 import './../datepicker/datepicker.css';
 
-export default class AllUsers extends Component {
+class AllUsers extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -35,9 +37,10 @@ export default class AllUsers extends Component {
 			},
 			doneTask : {
 				taskNum : null
-			}
+			},
+			userToEdit: {}
 		};
-		this.editTask = this.editTask.bind(this);
+		this.editUser = this.editUser.bind(this);
 		this.cancelTask = this.cancelTask.bind(this);
 		this.confirmIfTaskIsDone = this.confirmIfTaskIsDone.bind(this);
 		this.markTaskAsDone = this.markTaskAsDone.bind(this);
@@ -60,13 +63,14 @@ export default class AllUsers extends Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		console.log("nextProps===", newProps);
-		console.log("nextProps===", newProps.users);
-		console.log("this.props===", this.props);
-
+		// console.log("ALLUSERS::nextProps===", newProps);
+		// console.log("nextProps::users===", newProps.users);
+		// console.log("nextProps::userToEdit===", newProps.userToEdit);
+		// console.log("ALLUSERS::this.props===", this.props);
+		// console.log("ALLUSERS::this.props.userToEdit", this.props.userToEdit);
 		this.setState({
 			users: newProps.users,
-			tasks : this.getTasksArray(newProps)
+			userToEdit : newProps.userToEdit
 		})
 
 	}	
@@ -87,7 +91,7 @@ export default class AllUsers extends Component {
 				else console.log(`User "${newProps.users[userNum].profile.name}" has an empty task!`)
 			}
 		}		
-		console.log("alltasks===",alltasks);
+		// console.log("alltasks===",alltasks);
 
 		alltasks.sort((task1, task2) => {
 			let date1 = moment(task1.task.date, 'MM/DD/YYYY');
@@ -103,23 +107,13 @@ export default class AllUsers extends Component {
 	}
 
 	/* ============================================================================================================ */	
-	editTask(taskNum, event) {
-		let isEditMode;
-		if (taskNum !== this.state.editTask.taskNum) isEditMode = true;
-		else isEditMode = !this.state.isEditMode;
-
-		let editTask = {
-			taskNum: taskNum,
-			task_id: this.state.tasks[taskNum].task.task_id,
-			time: this.state.tasks[taskNum].task.time,
-			date: moment(this.state.tasks[taskNum].task.date, 'MM/DD/YYYY'),
-			description: this.state.tasks[taskNum].task.description,
-		};
-
+	editUser(userNum, event) {
 		this.setState({
-			isEditMode,
-			editTask
+			userToEdit : this.state.users[userNum]
 		});
+
+		this.props.action__updateUserToEdit(this.state.users[userNum])
+
 	}
 
 	/* ============================================================================================================ */	
@@ -368,17 +362,10 @@ export default class AllUsers extends Component {
 	}
 
 	/* ============================================================================================================ */	
-	getSmallIcons(taskNum) {
-		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ? 
-			(
+	getSmallIcons(userNum) {
+			return (
 				<td>
-					<img onClick={this.showModal.bind(this, "MODAL::SaveChanges")} className="AllUsers__table__img" src={AllUsers__done} alt="" />
-					<img onClick={this.cancelTask} className="AllUsers__table__img" src={AllUsers__delete} alt="" />
-				</td>
-			) :
-			(
-				<td>
-					<img onClick={this.editTask.bind(this,taskNum)} className="AllUsers__table__img" src={AllUsers__edit} alt="" />
+					<img onClick={this.editUser.bind(this,userNum)} className="AllUsers__table__img" src={AllUsers__edit} alt="" />
 					<img className="AllUsers__table__img" src={AllUsers__delete} alt="" />
 				</td>
 			);
@@ -552,3 +539,16 @@ export default class AllUsers extends Component {
 		);
 	}
 }
+
+function mapStateToProps(data) {
+	return { 
+		users: data.users,
+		userToEdit: data.userToEdit
+	 };
+}
+
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({ action__updateUserToEdit }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AllUsers);

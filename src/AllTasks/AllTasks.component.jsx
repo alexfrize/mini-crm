@@ -57,9 +57,9 @@ class AllTasks extends Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		console.log("nextProps===", newProps);
-		console.log("nextProps===", newProps.users);
-		console.log("this.props===", this.props);
+		// console.log("nextProps===", newProps);
+		// console.log("nextProps===", newProps.users);
+		// console.log("this.props===", this.props);
 
 		this.setState({
 			users: newProps.users,
@@ -84,7 +84,7 @@ class AllTasks extends Component {
 				else console.log(`User "${newProps.users[userNum].profile.name}" has an empty task!`)
 			}
 		}		
-		console.log("alltasks===",alltasks);
+		// console.log("alltasks===",alltasks);
 
 		alltasks.sort((task1, task2) => {
 			let date1 = moment(task1.task.date, 'MM/DD/YYYY');
@@ -223,8 +223,8 @@ class AllTasks extends Component {
 	
 	/* ============================================================================================================ */	
 	getTaskDate__handleChange(date) {
-		console.log("date:",date);
-		console.log('this.state.editTask.date ==',this.state.editTask.date);
+		// console.log("date:",date);
+		// console.log('this.state.editTask.date ==',this.state.editTask.date);
 		let editTask = this.state.editTask;
 		editTask.date = date;
 		this.setState({
@@ -360,7 +360,7 @@ class AllTasks extends Component {
 			}
 		});
 		this.showModal("MODAL::MarkAsDone", event);
-		console.log("confirmIfTaskIsDone");
+		// console.log("confirmIfTaskIsDone");
 	}
 
 	/* ============================================================================================================ */	
@@ -390,7 +390,7 @@ class AllTasks extends Component {
 		.catch(err => {
 			console.error(err);
 		});
-		console.log("dataToUpdate === ", dataToUpdate);
+		// console.log("dataToUpdate === ", dataToUpdate);
 
 
 		let editTask = {
@@ -561,7 +561,16 @@ class AllTasks extends Component {
 		);
 	}
 }
+
 function mapDispatchToProps(dispatch) {
 	return bindActionCreators({ action__deleteTaskFromDB }, dispatch);
 }
-export default connect(null, mapDispatchToProps)(AllTasks);
+
+function mapStateToProps(data) {
+	return { 
+		users : data.users,
+		userToEdit: data.userToEdit
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AllTasks);

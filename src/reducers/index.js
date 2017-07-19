@@ -1,4 +1,4 @@
-import { LOADED_FROM_DB, DELETE_TASK_FROM_DB } from '../constants';
+import { LOADED_FROM_DB, DELETE_TASK_FROM_DB, UPDATE_USER_TO_EDIT } from '../constants';
 
 function deleteFromDB(taskToDelete) {
 	var _url = "/api/deletetask";
@@ -11,16 +11,17 @@ function deleteFromDB(taskToDelete) {
 	});
 }
 
-export function mainReducer(state = [], action) {
+export function mainReducer(state = {users : [], userToEdit: {} }, action) {
 	switch (action.type) {
-		case 'UPDATE_TASK_DB' : console.log("UPDATE_TASK_DB");
-								break;
+		case UPDATE_USER_TO_EDIT : console.log("UPDATE_USER_TO_EDIT");
+								return Object.assign({}, { users: state.users , userToEdit: action.userToEdit });
+
 		case DELETE_TASK_FROM_DB : console.log("DELETE_TASK_FROM_DB", action.taskToDelete);
 								deleteFromDB(action.taskToDelete);
-								return action.users;
+								return Object.assign({}, { users: action.users,  userToEdit: state.userToEdit });
 
 		case LOADED_FROM_DB : console.log("LOADED_FROM_DB");
-								return action.users;
+								return Object.assign({}, { users: action.users,  userToEdit: state.userToEdit });
 		default: return state;
 	}
 }

@@ -18,6 +18,5 @@ var render = () => ReactDOM.render(
 		);
 store.subscribe(render);
 render();
-store.dispatch({ type : 'UPDATE_TASK_DB'});
 registerServiceWorker();
 
