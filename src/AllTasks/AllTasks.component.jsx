@@ -57,9 +57,9 @@ class AllTasks extends Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		// console.log("nextProps===", newProps);
-		// console.log("nextProps===", newProps.users);
-		// console.log("this.props===", this.props);
+		console.log("AllTasks::nextProps===", newProps);
+		console.log("AllTasks::nextProps===", newProps.users);
+		console.log("AllTasks::this.props===", this.props);
 
 		this.setState({
 			users: newProps.users,
@@ -234,6 +234,10 @@ class AllTasks extends Component {
 	
 	/* ============================================================================================================ */	
 	getTaskDate(taskNum) {
+		console.log(`AllTasks::getTaskDate(taskNum)::taskNum === ${taskNum}, \r\n 
+					AllTasks::this.state.tasks[taskNum].task.date === ${this.state.tasks[taskNum].task.date}
+			`);
+
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ?
 			(
 				<td>

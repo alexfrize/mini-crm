@@ -36,7 +36,7 @@ class UserProfileProfile extends Component {
 		var _value = event.target.value;
 		var profile = this.state.profile;
 		profile.email = _value;
-		if (_value.match(/^[a-zA-Z_0-9\.@]*$/ig)) this.setState({ profile });
+		if (_value.match(/^[a-zA-Z_0-9.@]*$/ig)) this.setState({ profile });
 	}
 
 	checkUserPhone(event) {
@@ -60,11 +60,11 @@ class UserProfileProfile extends Component {
 		 else {
 			errorsDescription = _ERRORS_IN;
 			if (this.state.profile.name === "") errorsDescription += "name, ";
-			if (!this.state.profile.email.match(/^[a-zA-Z0-9\.-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,3}$/ig)) errorsDescription += "email, ";
+			if (!this.state.profile.email.match(/^[a-zA-Z0-9.-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,3}$/ig)) errorsDescription += "email, ";
 			if (!this.state.profile.phone.match(/^\+*[0-9-]{9,15}[0-9]$/ig))  errorsDescription += "phone";
 			let _ed = errorsDescription;
 			let _edl = errorsDescription.length;
-			if (_ed.slice(-2) == ", ") errorsDescription = errorsDescription.slice(0,_edl - 2);
+			if (_ed.slice(-2) === ", ") errorsDescription = errorsDescription.slice(0,_edl - 2);
 			if (errorsDescription === _ERRORS_IN) errorsDescription = "";
 		}
 		this.setState({ errorsDescription });

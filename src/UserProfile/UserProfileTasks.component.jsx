@@ -10,16 +10,11 @@ import { connect } from 'react-redux';
 class UserProfileTasks extends Component {
 	constructor(props) {
 		super(props);
-		var timeArr = ["12:00 AM"];
-		var taskDescriptionArr = [""];
-		var tasks = [{
-					task_id : this.generateTaskID(),
-					date: moment(),
-					time: "12:00 AM",
-					description: ""
-				}];
+		var tasks = [this.generateEmptyTask()];
 		
-		this.state = { tasks }; 
+		this.state = { userToEdit : {
+			tasks
+		} }; 
 
 		this.handleDateChange = this.handleDateChange.bind(this);
 		this.addNewTask = this.addNewTask.bind(this);
@@ -28,34 +23,55 @@ class UserProfileTasks extends Component {
 		this.handleTimeChange = this.handleTimeChange.bind(this);
 	}
 	
+
+	generateEmptyTask() {
+		return {
+					task_id : this.generateTaskID(),
+					_date__Moment: moment(),
+					date: moment().format('MM/DD/YYYY'),
+					time: "12:00 AM",
+					description: ""
+				}
+	}
 	/* ============================================================================================================ */
 	componentWillReceiveProps(nextProps) {
 		console.log("UUUUU :: nextProps", nextProps);
+		var { userToEdit } = nextProps;
+		if (!userToEdit.tasks) userToEdit.tasks = [];
+		console.log("UU::userToEdit.tasks ===", userToEdit.tasks);
+
+		if (userToEdit.tasks.length) {
+			console.log("FROM PROPS::tasks", userToEdit.tasks);
+			userToEdit.tasks.map(task => task._date__Moment = moment(task.date, 'MM/DD/YYYY'));
+		}
+		else userToEdit.tasks = [this.generateEmptyTask()];
+
+		this.setState({ userToEdit });
 
 	}
 
 	/* ============================================================================================================ */
 	handleDateChange(taskItemNum, date) {
-		var { tasks } = this.state;
-		tasks[taskItemNum].date = date;
+		var { userToEdit } = this.state;
+		userToEdit.tasks[taskItemNum].date = date;
 		this.setState({
-			tasks
+			userToEdit
 		});
 	}
 
 	/* ============================================================================================================ */
 	handleDescriptionChange(taskItemNum, event) {
-		var { tasks } = this.state;
-		tasks[taskItemNum].description = event.target.value;
-		this.setState({ tasks });
+		var { userToEdit } = this.state;
+		userToEdit.tasks[taskItemNum].description = event.target.value;
+		this.setState({ userToEdit });
 	}
 
 	/* ============================================================================================================ */
 	handleTimeChange(taskItemNum, event) {
-		var { tasks } = this.state;
-		tasks[taskItemNum].time = event.target.value;
+		var { userToEdit } = this.state;
+		userToEdit.tasks[taskItemNum].time = event.target.value;
 		this.setState({
-			tasks
+			userToEdit
 		});
 	}
 
@@ -100,18 +116,18 @@ class UserProfileTasks extends Component {
 	/* ============================================================================================================ */
 	renderTaskItems() {
 		var taskItems = [];
-		var totalTasks = this.state.tasks.length;
+		var totalTasks = this.state.userToEdit.tasks.length;
 		for (let i=0; i<totalTasks; i++) {
 			taskItems.push(
 				<div key={"taskItem"+i} className="UserProfile__tasks__task">
 					<div className="UserProfile__tasks__task__input-group">
 						<DatePicker className="UserProfile__tasks__task__input"
-						    selected={this.state.tasks[i].date}
+						    selected={this.state.userToEdit.tasks[i]._date__Moment}
 						    onChange={this.handleDateChange.bind(this,i)}
 						/>
 						{this.render_UserProfile__tasks__select(i)}
 					</div>
-					<textarea onChange={this.handleDescriptionChange.bind(this,i)} className="UserProfile__tasks__task__task-description" placeholder="Task description:" />
+					<textarea onChange={this.handleDescriptionChange.bind(this,i)} value={this.state.userToEdit.tasks[i].description} className="UserProfile__tasks__task__task-description" placeholder="Task description:" />
 				</div>
 			);
 		}
@@ -125,25 +141,20 @@ class UserProfileTasks extends Component {
 	/* ============================================================================================================ */
 	generateTaskID() {
 		var task_id = "";
-		for (let i=0; i < 8; i++) {
+		for (let i=0; i < 4; i++) {
 			task_id += String.fromCharCode(Math.floor(Math.random()*26)+65);
 			task_id += String.fromCharCode(Math.floor(Math.random()*26)+97);
 			task_id += String.fromCharCode(Math.floor(Math.random()*10)+48);
 		}
-		console.log("New task_id === " , task_id); 
+		// console.log("New task_id === " , task_id); 
 		return task_id;
 	}
 
 	/* ============================================================================================================ */
 	addNewTask() {
-		var { tasks }= this.state;
-		tasks.push({
-			task_id : this.generateTaskID(),
-			date: moment(),
-			time: "12:00 AM",
-			description: ""
-		});
-		this.setState ({ tasks });
+		var { userToEdit }= this.state;
+		userToEdit.tasks.push(this.generateEmptyTask());
+		this.setState ({ userToEdit });
 	}
 
 	/* ============================================================================================================ */
@@ -153,6 +164,7 @@ class UserProfileTasks extends Component {
 
 	/* ============================================================================================================ */
 	render() {
+		console.log("UserProfileTasks::this.state.users === ", this.state.users);
 		return (
 				<div className="UserProfile__tasks">
 					<h2 className="h2">Tasks:</h2>
@@ -169,9 +181,13 @@ class UserProfileTasks extends Component {
 }
 
 function mapStateToProps(data) {
+	var userToEdit = data.userToEdit;
+	if (userToEdit.tasks) {
+		if (userToEdit.tasks.length) userToEdit.tasks.map(task => task.date = moment(task.date, 'MM/DD/YYYY').format("MM/DD/YYYY"));
+	}
 	return {
-		users : data.users,
-		userToEdit : data.userToEdit
+		users: data.users,
+		userToEdit
 	}
 }
 

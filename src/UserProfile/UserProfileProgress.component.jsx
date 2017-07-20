@@ -6,6 +6,7 @@ import progress__presentation from './img/progress__presentation.svg';
 import progress__contract from './img/progress__contract.svg';
 import progress__done from './img/progress__done.svg';
 import progress__arrow from './img/progress__arrow.svg';
+import { connect } from 'react-redux';
 
 import './UserProfileProgress.component.css';
 
@@ -15,7 +16,7 @@ const progressItems_static = {
 
 	};
 
-export default class UserProfileProgress extends Component {
+class UserProfileProgress extends Component {
 	constructor(props) {
 		super(props);
 		this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
@@ -135,3 +136,6 @@ export default class UserProfileProgress extends Component {
 	}
 }
 
+
+
+export default connect(null, null)(UserProfileProgress);
