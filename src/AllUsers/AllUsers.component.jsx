@@ -63,11 +63,6 @@ class AllUsers extends Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		// console.log("ALLUSERS::nextProps===", newProps);
-		// console.log("nextProps::users===", newProps.users);
-		// console.log("nextProps::userToEdit===", newProps.userToEdit);
-		// console.log("ALLUSERS::this.props===", this.props);
-		// console.log("ALLUSERS::this.props.userToEdit", this.props.userToEdit);
 		this.setState({
 			users: newProps.users,
 			userToEdit : newProps.userToEdit

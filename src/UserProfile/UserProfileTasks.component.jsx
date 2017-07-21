@@ -6,15 +6,24 @@ import moment from 'moment';
 import './UserProfileTasks.component.css';
 import { connect } from 'react-redux';
 
+// Uses for creating local objects, whitch have _date__Moment parameter inside
+const _PUBLIC = 'public',
+	  _LOCAL = 'local';
+
 
 class UserProfileTasks extends Component {
 	constructor(props) {
 		super(props);
-		var tasks = [this.generateEmptyTask()];
 		
-		this.state = { userToEdit : {
-			tasks
-		} }; 
+		this.state = { 
+			userToEdit : {
+				tasks : this.generateEmptyTask(_PUBLIC)
+			},
+			userToEdit_local : {
+				tasks : this.generateEmptyTask(_LOCAL)
+			},
+			users : []
+		 }; 
 
 		this.handleDateChange = this.handleDateChange.bind(this);
 		this.addNewTask = this.addNewTask.bind(this);
@@ -24,59 +33,68 @@ class UserProfileTasks extends Component {
 	}
 	
 
-	generateEmptyTask() {
-		return {
-					task_id : this.generateTaskID(),
-					_date__Moment: moment(),
-					date: moment().format('MM/DD/YYYY'),
-					time: "12:00 AM",
-					description: ""
-				}
+	generateEmptyTask(isLocal) {
+		var emptyTask = {
+				task_id : this.generateTaskID(),
+				date: moment().format('MM/DD/YYYY'),
+				time: "12:00 AM",
+				description: ""
+			}
+		if (isLocal === _LOCAL)	emptyTask._date__Moment = moment();
+		return emptyTask;
 	}
 	/* ============================================================================================================ */
 	componentWillReceiveProps(nextProps) {
 		console.log("UUUUU :: nextProps", nextProps);
-		var { userToEdit } = nextProps;
-		if (!userToEdit.tasks) userToEdit.tasks = [];
-		console.log("UU::userToEdit.tasks ===", userToEdit.tasks);
 
-		if (userToEdit.tasks.length) {
-			console.log("FROM PROPS::tasks", userToEdit.tasks);
-			userToEdit.tasks.map(task => task._date__Moment = moment(task.date, 'MM/DD/YYYY'));
+		var userToEdit_local = JSON.parse(JSON.stringify(nextProps.userToEdit));
+
+		if (!userToEdit_local.tasks) userToEdit_local.tasks = [];
+		// console.log("UU::userToEdit_local.tasks ===", userToEdit_local.tasks);
+
+		if (userToEdit_local.tasks.length) {
+			userToEdit_local.tasks.map(task => task._date__Moment = moment(task.date, 'MM/DD/YYYY'));
 		}
-		else userToEdit.tasks = [this.generateEmptyTask()];
+		else {
+			userToEdit_local.tasks = [this.generateEmptyTask(_LOCAL)];
+			console.log("generated new tasks array: ", userToEdit_local.tasks);
+		}
 
-		this.setState({ userToEdit });
+		var users = nextProps.users;
+		this.setState({ userToEdit_local, users });
 
 	}
 
 	/* ============================================================================================================ */
-	handleDateChange(taskItemNum, date) {
-		var { userToEdit } = this.state;
-		userToEdit.tasks[taskItemNum].date = date;
+	handleDateChange(taskItemNum, newDate) {
+		var { userToEdit_local } = this.state;
+		userToEdit_local.tasks[taskItemNum]._date__Moment = newDate;
+		userToEdit_local.tasks[taskItemNum].date = newDate.format('MM/DD/YYYY');
 		this.setState({
-			userToEdit
+			userToEdit_local
 		});
 	}
 
 	/* ============================================================================================================ */
 	handleDescriptionChange(taskItemNum, event) {
-		var { userToEdit } = this.state;
-		userToEdit.tasks[taskItemNum].description = event.target.value;
-		this.setState({ userToEdit });
+		var { userToEdit_local } = this.state;
+		userToEdit_local.tasks[taskItemNum].description = event.target.value;
+		this.setState({ userToEdit_local });
 	}
 
 	/* ============================================================================================================ */
 	handleTimeChange(taskItemNum, event) {
-		var { userToEdit } = this.state;
-		userToEdit.tasks[taskItemNum].time = event.target.value;
+		var { userToEdit_local } = this.state;
+		userToEdit_local.tasks[taskItemNum].time = event.target.value;
 		this.setState({
-			userToEdit
+			userToEdit_local
 		});
+		console.log("this.state.userToEdit_local.tasks[taskItemNum].time ===", this.state.userToEdit_local.tasks[taskItemNum].time);
 	}
 
 	/* ============================================================================================================ */
 	render_UserProfile__tasks__select(taskItemNum) {
+		console.log("render_UserProfile__tasks__select, this.state.userToEdit_local.tasks[taskItemNum].time", this.state.userToEdit_local.tasks[taskItemNum].time);
 		var options = [];
 		var val = new Array(4);
 		var am_pm = "";
@@ -107,7 +125,7 @@ class UserProfileTasks extends Component {
 			}
 		}
 		return (
-			<select onChange={this.handleTimeChange.bind(this,taskItemNum)} className="UserProfile__tasks__task__input">
+			<select value={this.state.userToEdit_local.tasks[taskItemNum].time} onChange={this.handleTimeChange.bind(this,taskItemNum)} className="UserProfile__tasks__task__input">
 				{options}
 			</select>
 		);
@@ -116,18 +134,18 @@ class UserProfileTasks extends Component {
 	/* ============================================================================================================ */
 	renderTaskItems() {
 		var taskItems = [];
-		var totalTasks = this.state.userToEdit.tasks.length;
+		var totalTasks = this.state.userToEdit_local.tasks.length;
 		for (let i=0; i<totalTasks; i++) {
 			taskItems.push(
 				<div key={"taskItem"+i} className="UserProfile__tasks__task">
 					<div className="UserProfile__tasks__task__input-group">
 						<DatePicker className="UserProfile__tasks__task__input"
-						    selected={this.state.userToEdit.tasks[i]._date__Moment}
+						    selected={this.state.userToEdit_local.tasks[i]._date__Moment}
 						    onChange={this.handleDateChange.bind(this,i)}
 						/>
 						{this.render_UserProfile__tasks__select(i)}
 					</div>
-					<textarea onChange={this.handleDescriptionChange.bind(this,i)} value={this.state.userToEdit.tasks[i].description} className="UserProfile__tasks__task__task-description" placeholder="Task description:" />
+					<textarea onChange={this.handleDescriptionChange.bind(this,i)} value={this.state.userToEdit_local.tasks[i].description} className="UserProfile__tasks__task__task-description" placeholder="Task description:" />
 				</div>
 			);
 		}
@@ -152,19 +170,66 @@ class UserProfileTasks extends Component {
 
 	/* ============================================================================================================ */
 	addNewTask() {
-		var { userToEdit }= this.state;
-		userToEdit.tasks.push(this.generateEmptyTask());
-		this.setState ({ userToEdit });
+		var { userToEdit_local } = this.state;
+		userToEdit_local.tasks.push(this.generateEmptyTask(_LOCAL));
+		this.setState ({ userToEdit_local });
 	}
 
 	/* ============================================================================================================ */
 	saveTasks() {
-		console.log(this.state);
+		var userToEdit = JSON.parse(JSON.stringify(this.state.userToEdit_local));
+
+		if (userToEdit.tasks) {
+			if (userToEdit.tasks.length) {
+				for (let i=0; i<userToEdit.tasks.length; i++) {
+					userToEdit.tasks[i].date = moment(this.state.userToEdit_local.tasks[i]._date__Moment, 'MM/DD/YYYY').format("MM/DD/YYYY");
+					delete userToEdit.tasks[i]._date__Moment;
+				}
+			}
+			// We use only tasks with description
+			userToEdit.tasks = userToEdit.tasks.filter(task => task.description !== "");
+			console.log("==== userToEdit.tasks ==== ",userToEdit.tasks);
+
+		}
+		if (userToEdit.tasks.length) this.setState( { userToEdit });
+
+		// console.log("userToEdit._id",userToEdit._id);
+
+		// Check if user has a name or not
+		var users = this.state.users;
+		if (userToEdit._id) {
+
+			for (let user of users) {
+				if (user._id === userToEdit._id) {
+					user.tasks = userToEdit.tasks.slice(); //??d
+					//user.tasks.map(task => task.date = )
+					// console.log("UPT::user.tasks - if date correct? user.tasks", user.tasks);
+					// console.log("UPT::user.tasks - if date correct? userToEdit.tasks", userToEdit.tasks);
+
+				}
+
+			}
+			this.setState({ users });
+			
+			/*
+			************************************************
+			************************************************
+ 			IMPORTANT!!!! Don't forget to save changes to DB
+ 			************************************************
+			************************************************
+		
+			*/
+		}
+		else alert("You can't save tasks for undefined user. Please, input user name");
+
+		
+		// console.log("saveTasks::userToEdit", userToEdit);
+		// console.log("this.state.userToEdit_local",this.state.userToEdit_local);
 	}
 
 	/* ============================================================================================================ */
 	render() {
-		console.log("UserProfileTasks::this.state.users === ", this.state.users);
+		// console.log("UserProfileTasks::this.state.users === ", this.state.users);
 		return (
 				<div className="UserProfile__tasks">
 					<h2 className="h2">Tasks:</h2>
@@ -181,12 +246,11 @@ class UserProfileTasks extends Component {
 }
 
 function mapStateToProps(data) {
-	var userToEdit = data.userToEdit;
-	if (userToEdit.tasks) {
-		if (userToEdit.tasks.length) userToEdit.tasks.map(task => task.date = moment(task.date, 'MM/DD/YYYY').format("MM/DD/YYYY"));
-	}
+	var { userToEdit } = data,
+		{ users } = data;
+
 	return {
-		users: data.users,
+		users,
 		userToEdit
 	}
 }

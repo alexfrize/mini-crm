@@ -57,10 +57,6 @@ class AllTasks extends Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		console.log("AllTasks::nextProps===", newProps);
-		console.log("AllTasks::nextProps===", newProps.users);
-		console.log("AllTasks::this.props===", this.props);
-
 		this.setState({
 			users: newProps.users,
 			tasks : this.getTasksArray(newProps)
@@ -84,7 +80,6 @@ class AllTasks extends Component {
 				else console.log(`User "${newProps.users[userNum].profile.name}" has an empty task!`)
 			}
 		}		
-		// console.log("alltasks===",alltasks);
 
 		alltasks.sort((task1, task2) => {
 			let date1 = moment(task1.task.date, 'MM/DD/YYYY');
@@ -223,8 +218,6 @@ class AllTasks extends Component {
 	
 	/* ============================================================================================================ */	
 	getTaskDate__handleChange(date) {
-		// console.log("date:",date);
-		// console.log('this.state.editTask.date ==',this.state.editTask.date);
 		let editTask = this.state.editTask;
 		editTask.date = date;
 		this.setState({
@@ -234,10 +227,6 @@ class AllTasks extends Component {
 	
 	/* ============================================================================================================ */	
 	getTaskDate(taskNum) {
-		console.log(`AllTasks::getTaskDate(taskNum)::taskNum === ${taskNum}, \r\n 
-					AllTasks::this.state.tasks[taskNum].task.date === ${this.state.tasks[taskNum].task.date}
-			`);
-
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ?
 			(
 				<td>
@@ -452,14 +441,14 @@ class AllTasks extends Component {
 			tasks_untouched = this.state.tasks;
 		} 
 		else tasks_untouched = this.state.tasks_untouched;
-		console.log(tasks_untouched);
+		// console.log(tasks_untouched);
 		let searchFilter = event.target.value;
 		var tasks = tasks_untouched.filter(element => {
 			return (element.task.description.toUpperCase().search(searchFilter.toUpperCase()) !== -1);
 	 	});
 
-		console.log(searchFilter);
-		console.log("tasks==",tasks);
+		// console.log(searchFilter);
+		// console.log("tasks==",tasks);
 
 		this.setState({
 			searchFilter,
