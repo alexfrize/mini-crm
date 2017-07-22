@@ -57,6 +57,7 @@ class AllTasks extends Component {
 	}
 
 	componentWillReceiveProps(newProps){
+		console.log("==>newProps",newProps);
 		this.setState({
 			users: newProps.users,
 			tasks : this.getTasksArray(newProps)
@@ -337,6 +338,7 @@ class AllTasks extends Component {
 		this.setState({
 			tasks
 		})
+		console.log("Now userts:", this.state.users);
 	}
 
 	/* ============================================================================================================ */	

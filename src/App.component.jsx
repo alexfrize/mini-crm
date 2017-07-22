@@ -39,9 +39,10 @@ class App extends Component {
     return (
       <div className="App">
         <Menu />
+        <AllTasks />
         <UserProfile />
         <AllUsers />
-        <AllTasks />
+        
       </div>
     );
   }

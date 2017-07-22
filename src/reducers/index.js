@@ -32,7 +32,7 @@ export function mainReducer(state = {users : [], userToEdit: {} }, action) {
 
 		case DELETE_TASK_FROM_DB : console.log("DELETE_TASK_FROM_DB", action.taskToDelete);
 								deleteFromDB(action.taskToDelete);
-								return Object.assign({}, { users: action.users,  userToEdit: state.userToEdit });
+								return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit });
 
 		case UPDATE_TASKS_FOR_ONE_USER_DB : console.log("UPDATE_TASKS_FOR_ONE_USER_DB", action.userToEdit);
 								updateTasksForOneUserDB(action.userToEdit);
