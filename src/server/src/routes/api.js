@@ -34,7 +34,6 @@ router.get('/api/gettaskbyid', function(req, res) {
 		if (err) res.send("Error: DB error");
 		else res.json(data);
 	});
-
 });
 
 router.put('/api/updatetask', function(req, res) {
@@ -46,15 +45,18 @@ router.put('/api/updatetask', function(req, res) {
 	res.json({"Data" : "OK"})	
 });
 
+router.put('/api/updatealltasksforoneuser', function(req, res) {
+	var _id = req.body._id;
+	console.log("req.body", req.body);
+	db.users.update({_id: ObjectId(_id)}, {tasks : req.body.tasks, profile : req.body.profile, progress : req.body.progress }); // rewriting full object!
+	res.json({"Data" : "OK"})	
+});
+
 router.delete('/api/deletetask', function(req, res) {
 	var _task_id = req.body.task_id;
 	db.users.update({"tasks.task_id": _task_id}, {$pull : {"tasks" : {"task_id" : _task_id}}});
 	res.json({"Data" : "OK"})
 
 });
-
-// router.get('/api/getone', function(req, res){
-//   res.send('id: ' + req.query.id);
-// });
 
 module.exports = router;

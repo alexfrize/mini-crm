@@ -22,6 +22,7 @@ class App extends Component {
     fetch(_url)
     .then((response) => response.json())
     .then(users => {
+      console.log(users);
       this.props.action__loadedDataFromDB(users); // dispatch an action that data is loaded
       this.setState({ users : this.props.users });
     })

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
 import './../datepicker/datepicker.css';
 import moment from 'moment';
-
+import { bindActionCreators } from 'redux';
+import { action_updateTasksForOneUserDB } from '../actions';
 import './UserProfileTasks.component.css';
 import { connect } from 'react-redux';
 
@@ -201,35 +202,19 @@ class UserProfileTasks extends Component {
 
 			for (let user of users) {
 				if (user._id === userToEdit._id) {
-					user.tasks = userToEdit.tasks.slice(); //??d
-					//user.tasks.map(task => task.date = )
-					// console.log("UPT::user.tasks - if date correct? user.tasks", user.tasks);
-					// console.log("UPT::user.tasks - if date correct? userToEdit.tasks", userToEdit.tasks);
-
+					user.tasks = userToEdit.tasks.slice(); 
 				}
 
 			}
 			this.setState({ users });
-			
-			/*
-			************************************************
-			************************************************
- 			IMPORTANT!!!! Don't forget to save changes to DB
- 			************************************************
-			************************************************
-		
-			*/
+			this.props.action_updateTasksForOneUserDB(userToEdit);
+
 		}
 		else alert("You can't save tasks for undefined user. Please, input user name");
-
-		
-		// console.log("saveTasks::userToEdit", userToEdit);
-		// console.log("this.state.userToEdit_local",this.state.userToEdit_local);
 	}
 
 	/* ============================================================================================================ */
 	render() {
-		// console.log("UserProfileTasks::this.state.users === ", this.state.users);
 		return (
 				<div className="UserProfile__tasks">
 					<h2 className="h2">Tasks:</h2>
@@ -255,4 +240,8 @@ function mapStateToProps(data) {
 	}
 }
 
-export default connect(mapStateToProps, null)(UserProfileTasks);
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators( { action_updateTasksForOneUserDB }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfileTasks);
