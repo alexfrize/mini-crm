@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import './UserProfileProfile.component.css';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { action_createNewUserDB } from '../actions';
 
 class UserProfileProfile extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			userID : null,
 			profile : {
 				name : "Lorem Ipsum",
 				email : "",
@@ -19,9 +22,21 @@ class UserProfileProfile extends Component {
 	componentWillReceiveProps(nextProps) {
 		console.log("USERPROFILE::nextProps === ", nextProps);
 		var { profile } = nextProps.userToEdit;
+		var userID;
+
+		console.warn("userID ==", userID, nextProps.userToEdit);
+		console.warn("nextProps.userToEdit._id ==", nextProps.userToEdit._id);
 		if (profile !== undefined) {
-			this.setState({ profile });
-			console.log("profile===", profile);
+
+			/* 
+				*******************************
+				IMPORTANT ==> FIND BETTER SOLUTION!!!
+				*******************************
+			*/
+			setTimeout(() => {
+				userID = nextProps.userToEdit._id;
+				this.setState({ profile, userID });
+			}, 500);
 		}
 		console.log("USERPROFILE::profile.description", profile);
 		console.log("USERPROFILE::this.state.profile === ", this.state.profile);
@@ -74,17 +89,30 @@ class UserProfileProfile extends Component {
 	saveUserData(e) {
 		e.preventDefault();
 		if (!this.checkValuesOnSubmit()) return;
-		console.log(this.state);
-		var profile = {
-			name : "",
-			email : "",
-			phone : "",
-			description : ""
-		}			
-		this.setState({
-			profile,	
-			errorsDescription : ""
-		})
+		
+		var { profile } = this.state;
+		var { userID } = this.state;
+		if (!userID) {
+			this.props.action_createNewUserDB(profile);
+
+			console.log("saveUserData(e)::userID === NO_USER_ID", userID);	
+		} else {
+			console.log("saveUserData(e)::userID", userID);	
+		}
+		
+
+		// profile = {
+		// 	name : "",
+		// 	email : "",
+		// 	phone : "",
+		// 	description : ""
+		// }			
+		// userID = null;
+		// this.setState({
+		// 	userID,
+		// 	profile,	
+		// 	errorsDescription : ""
+		// })
 
 	}
 
@@ -116,4 +144,8 @@ function mapStateToProps(data) {
 	}
 }
 
-export default connect(mapStateToProps, null)(UserProfileProfile);
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators( { action_createNewUserDB }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfileProfile);

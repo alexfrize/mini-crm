@@ -46,7 +46,7 @@ class UserProfileTasks extends Component {
 	}
 	/* ============================================================================================================ */
 	componentWillReceiveProps(nextProps) {
-		console.log("UUUUU :: nextProps", nextProps);
+		// console.log("UUUUU :: nextProps", nextProps);
 
 		var userToEdit_local = JSON.parse(JSON.stringify(nextProps.userToEdit));
 
@@ -58,7 +58,7 @@ class UserProfileTasks extends Component {
 		}
 		else {
 			userToEdit_local.tasks = [this.generateEmptyTask(_LOCAL)];
-			console.log("generated new tasks array: ", userToEdit_local.tasks);
+			// console.log("generated new tasks array: ", userToEdit_local.tasks);
 		}
 
 		var users = nextProps.users;
@@ -95,7 +95,7 @@ class UserProfileTasks extends Component {
 
 	/* ============================================================================================================ */
 	render_UserProfile__tasks__select(taskItemNum) {
-		console.log("render_UserProfile__tasks__select, this.state.userToEdit_local.tasks[taskItemNum].time", this.state.userToEdit_local.tasks[taskItemNum].time);
+		// console.log("render_UserProfile__tasks__select, this.state.userToEdit_local.tasks[taskItemNum].time", this.state.userToEdit_local.tasks[taskItemNum].time);
 		var options = [];
 		var val = new Array(4);
 		var am_pm = "";

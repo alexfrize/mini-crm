@@ -59,4 +59,15 @@ router.delete('/api/deletetask', function(req, res) {
 
 });
 
+router.post('/api/createnewuser', function(req,res) {
+	var newUserObject = req.body;
+	console.log(newUserObject);
+	var _id = ObjectId();
+	var resObj = { _id 	};
+	newUserObject._id = _id;
+	console.log("_id === ", _id, resObj);
+	db.users.insert(newUserObject);
+	res.json(resObj);
+});
+
 module.exports = router;

@@ -170,8 +170,8 @@ class AllUsers extends Component {
 	
 	/* ============================================================================================================ */	
 	getTaskDate__handleChange(date) {
-		console.log("date:",date);
-		console.log('this.state.editTask.date ==',this.state.editTask.date);
+		// console.log("date:",date);
+		// console.log('this.state.editTask.date ==',this.state.editTask.date);
 		let editTask = this.state.editTask;
 		editTask.date = date;
 		this.setState({
@@ -413,14 +413,14 @@ class AllUsers extends Component {
 			tasks_untouched = this.state.tasks;
 		} 
 		else tasks_untouched = this.state.tasks_untouched;
-		console.log(tasks_untouched);
+		// console.log(tasks_untouched);
 		let searchFilter = event.target.value;
 		var tasks = tasks_untouched.filter(element => {
 			return (element.task.description.toUpperCase().search(searchFilter.toUpperCase()) !== -1);
 	 	});
 
-		console.log(searchFilter);
-		console.log("tasks==",tasks);
+		// console.log(searchFilter);
+		// console.log("tasks==",tasks);
 
 		this.setState({
 			searchFilter,
@@ -481,7 +481,7 @@ class AllUsers extends Component {
 			return (this_state.tasks.length === this_state.tasks_untouched.length) ? "All users:" : "Filtered users:";
 		}
 		var tasksTable = [];
-		console.log("==>this.state.users",this.state.users);
+		// console.log("==>this.state.users",this.state.users);
 		for (let i=0; i<this.state.users.length; i++) {
 			tasksTable.push(
 						<tr key={"tablerow"+i}>

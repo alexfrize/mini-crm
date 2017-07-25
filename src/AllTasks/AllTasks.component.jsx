@@ -7,6 +7,7 @@ import allTasks__cancel from './img/all-tasks__cancel.svg';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { action__deleteTaskFromDB } from '../actions';
+import { action_updateOneTaskDB } from '../actions';
 
 import moment from 'moment';
 
@@ -57,7 +58,7 @@ class AllTasks extends Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		console.log("==>newProps",newProps);
+		//console.log("==>newProps",newProps);
 		this.setState({
 			users: newProps.users,
 			tasks : this.getTasksArray(newProps)
@@ -338,7 +339,7 @@ class AllTasks extends Component {
 		this.setState({
 			tasks
 		})
-		console.log("Now userts:", this.state.users);
+		
 	}
 
 	/* ============================================================================================================ */	
@@ -360,6 +361,23 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	saveTask() {
+		var this_state_users = this.state.users;
+
+		// ************************
+		function updateUsersArray() {
+			for (let user of this_state_users) {
+				for (let task of user.tasks) {
+					// console.log("task.task_id === ", task.task_id);
+					// console.log("taskToUpdate.task_id ===", taskToUpdate.task_id);
+					if (task.task_id === taskToUpdate.task_id) {
+						task.time = taskToUpdate.time;
+						task.date = taskToUpdate.date;
+						task.description = taskToUpdate.description;
+					}	
+				}
+			}
+		}
+		// ************************
 
 		let taskNum = this.state.editTask.taskNum;
 		var tasks = this.state.tasks;
@@ -369,24 +387,17 @@ class AllTasks extends Component {
 			date : this.state.editTask.date.format("MM/DD/YYYY"),
 			description: this.state.editTask.description
 		}
+		var taskToUpdate = tasks[taskNum].task;
+		this.props.action_updateOneTaskDB(taskToUpdate);
+		// this.props.action_checkAndUpdateUserToEditObject(taskToUpdate);
 
-		var _url="/api/updatetask";
+		// console.log("this.userToEdit.tasks ==",this.props.userToEdit);
+		// console.log("this.state.users ==" ,this.state.users);
 
-		var dataToUpdate = JSON.stringify(tasks[taskNum].task);
+		updateUsersArray();
 
-		fetch(_url, {
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: dataToUpdate
 
-		})
-		.catch(err => {
-			console.error(err);
-		});
-		// console.log("dataToUpdate === ", dataToUpdate);
-
+		// console.log("tasks[taskNum].task ====== >",taskToUpdate);
 
 		let editTask = {
 			task_id : null,
@@ -399,7 +410,6 @@ class AllTasks extends Component {
 			tasks,
 			editTask
 		});
-
 	}
 
 	/* ============================================================================================================ */	
@@ -558,7 +568,7 @@ class AllTasks extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ action__deleteTaskFromDB }, dispatch);
+	return bindActionCreators({ action__deleteTaskFromDB, action_updateOneTaskDB }, dispatch);
 }
 
 function mapStateToProps(data) {
