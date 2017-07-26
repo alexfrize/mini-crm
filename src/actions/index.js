@@ -5,7 +5,7 @@ import {
 		UPDATE_TASKS_FOR_ONE_USER_DB,
 		UPDATE_ONE_TASK_IN_TASK_LIST,
 		CREATE_NEW_USER_DB,
-		NEW_USER_ID_IS_LOADED_FROM_DB
+		UPDATE_USER_PROFILE_DB
 	} from '../constants';
 
 export const action__loadedDataFromDB = function(users) {
@@ -44,14 +44,40 @@ export const action_updateOneTaskDB = function(taskToUpdate) {
 }
 
 export const action_createNewUserDB = function(newUserProfile) {
+	var newUserObject = {
+		profile : newUserProfile,
+		tasks : [],
+		progress: [{
+			"isActive": "",
+			"description" : ""
+		}]
+	}
+	var _url = "/api/createnewuser";
 	return {
-		type: CREATE_NEW_USER_DB ,
-		newUserProfile
+		type: CREATE_NEW_USER_DB,
+		payload: new Promise ((resolve, reject) => {
+			fetch(_url, {
+				method: "POST",
+				headers: {
+					"Content-Type" : "application/json"
+				},
+				body: JSON.stringify(newUserObject)
+			})
+			.then((res) => res.json(), (err) => { console.error("Error: "); reject(err) })
+			.then((res) => {
+				newUserObject._id = res._id;
+				resolve(newUserObject);
+				}
+			)
+			.catch(err => console.error(err));
+		})
 	}
 }
 
-export const action_userIDIsLoadedFromDB = function() {
+export const action_updateUserDB = function(users, userToEdit) {
 	return {
-		type: NEW_USER_ID_IS_LOADED_FROM_DB
+		type : UPDATE_USER_PROFILE_DB,
+		users,
+		userToEdit
 	}
 }

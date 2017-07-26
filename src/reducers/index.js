@@ -4,8 +4,8 @@ import {
 		UPDATE_USER_TO_EDIT,
 		UPDATE_TASKS_FOR_ONE_USER_DB,
 		UPDATE_ONE_TASK_IN_TASK_LIST,
-		CREATE_NEW_USER_DB,
-		NEW_USER_ID_IS_LOADED_FROM_DB
+		CREATE_NEW_USER_DB_FULFILLED,
+		UPDATE_USER_PROFILE_DB
 	} from '../constants';
 
 // ===============================================================================================
@@ -17,6 +17,9 @@ function deleteFromDB(taskToDelete) {
 			"Content-Type" : "application/json"
 		},
 		body: taskToDelete
+	})
+	.catch(err => {
+		console.error(err);
 	});
 }
 
@@ -29,6 +32,9 @@ function updateTasksForOneUserDB(userToEdit) {
 			"Content-Type" : "application/json"
 		},
 		body: JSON.stringify(userToEdit)
+	})
+	.catch(err => {
+		console.error(err);
 	});
 }
 
@@ -49,44 +55,27 @@ function updateOneTaskDB(taskToUpdate) {
 }
 
 // ===============================================================================================
-function createNewUserDB(newUserProfile) {
-	var newUserObject = {
-		profile : newUserProfile,
-		tasks : [],
-		progress: [{
-			"isActive": "",
-			"description" : ""
-		}]
-	}
-	var _url = "/api/createnewuser";
+function updateUserProfileDB(userToUpdate) {
+	var _url="/api/updateuserprofile";
+	var dataToUpdate = JSON.stringify(userToUpdate);
 	fetch(_url, {
-		method: "POST",
+		method: "PUT",
 		headers: {
-			"Content-Type" : "application/json"
+			"Content-Type": "application/json"
 		},
-		body: JSON.stringify(newUserObject)
-	})	
-	.then(response => response.json())
-	.then(response => {
-		console.log("New id === ", response._id);
-		newUserObject._id = response._id;
+		body: dataToUpdate
 	})
-	.catch(err => console.error(err));
-
-	// console.warn(">>>res==",response);
-	console.log("newUserObject._id ==>", newUserObject._id);
-			/* 
-				*******************************
-				IMPORTANT ==> FIND BETTER SOLUTION!!!
-				Now newUserObject._id === undefined
-				*******************************
-			*/	
-	return newUserObject;
+	.catch(err => {
+		console.error(err);
+	});
 }
 
 // ===============================================================================================
 export function mainReducer(state = {users : [], userToEdit: {} }, action) {
 	switch (action.type) {
+		case LOADED_FROM_DB :
+								return Object.assign({}, { users: action.users,  userToEdit: state.userToEdit });
+
 		case UPDATE_USER_TO_EDIT :
 								return Object.assign({}, { users: state.users , userToEdit: action.userToEdit });
 
@@ -102,17 +91,16 @@ export function mainReducer(state = {users : [], userToEdit: {} }, action) {
 								updateOneTaskDB(action.taskToUpdate);				
 								return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit });
 
-		case CREATE_NEW_USER_DB :
-								let newUserObj = createNewUserDB(action.newUserProfile);
-								console.log('New is created: newUserObj === ', newUserObj);
-								return Object.assign({}, { users: [...state.users, newUserObj], userToEdit: newUserObj });
+		case CREATE_NEW_USER_DB_FULFILLED :
+								return Object.assign({}, { users: [...state.users, action.payload],  userToEdit: action.payload });
 
-		case NEW_USER_ID_IS_LOADED_FROM_DB :
-								console.warn(" NEW_USER_ID_IS_LOADED_FROM_DB", state.userToEdit);
-								return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit });
+		case UPDATE_USER_PROFILE_DB :
+								console.log("UPDATE_USER_PROFILE_DB");
+								console.log("UPDATE_USER_PROFILE_DB::action.users",action.users);
+								console.log("UPDATE_USER_PROFILE_DB::action.userToEdit",action.userToEdit);
 
-		case LOADED_FROM_DB :
-								return Object.assign({}, { users: action.users,  userToEdit: state.userToEdit });
-		default: return state;
+								return Object.assign({}, { users: action.users , userToEdit: state.userToEdit });
+
+		default: return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit });
 	}
 }

@@ -108,7 +108,6 @@ class AllUsers extends Component {
 		});
 
 		this.props.action__updateUserToEdit(this.state.users[userNum])
-
 	}
 
 	/* ============================================================================================================ */	

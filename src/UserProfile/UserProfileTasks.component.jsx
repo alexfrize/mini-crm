@@ -46,23 +46,17 @@ class UserProfileTasks extends Component {
 	}
 	/* ============================================================================================================ */
 	componentWillReceiveProps(nextProps) {
-		// console.log("UUUUU :: nextProps", nextProps);
-		console.warn("Got new props: ", nextProps.userToEdit);
+		// console.log("Got new props: ", nextProps.userToEdit);
 		var userToEdit_local = JSON.parse(JSON.stringify(nextProps.userToEdit));
-		setTimeout(()=> {
-			userToEdit_local = JSON.parse(JSON.stringify(nextProps.userToEdit));
-			console.warn("Got new props:: userToEdit_local ", userToEdit_local);
-		},100);
+		// console.log("Got new props:: userToEdit_local ", userToEdit_local);		
 
 		if (!userToEdit_local.tasks) userToEdit_local.tasks = [];
-		// console.log("UU::userToEdit_local.tasks ===", userToEdit_local.tasks);
 
 		if (userToEdit_local.tasks.length) {
 			userToEdit_local.tasks.map(task => task._date__Moment = moment(task.date, 'MM/DD/YYYY'));
 		}
 		else {
 			userToEdit_local.tasks = [this.generateEmptyTask(_LOCAL)];
-			// console.log("generated new tasks array: ", userToEdit_local.tasks);
 		}
 
 		var users = nextProps.users;
@@ -99,7 +93,6 @@ class UserProfileTasks extends Component {
 
 	/* ============================================================================================================ */
 	render_UserProfile__tasks__select(taskItemNum) {
-		// console.log("render_UserProfile__tasks__select, this.state.userToEdit_local.tasks[taskItemNum].time", this.state.userToEdit_local.tasks[taskItemNum].time);
 		var options = [];
 		var val = new Array(4);
 		var am_pm = "";
@@ -169,7 +162,6 @@ class UserProfileTasks extends Component {
 			task_id += String.fromCharCode(Math.floor(Math.random()*26)+97);
 			task_id += String.fromCharCode(Math.floor(Math.random()*10)+48);
 		}
-		// console.log("New task_id === " , task_id); 
 		return task_id;
 	}
 
@@ -198,11 +190,9 @@ class UserProfileTasks extends Component {
 		}
 		if (userToEdit.tasks.length) this.setState( { userToEdit });
 
-		// console.log("userToEdit._id",userToEdit._id);
-
 		// Check if user has a name or not
 		var users = this.state.users;
-		console.warn("userToEdit._id =====", userToEdit._id);
+		console.log("userToEdit._id =====", userToEdit._id);
 		if (userToEdit._id) {
 
 			for (let user of users) {

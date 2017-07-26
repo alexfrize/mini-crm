@@ -3,12 +3,14 @@ import './UserProfileProfile.component.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { action_createNewUserDB } from '../actions';
-import { action_userIDIsLoadedFromDB } from '../actions';
+import { action_updateUserDB } from '../actions';
 
 class UserProfileProfile extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			users : [],
+			// userToEdit : {},
 			userID : null,
 			profile : {
 				name : "Lorem Ipsum",
@@ -22,34 +24,17 @@ class UserProfileProfile extends Component {
 
 	componentWillReceiveProps(nextProps) {
 		console.log("USERPROFILE::nextProps === ", nextProps);
+		var { users } = nextProps;
+		// var { userToEdit } = nextProps;
 		var { profile } = nextProps.userToEdit;
 		var userID;
-
-		console.log("userID ==", userID, nextProps.userToEdit);
-		console.log("nextProps.userToEdit._id ==", nextProps.userToEdit._id);
-
-
-		var _this = this;
-		// ======= This function waits while new user ID is loaded from the server ======= 
-		function waitWhileUserIdIsLoaded() {
-			setTimeout(() => {
-				userID = nextProps.userToEdit._id;
-				if (!userID) waitWhileUserIdIsLoaded(); 
-				else {
-					console.log("User ID is loaded: ", userID);
-					console.log("New user data: ", nextProps.userToEdit);
-					_this.props.action_userIDIsLoadedFromDB();
-					_this.setState({ profile, userID });
-				}
-			}, 50);
-		}
-		// ===============================================================================
-
 		if (profile !== undefined) {
-			waitWhileUserIdIsLoaded();
+			userID = nextProps.userToEdit._id;
+			console.log("User ID is loaded: ", userID);
+			// console.log("New user data: ", nextProps.userToEdit);
+			this.setState({ users, profile, userID });
 		}
-		console.log("USERPROFILE::profile.description", profile);
-		console.log("USERPROFILE::this.state.profile === ", this.state.profile);
+
 	}
 	checkUserName(event) {
 		var _value = event.target.value;
@@ -102,27 +87,28 @@ class UserProfileProfile extends Component {
 		
 		var { profile } = this.state;
 		var { userID } = this.state;
+		var { users } = this.state;
 		if (!userID) {
 			this.props.action_createNewUserDB(profile);
-
 			console.log("saveUserData(e)::userID === NO_USER_ID", userID);	
 		} else {
-			console.log("saveUserData(e)::userID", userID);	
+			console.log("saveUserData(e)::userID", userID);
+			for (let user of users) {
+				if (user._id === userID) {
+					user.profile.username = profile.name;
+					user.profile.email = profile.email;
+					user.profile.phone = profile.phone;
+					user.profile.description = profile.description;
+				}
+			}
+			this.setState( { users });
+			//let userToEdit = this.state.userToEdit;
+			//userToEdit._id = userID;
+			//userToEdit.profile = profile;
+			//console.warn("userToEdit ==", userToEdit);
+			console.warn("profile ==", profile);
+			this.props.action_updateUserDB(users, profile);
 		}
-		
-
-		// profile = {
-		// 	name : "",
-		// 	email : "",
-		// 	phone : "",
-		// 	description : ""
-		// }			
-		// userID = null;
-		// this.setState({
-		// 	userID,
-		// 	profile,	
-		// 	errorsDescription : ""
-		// })
 
 	}
 
@@ -155,7 +141,7 @@ function mapStateToProps(data) {
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators( { action_createNewUserDB, action_userIDIsLoadedFromDB }, dispatch);
+	return bindActionCreators( { action_createNewUserDB, action_updateUserDB }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserProfileProfile);
