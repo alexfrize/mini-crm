@@ -4,7 +4,8 @@ import {
 		UPDATE_USER_TO_EDIT,
 		UPDATE_TASKS_FOR_ONE_USER_DB,
 		UPDATE_ONE_TASK_IN_TASK_LIST,
-		CREATE_NEW_USER_DB
+		CREATE_NEW_USER_DB,
+		NEW_USER_ID_IS_LOADED_FROM_DB
 	} from '../constants';
 
 // ===============================================================================================
@@ -64,15 +65,16 @@ function createNewUserDB(newUserProfile) {
 			"Content-Type" : "application/json"
 		},
 		body: JSON.stringify(newUserObject)
-	})
+	})	
 	.then(response => response.json())
 	.then(response => {
 		console.log("New id === ", response._id);
 		newUserObject._id = response._id;
-		
 	})
 	.catch(err => console.error(err));
-	console.warn("newUserObject._id ==>", newUserObject._id);
+
+	// console.warn(">>>res==",response);
+	console.log("newUserObject._id ==>", newUserObject._id);
 			/* 
 				*******************************
 				IMPORTANT ==> FIND BETTER SOLUTION!!!
@@ -101,9 +103,13 @@ export function mainReducer(state = {users : [], userToEdit: {} }, action) {
 								return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit });
 
 		case CREATE_NEW_USER_DB :
-								let newUserObj = createNewUserDB(action.newUserProfile)
+								let newUserObj = createNewUserDB(action.newUserProfile);
 								console.log('New is created: newUserObj === ', newUserObj);
-								return Object.assign({}, { users: [...state.users, newUserObj],   userToEdit: newUserObj });										
+								return Object.assign({}, { users: [...state.users, newUserObj], userToEdit: newUserObj });
+
+		case NEW_USER_ID_IS_LOADED_FROM_DB :
+								console.warn(" NEW_USER_ID_IS_LOADED_FROM_DB", state.userToEdit);
+								return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit });
 
 		case LOADED_FROM_DB :
 								return Object.assign({}, { users: action.users,  userToEdit: state.userToEdit });

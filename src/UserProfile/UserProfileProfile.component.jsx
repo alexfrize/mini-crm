@@ -3,6 +3,7 @@ import './UserProfileProfile.component.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { action_createNewUserDB } from '../actions';
+import { action_userIDIsLoadedFromDB } from '../actions';
 
 class UserProfileProfile extends Component {
 	constructor(props) {
@@ -24,19 +25,28 @@ class UserProfileProfile extends Component {
 		var { profile } = nextProps.userToEdit;
 		var userID;
 
-		console.warn("userID ==", userID, nextProps.userToEdit);
-		console.warn("nextProps.userToEdit._id ==", nextProps.userToEdit._id);
-		if (profile !== undefined) {
+		console.log("userID ==", userID, nextProps.userToEdit);
+		console.log("nextProps.userToEdit._id ==", nextProps.userToEdit._id);
 
-			/* 
-				*******************************
-				IMPORTANT ==> FIND BETTER SOLUTION!!!
-				*******************************
-			*/
+
+		var _this = this;
+		// ======= This function waits while new user ID is loaded from the server ======= 
+		function waitWhileUserIdIsLoaded() {
 			setTimeout(() => {
 				userID = nextProps.userToEdit._id;
-				this.setState({ profile, userID });
-			}, 500);
+				if (!userID) waitWhileUserIdIsLoaded(); 
+				else {
+					console.log("User ID is loaded: ", userID);
+					console.log("New user data: ", nextProps.userToEdit);
+					_this.props.action_userIDIsLoadedFromDB();
+					_this.setState({ profile, userID });
+				}
+			}, 50);
+		}
+		// ===============================================================================
+
+		if (profile !== undefined) {
+			waitWhileUserIdIsLoaded();
 		}
 		console.log("USERPROFILE::profile.description", profile);
 		console.log("USERPROFILE::this.state.profile === ", this.state.profile);
@@ -145,7 +155,7 @@ function mapStateToProps(data) {
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators( { action_createNewUserDB }, dispatch);
+	return bindActionCreators( { action_createNewUserDB, action_userIDIsLoadedFromDB }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserProfileProfile);

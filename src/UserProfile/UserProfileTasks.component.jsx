@@ -47,8 +47,12 @@ class UserProfileTasks extends Component {
 	/* ============================================================================================================ */
 	componentWillReceiveProps(nextProps) {
 		// console.log("UUUUU :: nextProps", nextProps);
-
+		console.warn("Got new props: ", nextProps.userToEdit);
 		var userToEdit_local = JSON.parse(JSON.stringify(nextProps.userToEdit));
+		setTimeout(()=> {
+			userToEdit_local = JSON.parse(JSON.stringify(nextProps.userToEdit));
+			console.warn("Got new props:: userToEdit_local ", userToEdit_local);
+		},100);
 
 		if (!userToEdit_local.tasks) userToEdit_local.tasks = [];
 		// console.log("UU::userToEdit_local.tasks ===", userToEdit_local.tasks);
@@ -179,7 +183,7 @@ class UserProfileTasks extends Component {
 	/* ============================================================================================================ */
 	saveTasks() {
 		var userToEdit = JSON.parse(JSON.stringify(this.state.userToEdit_local));
-
+		console.warn("JSON.parse(JSON.stringify(this.state.userToEdit_local)) === userToEdit === ", userToEdit);
 		if (userToEdit.tasks) {
 			if (userToEdit.tasks.length) {
 				for (let i=0; i<userToEdit.tasks.length; i++) {
@@ -198,6 +202,7 @@ class UserProfileTasks extends Component {
 
 		// Check if user has a name or not
 		var users = this.state.users;
+		console.warn("userToEdit._id =====", userToEdit._id);
 		if (userToEdit._id) {
 
 			for (let user of users) {

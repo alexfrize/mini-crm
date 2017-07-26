@@ -4,7 +4,8 @@ import {
 		UPDATE_USER_TO_EDIT,
 		UPDATE_TASKS_FOR_ONE_USER_DB,
 		UPDATE_ONE_TASK_IN_TASK_LIST,
-		CREATE_NEW_USER_DB
+		CREATE_NEW_USER_DB,
+		NEW_USER_ID_IS_LOADED_FROM_DB
 	} from '../constants';
 
 export const action__loadedDataFromDB = function(users) {
@@ -46,5 +47,11 @@ export const action_createNewUserDB = function(newUserProfile) {
 	return {
 		type: CREATE_NEW_USER_DB ,
 		newUserProfile
+	}
+}
+
+export const action_userIDIsLoadedFromDB = function() {
+	return {
+		type: NEW_USER_ID_IS_LOADED_FROM_DB
 	}
 }
