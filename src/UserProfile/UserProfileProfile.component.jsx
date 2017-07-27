@@ -10,29 +10,34 @@ class UserProfileProfile extends Component {
 		super(props);
 		this.state = {
 			users : [],
-			// userToEdit : {},
+			userToEdit : {},
 			userID : null,
-			profile : {
+			profile : this.emptyProfile(),
+			errorsDescription : ""
+		}
+	}
+	
+	emptyProfile() {
+		return {
 				name : "Lorem Ipsum",
 				email : "",
 				phone : "+8-565-214-154-1",
 				description: ""
-			},
-			errorsDescription : ""
-		}
+			};
 	}
 
 	componentWillReceiveProps(nextProps) {
 		console.log("USERPROFILE::nextProps === ", nextProps);
 		var { users } = nextProps;
-		// var { userToEdit } = nextProps;
-		var { profile } = nextProps.userToEdit;
+		var { userToEdit } = nextProps;
+		var profile = nextProps.userToEdit.profile ? JSON.parse(JSON.stringify(nextProps.userToEdit.profile)) : this.emptyProfile();
+		console.warn("CWRP::profile ===", profile);
 		var userID;
 		if (profile !== undefined) {
 			userID = nextProps.userToEdit._id;
 			console.log("User ID is loaded: ", userID);
-			// console.log("New user data: ", nextProps.userToEdit);
-			this.setState({ users, profile, userID });
+			console.log("New user data: ", nextProps.userToEdit);
+			this.setState({ users, userToEdit, profile, userID });
 		}
 
 	}
@@ -57,7 +62,7 @@ class UserProfileProfile extends Component {
 	}
 
 	checkUserDescription(event) {
-		var _value = event.target.description;
+		var _value = event.target.value;
 		var profile = this.state.profile;
 		profile.description = _value;
 		this.setState({ profile });
@@ -85,9 +90,10 @@ class UserProfileProfile extends Component {
 		e.preventDefault();
 		if (!this.checkValuesOnSubmit()) return;
 		
-		var { profile } = this.state;
+		var profile = this.state.profile;
+		console.warn("SAVE::profile2 ==",profile);
 		var { userID } = this.state;
-		var { users } = this.state;
+		var users = JSON.parse(JSON.stringify(this.state.users));
 		if (!userID) {
 			this.props.action_createNewUserDB(profile);
 			console.log("saveUserData(e)::userID === NO_USER_ID", userID);	
@@ -95,21 +101,19 @@ class UserProfileProfile extends Component {
 			console.log("saveUserData(e)::userID", userID);
 			for (let user of users) {
 				if (user._id === userID) {
-					user.profile.username = profile.name;
+					user.profile.name = profile.name;
 					user.profile.email = profile.email;
 					user.profile.phone = profile.phone;
 					user.profile.description = profile.description;
 				}
 			}
-			this.setState( { users });
-			//let userToEdit = this.state.userToEdit;
-			//userToEdit._id = userID;
-			//userToEdit.profile = profile;
-			//console.warn("userToEdit ==", userToEdit);
+			let userToEdit = this.state.userToEdit;
+			userToEdit._id = userID;
+			userToEdit.profile = profile;
+			console.warn("userToEdit ==", userToEdit);
 			console.warn("profile ==", profile);
-			this.props.action_updateUserDB(users, profile);
+			this.props.action_updateUserDB(users, userToEdit);
 		}
-
 	}
 
 	render() {

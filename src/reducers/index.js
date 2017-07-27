@@ -85,6 +85,7 @@ export function mainReducer(state = {users : [], userToEdit: {} }, action) {
 
 		case UPDATE_TASKS_FOR_ONE_USER_DB : 
 								updateTasksForOneUserDB(action.userToEdit);
+								console.log("UPDATE_TASKS_FOR_ONE_USER_DB",action.userToEdit);
 								return Object.assign({}, { users: state.users,  userToEdit: action.userToEdit });
 
 		case UPDATE_ONE_TASK_IN_TASK_LIST :
@@ -95,11 +96,9 @@ export function mainReducer(state = {users : [], userToEdit: {} }, action) {
 								return Object.assign({}, { users: [...state.users, action.payload],  userToEdit: action.payload });
 
 		case UPDATE_USER_PROFILE_DB :
-								console.log("UPDATE_USER_PROFILE_DB");
-								console.log("UPDATE_USER_PROFILE_DB::action.users",action.users);
 								console.log("UPDATE_USER_PROFILE_DB::action.userToEdit",action.userToEdit);
-
-								return Object.assign({}, { users: action.users , userToEdit: state.userToEdit });
+								updateUserProfileDB(action.userToEdit);
+								return Object.assign({}, { users: action.users , userToEdit: action.userToEdit });
 
 		default: return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit });
 	}

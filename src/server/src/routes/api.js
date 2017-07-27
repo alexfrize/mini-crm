@@ -70,4 +70,13 @@ router.post('/api/createnewuser', function(req,res) {
 	res.json(resObj);
 });
 
+router.put('/api/updateuserprofile', function(req, res) {
+	var _id = req.body._id;
+	console.log("req.body", req.body);
+	db.users.update({_id: ObjectId(_id)}, {tasks : req.body.tasks, profile : req.body.profile, progress : req.body.progress }); // rewriting full object!
+	res.json({"Data" : "OK"})	
+});
+
+
+
 module.exports = router;

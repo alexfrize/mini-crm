@@ -21,6 +21,7 @@ class AllTasks extends Component {
 		this.state = {
 			users : [],
 			tasks: [],
+			userToEdit: {},
 			tasks_untouched: [],
 			isEditMode : false,
 			searchFilter : "",
@@ -60,6 +61,7 @@ class AllTasks extends Component {
 	componentWillReceiveProps(newProps){
 		//console.log("==>newProps",newProps);
 		this.setState({
+			userToEdit : newProps.userToEdit,
 			users: newProps.users,
 			tasks : this.getTasksArray(newProps)
 		})
@@ -215,7 +217,6 @@ class AllTasks extends Component {
 				{this.render__getTaskTime__timeValues()}
 			</td>) :
 			<td className={this.isOverdueClassName(taskNum)}><div className="AllTasks__table__view-mode__input">{this.state.tasks[taskNum].task.time}</div></td>
-	
 	}
 	
 	/* ============================================================================================================ */	
