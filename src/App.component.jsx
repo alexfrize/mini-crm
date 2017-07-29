@@ -4,6 +4,7 @@ import Menu from './Menu/Menu.component.jsx';
 import UserProfile from './UserProfile/UserProfile.component.jsx';
 import AllTasks from './AllTasks/AllTasks.component.jsx';
 import AllUsers from './AllUsers/AllUsers.component.jsx';
+import Modal from './Modal/Modal.component.jsx';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { action__loadedDataFromDB } from './actions';
@@ -38,6 +39,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Modal />
         <Menu />
         <AllTasks />
         <UserProfile />

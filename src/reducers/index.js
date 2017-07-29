@@ -7,99 +7,48 @@ import {
 		CREATE_NEW_USER_DB_FULFILLED,
 		UPDATE_USER_PROFILE_DB
 	} from '../constants';
+import { MODAL_SHOW, MODAL_HIDE } from '../constants/modal';
+import { deleteFromDB, updateTasksForOneUserDB, updateOneTaskDB, updateUserProfileDB } from './db';
 
 // ===============================================================================================
-function deleteFromDB(taskToDelete) {
-	var _url = "/api/deletetask";
-	fetch(_url, {
-		method : "DELETE",
-		headers: {
-			"Content-Type" : "application/json"
-		},
-		body: taskToDelete
-	})
-	.catch(err => {
-		console.error(err);
-	});
-}
-
-// ===============================================================================================
-function updateTasksForOneUserDB(userToEdit) {
-	var _url = "/api/updatealltasksforoneuser";
-	fetch(_url, {
-		method : "PUT",
-		headers: {
-			"Content-Type" : "application/json"
-		},
-		body: JSON.stringify(userToEdit)
-	})
-	.catch(err => {
-		console.error(err);
-	});
-}
-
-// ===============================================================================================
-function updateOneTaskDB(taskToUpdate) {
-	var _url="/api/updatetask";
-	var dataToUpdate = JSON.stringify(taskToUpdate);
-	fetch(_url, {
-		method: "PUT",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: dataToUpdate
-	})
-	.catch(err => {
-		console.error(err);
-	});
-}
-
-// ===============================================================================================
-function updateUserProfileDB(userToUpdate) {
-	var _url="/api/updateuserprofile";
-	var dataToUpdate = JSON.stringify(userToUpdate);
-	fetch(_url, {
-		method: "PUT",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: dataToUpdate
-	})
-	.catch(err => {
-		console.error(err);
-	});
-}
-
-// ===============================================================================================
-export function mainReducer(state = {users : [], userToEdit: {} }, action) {
+export const mainReducer = function(state = {users : [], userToEdit: {} , modal: { type : "", text: "" } }, action) {
 	switch (action.type) {
 		case LOADED_FROM_DB :
-								return Object.assign({}, { users: action.users,  userToEdit: state.userToEdit });
+								return Object.assign({}, { users: action.users,  userToEdit: state.userToEdit, modal: state.modal });
 
 		case UPDATE_USER_TO_EDIT :
-								return Object.assign({}, { users: state.users , userToEdit: action.userToEdit });
+								return Object.assign({}, { users: state.users, userToEdit: action.userToEdit, modal: state.modal });
 
 		case DELETE_TASK_FROM_DB :
 								deleteFromDB(action.taskToDelete);
-								return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit });
+								return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit, modal: state.modal });
 
 		case UPDATE_TASKS_FOR_ONE_USER_DB : 
 								updateTasksForOneUserDB(action.userToEdit);
-								console.log("UPDATE_TASKS_FOR_ONE_USER_DB",action.userToEdit);
-								return Object.assign({}, { users: state.users,  userToEdit: action.userToEdit });
+								return Object.assign({}, { users: state.users,  userToEdit: action.userToEdit, modal: state.modal });
 
 		case UPDATE_ONE_TASK_IN_TASK_LIST :
 								updateOneTaskDB(action.taskToUpdate);				
-								return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit });
+								return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit, modal: state.modal });
 
 		case CREATE_NEW_USER_DB_FULFILLED :
-								return Object.assign({}, { users: [...state.users, action.payload],  userToEdit: action.payload });
+								return Object.assign({}, { users: [...state.users, action.payload],  userToEdit: action.payload, modal: state.modal });
 
 		case UPDATE_USER_PROFILE_DB :
-								console.log("UPDATE_USER_PROFILE_DB::action.userToEdit",action.userToEdit);
 								updateUserProfileDB(action.userToEdit);
-								return Object.assign({}, { users: action.users , userToEdit: action.userToEdit });
+								return Object.assign({}, { users: action.users , userToEdit: action.userToEdit, modal: state.modal });
+		
+		// ================== MODAL ACTIONS ==================
+		case MODAL_SHOW :
 
-		default: return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit });
+								return Object.assign({}, { users: state.users , userToEdit: state.userToEdit, modal: action.modal });
+		case MODAL_HIDE :
+								let modalObj = {
+									type : "MODAL::Hide",
+									text : ""
+								}
+								return Object.assign({}, { users: state.users , userToEdit: state.userToEdit, modal: modalObj });		
+
+		default: return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit, modal: state.modal });
 	}
 }

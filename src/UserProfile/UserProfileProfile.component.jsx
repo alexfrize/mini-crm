@@ -31,7 +31,7 @@ class UserProfileProfile extends Component {
 		var { users } = nextProps;
 		var { userToEdit } = nextProps;
 		var profile = nextProps.userToEdit.profile ? JSON.parse(JSON.stringify(nextProps.userToEdit.profile)) : this.emptyProfile();
-		console.warn("CWRP::profile ===", profile);
+		console.log("CWRP::profile ===", profile);
 		var userID;
 		if (profile !== undefined) {
 			userID = nextProps.userToEdit._id;
