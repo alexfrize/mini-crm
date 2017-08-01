@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { action__deleteTaskFromDB } from '../actions';
 import { action_updateOneTaskDB } from '../actions';
+import { action_showModal } from '../actions/modal';
 
 import moment from 'moment';
 
@@ -25,6 +26,7 @@ class AllTasks extends Component {
 			tasks_untouched: [],
 			isEditMode : false,
 			searchFilter : "",
+			modal: {},
 			activeModal: {
 				id: null,
 				answer : null
@@ -59,15 +61,24 @@ class AllTasks extends Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		//console.log("==>newProps",newProps);
+		console.log("==>newProps.modal",newProps.modal);
+		if (newProps.modal) this.checkModalState(newProps.modal);
 		this.setState({
+			modal: newProps.modal,
 			userToEdit : newProps.userToEdit,
 			users: newProps.users,
 			tasks : this.getTasksArray(newProps)
 		})
 
 	}	
-
+	
+	/* ============================================================================================================ */	
+	checkModalState(modal) {
+		if (modal.answer === "MODAL::MarkAsDone::Yes") {
+			this.markTaskAsDone(modal.taskId);
+		}
+	}
+	
 	/* ============================================================================================================ */	
 	getTasksArray(newProps) {
 		var alltasks = [];
@@ -276,7 +287,7 @@ class AllTasks extends Component {
 				answer: null
 			}
 		});
-		/* IMPORTANT: CHECK ALL CHANGES IN initModal() */
+		
 	}
 
 	/* ============================================================================================================ */	
@@ -311,15 +322,31 @@ class AllTasks extends Component {
 			doneTask
 		});
 	}
+
 	/* ============================================================================================================ */	
-	markTaskAsDone() {
-		let taskNumToMarkAsDone = this.state.doneTask.taskNum;
-		console.log(`Task ${taskNumToMarkAsDone} is marked as done:`, this.state.tasks[taskNumToMarkAsDone]);
+	getTaskNumByTaskId(taskId) {
+		var tasks = this.state.tasks
+		for (let i = 0; i < tasks.length; i++) {
+			if (tasks[i].task.task_id === taskId) return i;
+		}
+	}
+
+
+	/* ============================================================================================================ */	
+	markTaskAsDone(taskId) {
+		// let taskNumToMarkAsDone = this.state.doneTask.taskNum;
+		// console.log(`Task ${taskNumToMarkAsDone} is marked as done:`, this.state.tasks[taskNumToMarkAsDone]);
 		let tasks = this.state.tasks;
 		// let task_id_toDelete = this.state.tasks[taskNumToMarkAsDone].task.task_id;
-		// var taskToDelete = JSON.stringify(this.state.tasks[taskNumToMarkAsDone].task);
-		var taskToDelete = JSON.stringify({task_id : this.state.tasks[taskNumToMarkAsDone].task.task_id});
+		// var taskToDelete = JSON.stringify({task_id : this.state.tasks[taskNumToMarkAsDone].task.task_id});
+		var taskNumToMarkAsDone = this.getTaskNumByTaskId(taskId);
+		var taskToDelete = JSON.stringify(this.state.tasks[taskNumToMarkAsDone].task);
+		taskToDelete = JSON.stringify({task_id : taskId});
+		console.log("taskNumToMarkAsDone ===",taskNumToMarkAsDone);
+		console.log("taskToDelete ===",taskToDelete);
+		console.warn("tasks[]::before", tasks);
 		tasks.splice(taskNumToMarkAsDone,1);
+		console.warn("tasks[]::after", tasks);
 		console.log("taskToDelete === ", taskToDelete);
 		// console.log("----------------", task_id_toDelete);
 		/*
@@ -330,16 +357,16 @@ class AllTasks extends Component {
 
 			******************************
 		*/
-		
+		this.setState({
+			tasks
+		});
 
 
 		this.props.action__deleteTaskFromDB(taskToDelete);
 
 		this.clearDoneTaskInfo();
-		this.hideModal();
-		this.setState({
-			tasks
-		})
+		//this.hideModal();
+		
 		
 	}
 
@@ -418,7 +445,7 @@ class AllTasks extends Component {
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ? 
 			(
 				<td>
-					<img onClick={this.showModal.bind(this, "MODAL::SaveChanges")} className="AllTasks__table__img" src={allTasks__done} alt="" />
+					<img onClick={ () => this.props.action_showModal("MODAL::SaveChanges") } className="AllTasks__table__img" src={allTasks__done} alt="" />
 					<img onClick={this.cancelTask} className="AllTasks__table__img" src={allTasks__cancel} alt="" />
 				</td>
 			) :
@@ -426,7 +453,7 @@ class AllTasks extends Component {
 				<td>
 					<img onClick={this.editTask.bind(this,taskNum)} className="AllTasks__table__img" src={allTasks__edit} alt="" />
 					<img className="AllTasks__table__img" src={allTasks__profile} alt="" />
-					<img onClick={this.confirmIfTaskIsDone.bind(this, taskNum)} className="AllTasks__table__img" src={allTasks__done} alt="" />
+					<img onClick={ () => this.props.action_showModal({ type : "MODAL::MarkAsDone", taskId : this.state.tasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
 				</td>
 			);
 	}
@@ -569,13 +596,14 @@ class AllTasks extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ action__deleteTaskFromDB, action_updateOneTaskDB }, dispatch);
+	return bindActionCreators({ action__deleteTaskFromDB, action_updateOneTaskDB, action_showModal }, dispatch);
 }
 
 function mapStateToProps(data) {
 	return { 
 		users : data.users,
-		userToEdit: data.userToEdit
+		userToEdit: data.userToEdit,
+		modal: data.modal
 	};
 }
 

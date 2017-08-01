@@ -19,13 +19,5 @@ var render = () => ReactDOM.render(
 
 store.subscribe(render);
 render();
-
-setTimeout(
-	() => store.dispatch({ type: 'MODAL_SHOW', modal: { type: "MODAL::MarkAsDone" } })
-	, 1000);
-setTimeout(
-	() => store.dispatch({ type: 'MODAL_HIDE' })
-	, 3000);
-
 registerServiceWorker();
 

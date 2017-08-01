@@ -45,8 +45,11 @@ export const mainReducer = function(state = {users : [], userToEdit: {} , modal:
 		case MODAL_HIDE :
 								let modalObj = {
 									type : "MODAL::Hide",
-									text : ""
+									answer : action.modal.answer,
+									taskId : action.modal.taskId,
+									userId : action.modal.userId
 								}
+								console.log("modalObj", modalObj);
 								return Object.assign({}, { users: state.users , userToEdit: state.userToEdit, modal: modalObj });		
 
 		default: return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit, modal: state.modal });
