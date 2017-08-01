@@ -7,7 +7,7 @@ import {
 		CREATE_NEW_USER_DB_FULFILLED,
 		UPDATE_USER_PROFILE_DB
 	} from '../constants';
-import { MODAL_SHOW, MODAL_HIDE } from '../constants/modal';
+import { MODAL_SHOW, MODAL_HIDE, MODAL_CLEAR } from '../constants/modal';
 import { deleteFromDB, updateTasksForOneUserDB, updateOneTaskDB, updateUserProfileDB } from './db';
 
 // ===============================================================================================
@@ -50,8 +50,10 @@ export const mainReducer = function(state = {users : [], userToEdit: {} , modal:
 									userId : action.modal.userId
 								}
 								console.log("modalObj", modalObj);
-								return Object.assign({}, { users: state.users , userToEdit: state.userToEdit, modal: modalObj });		
+								return Object.assign({}, { users: state.users , userToEdit: state.userToEdit, modal: modalObj });	
 
+		case MODAL_CLEAR :
+								return Object.assign({}, { users: state.users , userToEdit: state.userToEdit, modal: {} });
 		default: return Object.assign({}, { users: state.users,  userToEdit: state.userToEdit, modal: state.modal });
 	}
 }

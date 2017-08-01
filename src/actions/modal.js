@@ -1,4 +1,4 @@
-import { MODAL_SHOW, MODAL_HIDE } from '../constants/modal';
+import { MODAL_SHOW, MODAL_HIDE, MODAL_CLEAR } from '../constants/modal';
 
 
 /* 
@@ -17,5 +17,11 @@ export function action_hideModal(modal) {
 	return {
 		type : MODAL_HIDE,
 		modal
+	}
+}
+
+export function action__clearModalState() {
+	return {
+		type : MODAL_CLEAR
 	}
 }

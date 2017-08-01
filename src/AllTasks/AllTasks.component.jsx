@@ -9,6 +9,8 @@ import { bindActionCreators } from 'redux';
 import { action__deleteTaskFromDB } from '../actions';
 import { action_updateOneTaskDB } from '../actions';
 import { action_showModal } from '../actions/modal';
+import { action__clearModalState } from '../actions/modal';
+
 
 import moment from 'moment';
 
@@ -33,33 +35,28 @@ class AllTasks extends Component {
 			},
 			editTask : {
 				taskNum : null
-			},
-			doneTask : {
-				taskNum : null
 			}
 		};
 		this.editTask = this.editTask.bind(this);
 		this.cancelTask = this.cancelTask.bind(this);
-		this.confirmIfTaskIsDone = this.confirmIfTaskIsDone.bind(this);
 		this.markTaskAsDone = this.markTaskAsDone.bind(this);
-		this.dontMarkTaskAsDone = this.dontMarkTaskAsDone.bind(this);
 		this.getTaskTime__handleChange = this.getTaskTime__handleChange.bind(this);
 		this.getTaskDate__handleChange = this.getTaskDate__handleChange.bind(this);
 		this.getTaskDescription__handleChange = this.getTaskDescription__handleChange.bind(this);
-		this.MODALSaveChanges__setAnswer = this.MODALSaveChanges__setAnswer.bind(this);
-
 		this.filterTasks = this.filterTasks.bind(this);
 	}
 
 	/* ============================================================================================================ */	
-	componentWillMount() {
+	emptyEditTaskObj() {
+		let editTask = {
+			task_id : null,
+			taskNum : null,
+			date: null,
+			time: null,
+			description : null
+		}
+		return editTask;
 	}
-
-	/* ============================================================================================================ */	
-	componentDidMount() {
-
-	}
-
 	componentWillReceiveProps(newProps){
 		console.log("==>newProps.modal",newProps.modal);
 		if (newProps.modal) this.checkModalState(newProps.modal);
@@ -74,9 +71,23 @@ class AllTasks extends Component {
 	
 	/* ============================================================================================================ */	
 	checkModalState(modal) {
-		if (modal.answer === "MODAL::MarkAsDone::Yes") {
-			this.markTaskAsDone(modal.taskId);
+		switch (modal.answer) {
+			case "MODAL::MarkAsDone::Yes" :
+											this.markTaskAsDone(modal.taskId);
+											break;
+			case "MODAL::MarkAsDone::No" :
+											this.props.action__clearModalState();
+											break;
+			case "MODAL::SaveChanges::Yes" :
+											this.saveTask();
+											break;
+			case "MODAL::SaveChanges::No" :
+											let editTask = this.emptyEditTaskObj();
+											this.setState({ editTask });
+											this.props.action__clearModalState();
+											break;											
 		}
+		
 	}
 	
 	/* ============================================================================================================ */	
@@ -314,16 +325,6 @@ class AllTasks extends Component {
 	}
 
 	/* ============================================================================================================ */	
-	clearDoneTaskInfo() {
-		let doneTask = {
-			taskNum : null
-		}
-		this.setState({
-			doneTask
-		});
-	}
-
-	/* ============================================================================================================ */	
 	getTaskNumByTaskId(taskId) {
 		var tasks = this.state.tasks
 		for (let i = 0; i < tasks.length; i++) {
@@ -331,60 +332,20 @@ class AllTasks extends Component {
 		}
 	}
 
-
 	/* ============================================================================================================ */	
 	markTaskAsDone(taskId) {
-		// let taskNumToMarkAsDone = this.state.doneTask.taskNum;
-		// console.log(`Task ${taskNumToMarkAsDone} is marked as done:`, this.state.tasks[taskNumToMarkAsDone]);
-		let tasks = this.state.tasks;
-		// let task_id_toDelete = this.state.tasks[taskNumToMarkAsDone].task.task_id;
-		// var taskToDelete = JSON.stringify({task_id : this.state.tasks[taskNumToMarkAsDone].task.task_id});
+
+		var users = this.state.users;
 		var taskNumToMarkAsDone = this.getTaskNumByTaskId(taskId);
+		for (let user of users) {
+			user.tasks = user.tasks.filter(task => task.task_id !== taskId);
+		}
+		
 		var taskToDelete = JSON.stringify(this.state.tasks[taskNumToMarkAsDone].task);
 		taskToDelete = JSON.stringify({task_id : taskId});
-		console.log("taskNumToMarkAsDone ===",taskNumToMarkAsDone);
-		console.log("taskToDelete ===",taskToDelete);
-		console.warn("tasks[]::before", tasks);
-		tasks.splice(taskNumToMarkAsDone,1);
-		console.warn("tasks[]::after", tasks);
-		console.log("taskToDelete === ", taskToDelete);
-		// console.log("----------------", task_id_toDelete);
-		/*
-			******************************
-
-			IMPORTANT!
-			Dont' forget to modify users array and save it to DB!
-
-			******************************
-		*/
-		this.setState({
-			tasks
-		});
-
 
 		this.props.action__deleteTaskFromDB(taskToDelete);
-
-		this.clearDoneTaskInfo();
-		//this.hideModal();
-		
-		
-	}
-
-	/* ============================================================================================================ */	
-	dontMarkTaskAsDone() {
-		this.clearDoneTaskInfo();
-		this.hideModal();
-	}
-
-	/* ============================================================================================================ */	
-	confirmIfTaskIsDone(taskNum, event) {
-		this.setState({
-			doneTask: {
-				taskNum
-			}
-		});
-		this.showModal("MODAL::MarkAsDone", event);
-		// console.log("confirmIfTaskIsDone");
+		this.props.action__clearModalState();
 	}
 
 	/* ============================================================================================================ */	
@@ -395,8 +356,6 @@ class AllTasks extends Component {
 		function updateUsersArray() {
 			for (let user of this_state_users) {
 				for (let task of user.tasks) {
-					// console.log("task.task_id === ", task.task_id);
-					// console.log("taskToUpdate.task_id ===", taskToUpdate.task_id);
 					if (task.task_id === taskToUpdate.task_id) {
 						task.time = taskToUpdate.time;
 						task.date = taskToUpdate.date;
@@ -417,23 +376,9 @@ class AllTasks extends Component {
 		}
 		var taskToUpdate = tasks[taskNum].task;
 		this.props.action_updateOneTaskDB(taskToUpdate);
-		// this.props.action_checkAndUpdateUserToEditObject(taskToUpdate);
-
-		// console.log("this.userToEdit.tasks ==",this.props.userToEdit);
-		// console.log("this.state.users ==" ,this.state.users);
-
 		updateUsersArray();
 
-
-		// console.log("tasks[taskNum].task ====== >",taskToUpdate);
-
-		let editTask = {
-			task_id : null,
-			taskNum : null,
-			date: null,
-			time: null,
-			description : null
-		}
+		let editTask = this.emptyEditTaskObj();
 		this.setState({
 			tasks,
 			editTask
@@ -445,7 +390,7 @@ class AllTasks extends Component {
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ? 
 			(
 				<td>
-					<img onClick={ () => this.props.action_showModal("MODAL::SaveChanges") } className="AllTasks__table__img" src={allTasks__done} alt="" />
+					<img onClick={ () => this.props.action_showModal({ type : "MODAL::SaveChanges", taskId : this.state.tasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
 					<img onClick={this.cancelTask} className="AllTasks__table__img" src={allTasks__cancel} alt="" />
 				</td>
 			) :
@@ -456,22 +401,6 @@ class AllTasks extends Component {
 					<img onClick={ () => this.props.action_showModal({ type : "MODAL::MarkAsDone", taskId : this.state.tasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
 				</td>
 			);
-	}
-
-	/* ============================================================================================================ */	
-	MODALSaveChanges__setAnswer(answer, event) {
-		let activeModal = this.state.activeModal;
-		activeModal = {
-			answer : answer,
-			id: null
-		}
-		this.setState({
-			activeModal
-		});
-		
-		if (answer.toUpperCase() === "YES") this.saveTask();
-		else this.cancelTask();
-		this.hideModal();
 	}
 
 	/* ============================================================================================================ */	
@@ -487,9 +416,6 @@ class AllTasks extends Component {
 			return (element.task.description.toUpperCase().search(searchFilter.toUpperCase()) !== -1);
 	 	});
 
-		// console.log(searchFilter);
-		// console.log("tasks==",tasks);
-
 		this.setState({
 			searchFilter,
 			tasks_untouched,
@@ -497,50 +423,6 @@ class AllTasks extends Component {
 		});
 	}
 
-
-	/* ============================================================================================================ */	
-	initModal() {
-		let activeModalHTML;
-				if (this.state.activeModal.id === "MODAL::MarkAsDone")
-			activeModalHTML = (
-				<div className="overlay">
-					<div className="modal">
-				 		<p>
-				 			Are you sure you want to mark this task as done?
-				 		</p>
-				 		<div className="modal__button-container">
-				 			<button onClick={this.markTaskAsDone} className="modal__button">
-				 				Yes
-				 			</button>
-				 			<button onClick={this.dontMarkTaskAsDone} className="modal__button">
-				 				No
-				 			</button>			 			
-				 		</div>
-					</div>
-				</div>
-			);
-		else
-		if (this.state.activeModal.id === "MODAL::SaveChanges")
-			activeModalHTML = (
-				<div className="overlay">
-					<div className="modal">
-				 		<p>
-				 			Do you want to save changes?
-				 		</p>
-				 		<div className="modal__button-container">
-				 			<button onClick={this.MODALSaveChanges__setAnswer.bind(this, "yes")} className="modal__button">
-				 				Yes
-				 			</button>
-				 			<button onClick={this.MODALSaveChanges__setAnswer.bind(this, "no")} className="modal__button">
-				 				No
-				 			</button>			 			
-				 		</div>
-					</div>
-				</div>
-			);				
-		else activeModalHTML = <div></div>;
-		return activeModalHTML;
-	}
 	/* ============================================================================================================ */	
 	render() {
 		var this_state = this.state;
@@ -575,8 +457,6 @@ class AllTasks extends Component {
 			
 			<div className="AllTasks">
 
-				{this.initModal()}
-
 				<div className="AllTasks__header">
 					<h2 className="h2">{allOrFiltered()} {this.getOverdueTasks()}</h2>
 					<div className="AllTasks__search-box">
@@ -596,7 +476,7 @@ class AllTasks extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ action__deleteTaskFromDB, action_updateOneTaskDB, action_showModal }, dispatch);
+	return bindActionCreators({ action__deleteTaskFromDB, action_updateOneTaskDB, action_showModal, action__clearModalState }, dispatch);
 }
 
 function mapStateToProps(data) {
