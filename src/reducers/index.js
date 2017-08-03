@@ -6,11 +6,13 @@ import {
 		UPDATE_ONE_TASK_IN_TASK_LIST,
 		CREATE_NEW_USER_DB_FULFILLED,
 		UPDATE_USER_PROFILE_DB,
-		UPDATE_PROGRESS_FOR_ONE_USER_DB
+		UPDATE_PROGRESS_FOR_ONE_USER_DB,
+		DELETE_USER_FROM_DB
 	} from '../constants';
 import { MODAL_SHOW, MODAL_HIDE, MODAL_CLEAR } from '../constants/modal';
 import { deleteFromDB, updateTasksForOneUserDB, updateOneTaskDB, updateUserProfileDB,
-		 updateUserProgressForOneUserDB, updateUserprogressInUsersArray } from './db';
+		 updateUserProgressForOneUserDB, updateUserprogressInUsersArray,
+		 deleteUserFromDB, deleteUserFromArray } from './db';
 
 // ===============================================================================================
 export const mainReducer = function(state = {users : [], userToEdit: {} , modal: { type : "", text: "" } }, action) {
@@ -44,7 +46,12 @@ export const mainReducer = function(state = {users : [], userToEdit: {} , modal:
 								updateUserProgressForOneUserDB(action.userToEdit);
 								let updatedUsersArray = updateUserprogressInUsersArray(action.userToEdit, state.users);
 								return Object.assign({}, { users: updatedUsersArray , userToEdit: action.userToEdit, modal: state.modal });
-		
+
+		case DELETE_USER_FROM_DB :
+								deleteUserFromDB(action.userToEdit);
+								let usersArrayWithoutOneUser = deleteUserFromArray(action.userToEdit, state.users);
+								return Object.assign({}, { users: usersArrayWithoutOneUser , userToEdit: state.userToEdit, modal: state.modal });
+
 		// ================== MODAL ACTIONS ==================
 		case MODAL_SHOW :
 

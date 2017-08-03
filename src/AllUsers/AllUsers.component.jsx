@@ -10,7 +10,8 @@ import AllUsers__progress__phoneCall from './img/all-users__progress__phone-call
 import AllUsers__progress__presentation from './img/all-users__progress__presentation.svg';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { action__updateUserToEdit } from '../actions';
+import { action__updateUserToEdit, action__deleteUserFromDB } from '../actions';
+import { action_showModal, action__clearModalState } from '../actions/modal';
 
 class AllUsers extends Component {
 	constructor(props) {
@@ -18,7 +19,8 @@ class AllUsers extends Component {
 		this.state = {
 			users : [],
 			searchFilter : "",
-			userToEdit: {}
+			userToEdit: {},
+			modal : {}
 		};
 		this.editUser = this.editUser.bind(this);
 	}
@@ -33,6 +35,15 @@ class AllUsers extends Component {
 	}
 
 	componentWillReceiveProps(newProps){
+		if (newProps.modal) {
+			
+			if (newProps.modal.answer === "MODAL::DeleteUser::Yes") { 
+				console.warn("newProps.modal.answer:==",newProps.modal.answer);
+				this.deleteUser(newProps.modal.userId); 
+				this.props.action__clearModalState();
+			}
+		}
+
 		this.setState({
 			users: newProps.users,
 			userToEdit : newProps.userToEdit
@@ -48,13 +59,16 @@ class AllUsers extends Component {
 
 		this.props.action__updateUserToEdit(this.state.users[userNum])
 	}
-
+	deleteUser(userId) {
+		console.log("Deleting user ", userId);
+		this.props.action__deleteUserFromDB({ _id : userId });
+	}
 	/* ============================================================================================================ */	
 	getSmallIcons(userNum) {
 			return (
 				<td>
 					<img onClick={this.editUser.bind(this,userNum)} className="AllUsers__table__img" src={AllUsers__edit} alt="" />
-					<img className="AllUsers__table__img" src={AllUsers__delete} alt="" />
+					<img onClick={() => this.props.action_showModal({ type: "MODAL::DeleteUser", userId: this.state.users[userNum]._id }) } className="AllUsers__table__img" src={AllUsers__delete} alt="" />
 				</td>
 			);
 	}
@@ -81,90 +95,58 @@ class AllUsers extends Component {
 				</td>
 			);
 	}
-
+	//filterUsers
 	/* ============================================================================================================ */	
-	filterUsers() {
+	setSearchFilter(e) {
 		console.log("filterUsers()");
+		let searchFilter = e.target.value;
+		this.setState({ searchFilter });
 	}
 
-
-	/* ============================================================================================================ */	
-	initModal() {
-		let activeModalHTML;
-				if (this.state.activeModal.id === "MODAL::MarkAsDone")
-			activeModalHTML = (
-				<div className="overlay">
-					<div className="modal">
-				 		<p>
-				 			Are you sure you want to mark this task as done?
-				 		</p>
-				 		<div className="modal__button-container">
-				 			<button onClick={this.markTaskAsDone} className="modal__button">
-				 				Yes
-				 			</button>
-				 			<button onClick={this.dontMarkTaskAsDone} className="modal__button">
-				 				No
-				 			</button>			 			
-				 		</div>
-					</div>
-				</div>
-			);
-		else
-		if (this.state.activeModal.id === "MODAL::SaveChanges")
-			activeModalHTML = (
-				<div className="overlay">
-					<div className="modal">
-				 		<p>
-				 			Do you want to save changes?
-				 		</p>
-				 		<div className="modal__button-container">
-				 			<button onClick={this.MODALSaveChanges__setAnswer.bind(this, "yes")} className="modal__button">
-				 				Yes
-				 			</button>
-				 			<button onClick={this.MODALSaveChanges__setAnswer.bind(this, "no")} className="modal__button">
-				 				No
-				 			</button>			 			
-				 		</div>
-					</div>
-				</div>
-			);				
-		else activeModalHTML = <div></div>;
-		return activeModalHTML;
-	}
 	/* ============================================================================================================ */	
 	render() {
 		var this_state = this.state;
 		function allOrFiltered() {
-			return "All users:"; // : "Filtered users:";
+			return (this_state.searchFilter === "") ? "All users:" : "Filtered users:";
 		}
-		var tasksTable = [];
+		var usersTable = [];
 		// console.log("==>this.state.users",this.state.users);
-		for (let i=0; i<this.state.users.length; i++) {
-			tasksTable.push(
-						<tr key={"tablerow"+i}>
-							<td>
-								<table className="AllUsers__table__sub-table">
-										<tbody>
-											<tr>
-												<td>{this.state.users[i].profile.name}</td>
-												<td>{this.state.users[i].profile.phone}</td>
-												<td>{this.state.users[i].profile.email}</td>
-												<td>Tasks: {this.state.users[i].tasks.length}</td>
-											</tr>
-											<tr>
-												<td colSpan="3" className="AllUsers__table__sub-table__description">
-													{this.state.users[i].profile.description}
-												</td>
-												{this.getProgressIcons(this_state.users[i].progress)}
-											</tr>	
-										</tbody>
-								</table>
-							</td>
+		var filteredUsers = this.state.users.filter(user => {
+			let found = false;
+			if ((user.profile.name.toUpperCase().search(this_state.searchFilter.toUpperCase()) !== -1) ||
+				(user.profile.email.toUpperCase().search(this_state.searchFilter.toUpperCase()) !== -1) ||
+				(user.profile.description.toUpperCase().search(this_state.searchFilter.toUpperCase()) !== -1)) found = true; 
+			return found;
+		});
 
-							{this.getSmallIcons(i)}
-						</tr>
-			)
-		}
+		if (filteredUsers.length !== 0) {
+			for (let i=0; i<filteredUsers.length; i++) {
+				usersTable.push(
+							<tr key={"tablerow"+i}>
+								<td>
+									<table className="AllUsers__table__sub-table">
+											<tbody>
+												<tr>
+													<td>{filteredUsers[i].profile.name}</td>
+													<td>{filteredUsers[i].profile.phone}</td>
+													<td>{filteredUsers[i].profile.email}</td>
+													<td>Tasks: {filteredUsers[i].tasks.length}</td>
+												</tr>
+												<tr>
+													<td colSpan="3" className="AllUsers__table__sub-table__description">
+														{filteredUsers[i].profile.description}
+													</td>
+													{this.getProgressIcons(filteredUsers[i].progress)}
+												</tr>	
+											</tbody>
+									</table>
+								</td>
+
+								{this.getSmallIcons(i)}
+							</tr>
+				)
+			}
+		} else usersTable.push(<tr key={"not_found"}><td>Sorry, no results found for «{this.state.searchFilter}»</td></tr>);
 
 		return (
 			<div className="AllUsers">
@@ -172,13 +154,13 @@ class AllUsers extends Component {
 				<div className="AllUsers__header">
 					<h2 className="h2">{allOrFiltered()}</h2>
 					<div className="AllUsers__search-box">
-						<input onChange={() => this.filterUsers() } value={this.state.searchFilter} className="AllUsers__search-box__input" type="input" placeholder="Search"/>
+						<input onChange={(e) => this.setSearchFilter(e) } value={this.state.searchFilter} className="AllUsers__search-box__input" type="input" placeholder="Search"/>
 					</div>
 				</div>
 				
 				<table className="AllUsers__table">
 					<tbody>
-						{ tasksTable }																				
+						{ usersTable }																				
 					</tbody>
 				</table>
 
@@ -190,12 +172,13 @@ class AllUsers extends Component {
 function mapStateToProps(data) {
 	return { 
 		users: data.users,
-		userToEdit: data.userToEdit
+		userToEdit: data.userToEdit,
+		modal: data.modal
 	 };
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ action__updateUserToEdit }, dispatch);
+	return bindActionCreators({ action__updateUserToEdit, action__deleteUserFromDB, action_showModal, action__clearModalState }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AllUsers);

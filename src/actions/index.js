@@ -6,7 +6,8 @@ import {
 		UPDATE_ONE_TASK_IN_TASK_LIST,
 		CREATE_NEW_USER_DB,
 		UPDATE_USER_PROFILE_DB,
-		UPDATE_PROGRESS_FOR_ONE_USER_DB
+		UPDATE_PROGRESS_FOR_ONE_USER_DB,
+		DELETE_USER_FROM_DB
 	} from '../constants';
 
 export const action__loadedDataFromDB = function(users) {
@@ -86,6 +87,13 @@ export const action_updateUserDB = function(users, userToEdit) {
 	return {
 		type : UPDATE_USER_PROFILE_DB,
 		users,
+		userToEdit
+	}
+}
+
+export const action__deleteUserFromDB = function(userToEdit) {
+	return {
+		type : DELETE_USER_FROM_DB,
 		userToEdit
 	}
 }

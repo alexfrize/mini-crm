@@ -43,7 +43,6 @@ class Modal extends Component {
 		
 		var { modal } = this.state;
 		modal.answer = answer;
-		// console.log(modal);
 		this.props.action_hideModal(modal);
 	}
 
@@ -54,16 +53,19 @@ class Modal extends Component {
 		const MODAL_Types = [
 								"MODAL::MarkAsDone",
 								"MODAL::SaveChanges",
-								"MODAL::UserNameNotDefined"
+								"MODAL::UserNameNotDefined",
+								"MODAL::DeleteUser"
 							];
 		const MODAL_Messages = ["Are you sure you want to mark this task as done?",
 								"Do you want to save changes?",
-								"Cannot save progress for undefined user. Please fill user name, email and phone."
+								"Cannot save progress for undefined user. Please fill user name, email and phone.",
+								"Are you sure you want to delete this user from database?"
 							];
 
 		const MODAL_WindowType = ["Dialog",
 								  "Dialog",
-								  "Message"];
+								  "Message",
+								  "Dialog"];
 
 		for (let i=0; i < MODAL_Types.length; i++) {
 			if (this.state.modal.type === MODAL_Types[i]) modalTypeNum = i;
@@ -72,7 +74,7 @@ class Modal extends Component {
 		var _this = this;
 		// ==============================================
 		function dialogOrMessage() {
-			return (MODAL_WindowType[modalTypeNum === "Dialog"]) ? (
+			return (MODAL_WindowType[modalTypeNum] === "Dialog") ? (
 							<div className="modal__button-container">
 					 			<button onClick={ () => _this.setModalAnswer(MODAL_Types[modalTypeNum]+"::Yes") } className="modal__button">
 					 				Yes

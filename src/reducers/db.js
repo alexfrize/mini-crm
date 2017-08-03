@@ -82,3 +82,30 @@ export function updateUserprogressInUsersArray(userToEdit, users) {
 	}
 	return users.slice();
 }
+
+
+// ===============================================================================================
+export function deleteUserFromDB(userToDelete) {
+	console.warn("userToDelete==",userToDelete);
+	var _url="/api/deleteuser";
+	var dataToDelete = JSON.stringify(userToDelete);
+	fetch(_url, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: dataToDelete
+	})
+	.catch(err => {
+		console.error(err);
+	});
+}
+
+export function deleteUserFromArray(userToEdit, users) {
+	var foundAt = -1;
+	for (let i=0; i < users.length; i++) {
+		if (users[i]._id === userToEdit._id) foundAt = i;
+	}
+	users.splice(foundAt, 1);
+	return users.slice();
+}
