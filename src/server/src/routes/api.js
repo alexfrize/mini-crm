@@ -52,6 +52,12 @@ router.put('/api/updatealltasksforoneuser', function(req, res) {
 	res.json({"Data" : "OK"})	
 });
 
+router.put('/api/updateprogressforoneuser', function(req, res) {
+	var _id = req.body._id;
+	db.users.update({_id: ObjectId(_id)}, {tasks : req.body.tasks, profile : req.body.profile, progress : req.body.progress }); // rewriting full object!
+	res.json({"Data" : "OK"})	
+});
+
 router.delete('/api/deletetask', function(req, res) {
 	var _task_id = req.body.task_id;
 	db.users.update({"tasks.task_id": _task_id}, {$pull : {"tasks" : {"task_id" : _task_id}}});

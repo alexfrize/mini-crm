@@ -5,7 +5,8 @@ import {
 		UPDATE_TASKS_FOR_ONE_USER_DB,
 		UPDATE_ONE_TASK_IN_TASK_LIST,
 		CREATE_NEW_USER_DB,
-		UPDATE_USER_PROFILE_DB
+		UPDATE_USER_PROFILE_DB,
+		UPDATE_PROGRESS_FOR_ONE_USER_DB
 	} from '../constants';
 
 export const action__loadedDataFromDB = function(users) {
@@ -32,6 +33,13 @@ export const action_updateTasksForOneUserDB = function(userToEdit) {
 export const action__updateUserToEdit = function(userToEdit) {
 	return {
 		type: UPDATE_USER_TO_EDIT,
+		userToEdit
+	}	
+}
+
+export const action__updateProgressForOneUserDB = function(userToEdit) {
+	return {
+		type: UPDATE_PROGRESS_FOR_ONE_USER_DB,
 		userToEdit
 	}	
 }

@@ -19,9 +19,9 @@ class UserProfileProfile extends Component {
 	
 	emptyProfile() {
 		return {
-				name : "Lorem Ipsum",
+				name : "",
 				email : "",
-				phone : "+8-565-214-154-1",
+				phone : "",
 				description: ""
 			};
 	}

@@ -10,6 +10,10 @@ import { connect } from 'react-redux';
 
 import './UserProfileProgress.component.css';
 
+import { action__updateUserToEdit, action__updateProgressForOneUserDB } from '../actions';
+import { action_showModal } from '../actions/modal';
+import { bindActionCreators } from 'redux';
+
 const progressItems_static = {
 		images : [progress__newLead, progress__phoneCall, progress__presentation, progress__contract, progress__done],
 		captions: ["New lead", "Phone call", "Presentation", "Contract", "Done!"]
@@ -31,6 +35,22 @@ class UserProfileProgress extends Component {
 	}
 
 	/* ============================================================================================================ */	
+	componentWillReceiveProps(nextProps) {
+		var activeProgressStep = nextProps.userToEdit.progress.length - 1;
+		var progressDescription = [];
+		for (let p of nextProps.userToEdit.progress) {
+			let desc = (p.description !== undefined) ? p.description : "";
+			progressDescription.push(desc);
+		}
+	
+		this.setState({
+			activeProgressStep,
+			progressDescription,
+			userToEdit: nextProps.userToEdit
+		});
+	}
+
+	/* ============================================================================================================ */	
 	handleDescriptionChange(progressItemNum, event) {
 		var progressDescription = this.state.progressDescription;
 		progressDescription[progressItemNum] = event.target.value;
@@ -42,6 +62,22 @@ class UserProfileProgress extends Component {
 	/* ============================================================================================================ */
 	saveProgressDescriptions(progressItemNum, event) {
 		console.log(this.state.progressDescription);
+		var userToEdit = this.state.userToEdit;
+		var steps = [];
+		for (let i=0; i<=this.state.activeProgressStep; i++) {
+			let item = {
+				isActive : "true",
+				description : this.state.progressDescription[i]
+			}
+			steps.push(item);
+		}
+		if (userToEdit) {
+			userToEdit.progress = steps;
+			console.log("UPD::userToEdit ==", userToEdit);
+			this.props.action__updateUserToEdit(userToEdit);
+			this.props.action__updateProgressForOneUserDB(userToEdit);
+		}
+		else this.props.action_showModal({ type: "MODAL::UserNameNotDefined" }); //alert("Cannot save progress for undefined user. Please fill user name, email and phone");
 	}
 
 	
@@ -65,7 +101,7 @@ class UserProfileProgress extends Component {
 							<img className="ProgressItem__img" src={progressItems_static.images[i]} alt="" />
 							<p className="ProgressItem__img-caption">{progressItems_static.captions[i]}</p>
 						</div>
-						<textarea onChange={this.handleDescriptionChange.bind(this, i)} className="ProgressItem__comment-textarea" placeholder= "Enter description here..." />
+						<textarea value={this.state.progressDescription[i]} onChange={this.handleDescriptionChange.bind(this, i)} className="ProgressItem__comment-textarea" placeholder= "Enter description here..." />
 					</div>
 				);
 		}
@@ -136,6 +172,14 @@ class UserProfileProgress extends Component {
 	}
 }
 
+function mapStateToProps(state) {
+	return {
+		userToEdit : state.userToEdit,
+	}
+}
 
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({ action__updateUserToEdit, action__updateProgressForOneUserDB, action_showModal }, dispatch);
+}
 
-export default connect(null, null)(UserProfileProgress);
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfileProgress);

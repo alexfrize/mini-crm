@@ -4,6 +4,7 @@ import './../datepicker/datepicker.css';
 import moment from 'moment';
 import { bindActionCreators } from 'redux';
 import { action_updateTasksForOneUserDB } from '../actions';
+import { action_showModal } from '../actions/modal';
 import './UserProfileTasks.component.css';
 import { connect } from 'react-redux';
 
@@ -175,7 +176,6 @@ class UserProfileTasks extends Component {
 	/* ============================================================================================================ */
 	saveTasks() {
 		var userToEdit = JSON.parse(JSON.stringify(this.state.userToEdit_local));
-		console.warn("JSON.parse(JSON.stringify(this.state.userToEdit_local)) === userToEdit === ", userToEdit);
 		if (userToEdit.tasks) {
 			if (userToEdit.tasks.length) {
 				for (let i=0; i<userToEdit.tasks.length; i++) {
@@ -205,7 +205,7 @@ class UserProfileTasks extends Component {
 			this.props.action_updateTasksForOneUserDB(userToEdit);
 
 		}
-		else alert("You can't save tasks for undefined user. Please, input user name");
+		else this.props.action_showModal({ type: "MODAL::UserNameNotDefined" }); //alert("You can't save tasks for undefined user. Please, input user name");
 	}
 
 	/* ============================================================================================================ */
@@ -236,7 +236,7 @@ function mapStateToProps(data) {
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators( { action_updateTasksForOneUserDB }, dispatch);
+	return bindActionCreators( { action_updateTasksForOneUserDB, action_showModal }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserProfileTasks);

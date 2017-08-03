@@ -59,3 +59,26 @@ export function updateUserProfileDB(userToUpdate) {
 		console.error(err);
 	});
 }
+
+// ===============================================================================================
+export function updateUserProgressForOneUserDB(userToUpdate) {
+	var _url = "/api/updateprogressforoneuser";
+	fetch(_url, {
+		method : "PUT",
+		headers: {
+			"Content-Type" : "application/json"
+		},
+		body: JSON.stringify(userToUpdate)
+	})
+	.catch(err => {
+		console.error(err);
+	});	
+}
+
+export function updateUserprogressInUsersArray(userToEdit, users) {
+
+	for (let user of users) {
+		if (user._id === userToEdit._id) user.progress = userToEdit.progress;
+	}
+	return users.slice();
+}

@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { action__deleteTaskFromDB } from '../actions';
 import { action_updateOneTaskDB } from '../actions';
+import { action__updateUserToEdit } from '../actions';
+
 import { action_showModal } from '../actions/modal';
 import { action__clearModalState } from '../actions/modal';
 
@@ -384,6 +386,20 @@ class AllTasks extends Component {
 			editTask
 		});
 	}
+	/* ============================================================================================================ */	
+	setUserToEdit(taskID) {
+		console.log("setUserToEdit");
+		var userToEdit;
+		for (let user of this.state.users) {
+			for (let task of user.tasks) {
+				if (task.task_id === taskID) {
+					userToEdit = user;
+					console.log("task.task_id===",task.task_id);
+				}	
+			}
+		}
+		this.props.action__updateUserToEdit(userToEdit);
+	}
 
 	/* ============================================================================================================ */	
 	getSmallIcons(taskNum) {
@@ -397,7 +413,7 @@ class AllTasks extends Component {
 			(
 				<td>
 					<img onClick={this.editTask.bind(this,taskNum)} className="AllTasks__table__img" src={allTasks__edit} alt="" />
-					<img className="AllTasks__table__img" src={allTasks__profile} alt="" />
+					<img onClick={ () => this.setUserToEdit(this.state.tasks[taskNum].task.task_id) } className="AllTasks__table__img" src={allTasks__profile} alt="" />
 					<img onClick={ () => this.props.action_showModal({ type : "MODAL::MarkAsDone", taskId : this.state.tasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
 				</td>
 			);
@@ -476,7 +492,7 @@ class AllTasks extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ action__deleteTaskFromDB, action_updateOneTaskDB, action_showModal, action__clearModalState }, dispatch);
+	return bindActionCreators({ action__updateUserToEdit, action__deleteTaskFromDB, action_updateOneTaskDB, action_showModal, action__clearModalState }, dispatch);
 }
 
 function mapStateToProps(data) {

@@ -29,36 +29,69 @@ class Modal extends Component {
 			userId: ""
 		}
 	}
-
+	
+	// =======================================================================================================
 	componentWillReceiveProps(nextProps) {
 		var { modal } = nextProps;
-		console.log("MODAL::nextProps", nextProps);
+		// console.log("MODAL::nextProps", nextProps);
 		this.setState( { modal });
 		if (modal.answer) console.log("Answer is ", modal.answer);
 	}
 
+	// =======================================================================================================
 	setModalAnswer(answer) {
 		
 		var { modal } = this.state;
 		modal.answer = answer;
-		console.log(modal);
+		// console.log(modal);
 		this.props.action_hideModal(modal);
 	}
 
+	// =======================================================================================================
 	render() {
 		var activeModalHTML = null;
 		var modalTypeNum = -1;
 		const MODAL_Types = [
 								"MODAL::MarkAsDone",
-								"MODAL::SaveChanges"
+								"MODAL::SaveChanges",
+								"MODAL::UserNameNotDefined"
 							];
 		const MODAL_Messages = ["Are you sure you want to mark this task as done?",
-								"Do you want to save changes?"
+								"Do you want to save changes?",
+								"Cannot save progress for undefined user. Please fill user name, email and phone."
 							];
+
+		const MODAL_WindowType = ["Dialog",
+								  "Dialog",
+								  "Message"];
 
 		for (let i=0; i < MODAL_Types.length; i++) {
 			if (this.state.modal.type === MODAL_Types[i]) modalTypeNum = i;
 		}
+
+		var _this = this;
+		// ==============================================
+		function dialogOrMessage() {
+			return (MODAL_WindowType[modalTypeNum === "Dialog"]) ? (
+							<div className="modal__button-container">
+					 			<button onClick={ () => _this.setModalAnswer(MODAL_Types[modalTypeNum]+"::Yes") } className="modal__button">
+					 				Yes
+					 			</button>
+					 			<button onClick={ () => _this.setModalAnswer(MODAL_Types[modalTypeNum]+"::No") } className="modal__button">
+					 				No
+					 			</button>			 			
+					 		</div>
+				) :
+			(
+							<div className="modal__button-container">
+					 			<button onClick={ () => _this.setModalAnswer(MODAL_Types[modalTypeNum]+"::OK") } className="modal__button">
+					 				OK
+					 			</button>
+					 		</div>
+
+				)
+		}
+		// ==============================================
 
 		activeModalHTML = (modalTypeNum !== -1) ?
 				(
@@ -67,14 +100,9 @@ class Modal extends Component {
 					 		<p>
 					 			{ MODAL_Messages[modalTypeNum] }
 					 		</p>
-					 		<div className="modal__button-container">
-					 			<button onClick={ () => this.setModalAnswer(MODAL_Types[modalTypeNum]+"::Yes") } className="modal__button">
-					 				Yes
-					 			</button>
-					 			<button onClick={ () => this.setModalAnswer(MODAL_Types[modalTypeNum]+"::No") } className="modal__button">
-					 				No
-					 			</button>			 			
-					 		</div>
+
+					 		{ dialogOrMessage() }
+					 		
 						</div>
 					</div>
 				) : null;
@@ -82,6 +110,7 @@ class Modal extends Component {
 		return activeModalHTML;
 	}
 }
+
 
 function mapStateToProps(state) {
 	return {
