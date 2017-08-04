@@ -119,13 +119,16 @@ class AllTasks extends Component {
 			}
 			if (moment(date1).isBefore(date2)) return -1; else return 1;
 		});
+
+		console.log("alltasks==",alltasks);
 		return alltasks;
 	}
 
 	/* ============================================================================================================ */	
 	isOverdue(taskNum) {
+		var filterTasks = this.getFilteredTasks();
 		var timeNow = moment();
-		let taskDate = moment(this.state.tasks[taskNum].task.date + " " + this.state.tasks[taskNum].task.time, 'MM/DD/YYYY hh:mm');
+		let taskDate = moment(filterTasks[taskNum].task.date + " " + filterTasks[taskNum].task.time, 'MM/DD/YYYY hh:mm');
 		return (moment(timeNow).isAfter(taskDate));
 	}
 
@@ -146,14 +149,15 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getOverdueTasks() {
+		var filterTasks = this.getFilteredTasks();
 		let overdueTasks=0;
-		for (let i=0; i < this.state.tasks.length; i++) {
+		for (let i=0; i < filterTasks.length; i++) {
 			if (this.isOverdue(i)) overdueTasks++;
 		}
 
 		return (overdueTasks !== 0) ?
 			(
-				<span>{this.state.tasks.length}
+				<span>{filterTasks.length}
 					&nbsp;&nbsp;&nbsp;
 					<span className="AllTasks__header__overdue-tasks">
 						Overdue tasks: {overdueTasks}
@@ -162,23 +166,24 @@ class AllTasks extends Component {
 			) :
 			(
 				<span>
-					{this.state.tasks.length}
+					{filterTasks.length}
 				</span>
 			)
 	}
 
 	/* ============================================================================================================ */	
 	editTask(taskNum, event) {
+		var filterTasks = this.getFilteredTasks();
 		let isEditMode;
 		if (taskNum !== this.state.editTask.taskNum) isEditMode = true;
 		else isEditMode = !this.state.isEditMode;
 
 		let editTask = {
 			taskNum: taskNum,
-			task_id: this.state.tasks[taskNum].task.task_id,
-			time: this.state.tasks[taskNum].task.time,
-			date: moment(this.state.tasks[taskNum].task.date, 'MM/DD/YYYY'),
-			description: this.state.tasks[taskNum].task.description,
+			task_id: filterTasks[taskNum].task.task_id,
+			time: filterTasks[taskNum].task.time,
+			date: moment(filterTasks[taskNum].task.date, 'MM/DD/YYYY'),
+			description: filterTasks[taskNum].task.description,
 		};
 
 		this.setState({
@@ -236,11 +241,12 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getTaskTime(taskNum) {
+		var filterTasks = this.getFilteredTasks();
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ? 
 			(<td>
 				{this.render__getTaskTime__timeValues()}
 			</td>) :
-			<td className={this.isOverdueClassName(taskNum)}><div className="AllTasks__table__view-mode__input">{this.state.tasks[taskNum].task.time}</div></td>
+			<td className={this.isOverdueClassName(taskNum)}><div className="AllTasks__table__view-mode__input">{filterTasks[taskNum].task.time}</div></td>
 	}
 	
 	/* ============================================================================================================ */	
@@ -254,6 +260,7 @@ class AllTasks extends Component {
 	
 	/* ============================================================================================================ */	
 	getTaskDate(taskNum) {
+		var filterTasks = this.getFilteredTasks();
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ?
 			(
 				<td>
@@ -266,7 +273,7 @@ class AllTasks extends Component {
 			(
 
 				<td className={this.isOverdueClassName(taskNum)}>
-					{this.state.tasks[taskNum].task.date}
+					{filterTasks[taskNum].task.date}
 					<p className={this.isOverdueClassName__smallWarning(taskNum)}>
 						{this.isOverdueText(taskNum)}
 					</p>
@@ -285,32 +292,12 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getTaskDescription(taskNum) {
+		var filterTasks = this.getFilteredTasks();
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ?
 		(
 			<textarea className="AllTasks__table__edit-mode__textarea" value={this.state.editTask.description} onChange={this.getTaskDescription__handleChange}></textarea> 
 		) :
-			<div className="AllTasks__table__view-mode__textarea">{this.state.tasks[taskNum].task.description}</div>;
-	}
-
-	/* ============================================================================================================ */	
-	showModal(modalId, event) {
-		this.setState({
-			activeModal : {
-				id: modalId,
-				answer: null
-			}
-		});
-		
-	}
-
-	/* ============================================================================================================ */	
-	hideModal() {
-		this.setState({
-			activeModal : {
-				id: null,
-				answer: null
-			}
-		});
+			<div className="AllTasks__table__view-mode__textarea">{filterTasks[taskNum].task.description}</div>;
 	}
 
 	/* ============================================================================================================ */	
@@ -328,26 +315,32 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getTaskNumByTaskId(taskId) {
-		var tasks = this.state.tasks
-		for (let i = 0; i < tasks.length; i++) {
-			if (tasks[i].task.task_id === taskId) return i;
+		var filterTasks = this.getFilteredTasks();
+		// var tasks = this.state.tasks
+		for (let i = 0; i < filterTasks.length; i++) {
+			console.warn("filterTasks[i].task==",filterTasks[i].task);
+			console.warn("filterTasks[i].task.task_id==",filterTasks[i].task.task_id, "taskId==",taskId);
+			
+			if (filterTasks[i].task.task_id === taskId) return i;
 		}
 	}
 
 	/* ============================================================================================================ */	
 	markTaskAsDone(taskId) {
-
+		var filterTasks = this.getFilteredTasks();
 		var users = this.state.users;
 		var taskNumToMarkAsDone = this.getTaskNumByTaskId(taskId);
+		console.warn("taskNumToMarkAsDone===",taskNumToMarkAsDone);
 		for (let user of users) {
 			user.tasks = user.tasks.filter(task => task.task_id !== taskId);
 		}
 		
-		var taskToDelete = JSON.stringify(this.state.tasks[taskNumToMarkAsDone].task);
+		var taskToDelete = JSON.stringify(filterTasks[taskNumToMarkAsDone].task);
 		taskToDelete = JSON.stringify({task_id : taskId});
-
+		
+		console.warn("this.state.tasks[taskNumToMarkAsDone].task" , filterTasks[taskNumToMarkAsDone].task);
 		this.props.action__deleteTaskFromDB(taskToDelete);
-		this.props.action__clearModalState();
+		this.props.action__clearModalState(); 
 	}
 
 	/* ============================================================================================================ */	
@@ -403,18 +396,19 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getSmallIcons(taskNum) {
+		var filterTasks = this.getFilteredTasks();
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ? 
 			(
 				<td>
-					<img onClick={ () => this.props.action_showModal({ type : "MODAL::SaveChanges", taskId : this.state.tasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
+					<img onClick={ () => this.props.action_showModal({ type : "MODAL::SaveChanges", taskId : filterTasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
 					<img onClick={this.cancelTask} className="AllTasks__table__img" src={allTasks__cancel} alt="" />
 				</td>
 			) :
 			(
 				<td>
 					<img onClick={this.editTask.bind(this,taskNum)} className="AllTasks__table__img" src={allTasks__edit} alt="" />
-					<img onClick={ () => this.setUserToEdit(this.state.tasks[taskNum].task.task_id) } className="AllTasks__table__img" src={allTasks__profile} alt="" />
-					<img onClick={ () => this.props.action_showModal({ type : "MODAL::MarkAsDone", taskId : this.state.tasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
+					<img onClick={ () => this.setUserToEdit(filterTasks[taskNum].task.task_id) } className="AllTasks__table__img" src={allTasks__profile} alt="" />
+					<img onClick={ () => this.props.action_showModal({ type : "MODAL::MarkAsDone", taskId : filterTasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
 				</td>
 			);
 	}
@@ -439,35 +433,60 @@ class AllTasks extends Component {
 		});
 	}
 
+	setFilter(e) {
+		var searchFilter = e.target.value;
+		this.setState({ searchFilter });
+	}
+
+	/* ============================================================================================================ */	
+	getFilteredTasks() {
+		var this_state = this.state;
+		var filteredTasks = this.state.tasks.filter(task => {
+			let found = false;
+			if ((task.task.description.toUpperCase().search(this_state.searchFilter.toUpperCase()) !== -1) ||
+				(task.user.email.toUpperCase().search(this_state.searchFilter.toUpperCase()) !== -1) ||
+				(task.user.name.toUpperCase().search(this_state.searchFilter.toUpperCase()) !== -1)) found = true; 
+			return found;
+		});
+		return filteredTasks;
+	}
+
 	/* ============================================================================================================ */	
 	render() {
 		var this_state = this.state;
+		
 		function allOrFiltered() {
-			if (this_state.tasks_untouched.length === 0) return "All tasks:";
-			return (this_state.tasks.length === this_state.tasks_untouched.length) ? "All tasks:" : "Filtered tasks:";
+			return (this_state.searchFilter === "") ? "All tasks:" : "Filtered tasks:";
 		}
+
 		var tasksTable = [];
-		for (let i=0; i<this.state.tasks.length; i++) {
-			tasksTable.push(
-						<tr key={"tablerow"+i}>
-							{this.getTaskTime(i)}
-							{this.getTaskDate(i)}
-							<td>
-								{this.getTaskDescription(i)}
-								<table className="AllTasks__table__sub-table">
-									<tbody>
-										<tr>
-											<td>{this.state.tasks[i].user.name}</td>
-											<td>{this.state.tasks[i].user.phone}</td>
-											<td>{this.state.tasks[i].user.email}</td>
-										</tr>
-									</tbody>
-								</table>
-							</td>
-							{this.getSmallIcons(i)}
-						</tr>
-			)
+
+		var filteredTasks = this.getFilteredTasks();
+		// var tasks = filteredTasks;
+		if (filteredTasks) {
+			for (let i=0; i<filteredTasks.length; i++) {
+				tasksTable.push(
+							<tr key={"tablerow"+i}>
+								{this.getTaskTime(i)}
+								{this.getTaskDate(i)}
+								<td>
+									{this.getTaskDescription(i)}
+									<table className="AllTasks__table__sub-table">
+										<tbody>
+											<tr>
+												<td>{filteredTasks[i].user.name}</td>
+												<td>{filteredTasks[i].user.phone}</td>
+												<td>{filteredTasks[i].user.email}</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+								{this.getSmallIcons(i)}
+							</tr>
+				)
+			}
 		}
+		else tasksTable.push(<tr key={"not_found"}><td>Sorry, no results found for «{this.state.searchFilter}»</td></tr>);
 
 		return (
 			
@@ -476,7 +495,7 @@ class AllTasks extends Component {
 				<div className="AllTasks__header">
 					<h2 className="h2">{allOrFiltered()} {this.getOverdueTasks()}</h2>
 					<div className="AllTasks__search-box">
-						<input onChange={this.filterTasks.bind(this)} value={this.state.searchFilter}className="AllTasks__search-box__input" type="input" placeholder="Search"/>
+						<input onChange={(e) => this.setFilter(e)} value={this.state.searchFilter} className="AllTasks__search-box__input" type="input" placeholder="Search"/>
 					</div>
 				</div>
 				
