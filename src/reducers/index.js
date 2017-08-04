@@ -21,6 +21,7 @@ export const mainReducer = function(state = {users : [], userToEdit: {} , modal:
 								return Object.assign({}, { users: action.users,  userToEdit: state.userToEdit, modal: state.modal });
 
 		case UPDATE_USER_TO_EDIT :
+								console.log("UPDATE_USER_TO_EDIT",action.userToEdit);
 								return Object.assign({}, { users: state.users, userToEdit: action.userToEdit, modal: state.modal });
 
 		case DELETE_TASK_FROM_DB :

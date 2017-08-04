@@ -25,16 +25,12 @@ class AllTasks extends Component {
 		super(props);
 		this.state = {
 			users : [],
-			tasks: [],
+			filteredTasks: [],
+			allTasks: [],
 			userToEdit: {},
-			tasks_untouched: [],
 			isEditMode : false,
 			searchFilter : "",
 			modal: {},
-			activeModal: {
-				id: null,
-				answer : null
-			},
 			editTask : {
 				taskNum : null
 			}
@@ -45,7 +41,7 @@ class AllTasks extends Component {
 		this.getTaskTime__handleChange = this.getTaskTime__handleChange.bind(this);
 		this.getTaskDate__handleChange = this.getTaskDate__handleChange.bind(this);
 		this.getTaskDescription__handleChange = this.getTaskDescription__handleChange.bind(this);
-		this.filterTasks = this.filterTasks.bind(this);
+		// this.filterTasks = this.filterTasks.bind(this);
 	}
 
 	/* ============================================================================================================ */	
@@ -59,39 +55,7 @@ class AllTasks extends Component {
 		}
 		return editTask;
 	}
-	componentWillReceiveProps(newProps){
-		console.log("==>newProps.modal",newProps.modal);
-		if (newProps.modal) this.checkModalState(newProps.modal);
-		this.setState({
-			modal: newProps.modal,
-			userToEdit : newProps.userToEdit,
-			users: newProps.users,
-			tasks : this.getTasksArray(newProps)
-		})
 
-	}	
-	
-	/* ============================================================================================================ */	
-	checkModalState(modal) {
-		switch (modal.answer) {
-			case "MODAL::MarkAsDone::Yes" :
-											this.markTaskAsDone(modal.taskId);
-											break;
-			case "MODAL::MarkAsDone::No" :
-											this.props.action__clearModalState();
-											break;
-			case "MODAL::SaveChanges::Yes" :
-											this.saveTask();
-											break;
-			case "MODAL::SaveChanges::No" :
-											let editTask = this.emptyEditTaskObj();
-											this.setState({ editTask });
-											this.props.action__clearModalState();
-											break;											
-		}
-		
-	}
-	
 	/* ============================================================================================================ */	
 	getTasksArray(newProps) {
 		var alltasks = [];
@@ -120,15 +84,64 @@ class AllTasks extends Component {
 			if (moment(date1).isBefore(date2)) return -1; else return 1;
 		});
 
-		console.log("alltasks==",alltasks);
 		return alltasks;
 	}
 
 	/* ============================================================================================================ */	
+	getFilteredTasks(tasks, searchFilter = "") {
+		var filteredTasks = tasks.filter(task => {
+			let found = false;
+			if ((task.task.description.toUpperCase().search(searchFilter.toUpperCase()) !== -1) ||
+				(task.user.email.toUpperCase().search(searchFilter.toUpperCase()) !== -1) ||
+				(task.user.name.toUpperCase().search(searchFilter.toUpperCase()) !== -1)) found = true; 
+			return found;
+		});
+		return filteredTasks;
+	}
+
+	/* ============================================================================================================ */	
+	componentWillReceiveProps(newProps){
+		if (newProps.modal) this.checkModalState(newProps.modal);
+		var allTasks = this.getTasksArray(newProps);
+		var filteredTasks = this.getFilteredTasks(allTasks, this.state.searchFilter);
+		this.setState({
+			modal: newProps.modal,
+			userToEdit : newProps.userToEdit,
+			users: newProps.users,
+			filteredTasks : filteredTasks,
+			allTasks : allTasks
+		})
+
+	}	
+	
+	/* ============================================================================================================ */	
+	checkModalState(modal) {
+		switch (modal.answer) {
+			case "MODAL::MarkAsDone::Yes" :
+											this.markTaskAsDone(modal.taskId);
+											break;
+			case "MODAL::MarkAsDone::No" :
+											this.props.action__clearModalState();
+											break;
+			case "MODAL::SaveChanges::Yes" :
+											this.saveTask();
+											break;
+			case "MODAL::SaveChanges::No" :
+											let editTask = this.emptyEditTaskObj();
+											this.setState({ editTask });
+											this.props.action__clearModalState();
+											break;
+			default:
+											break;											
+		}
+		
+	}
+	
+	/* ============================================================================================================ */	
 	isOverdue(taskNum) {
-		var filterTasks = this.getFilteredTasks();
+		var filteredTasks = this.state.filteredTasks;
 		var timeNow = moment();
-		let taskDate = moment(filterTasks[taskNum].task.date + " " + filterTasks[taskNum].task.time, 'MM/DD/YYYY hh:mm');
+		let taskDate = moment(filteredTasks[taskNum].task.date + " " + filteredTasks[taskNum].task.time, 'MM/DD/YYYY hh:mm');
 		return (moment(timeNow).isAfter(taskDate));
 	}
 
@@ -149,15 +162,15 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getOverdueTasks() {
-		var filterTasks = this.getFilteredTasks();
+		var filteredTasks = this.state.filteredTasks;
 		let overdueTasks=0;
-		for (let i=0; i < filterTasks.length; i++) {
+		for (let i=0; i < filteredTasks.length; i++) {
 			if (this.isOverdue(i)) overdueTasks++;
 		}
 
 		return (overdueTasks !== 0) ?
 			(
-				<span>{filterTasks.length}
+				<span>{filteredTasks.length}
 					&nbsp;&nbsp;&nbsp;
 					<span className="AllTasks__header__overdue-tasks">
 						Overdue tasks: {overdueTasks}
@@ -166,24 +179,24 @@ class AllTasks extends Component {
 			) :
 			(
 				<span>
-					{filterTasks.length}
+					{filteredTasks.length}
 				</span>
 			)
 	}
 
 	/* ============================================================================================================ */	
 	editTask(taskNum, event) {
-		var filterTasks = this.getFilteredTasks();
+		var filteredTasks = this.state.filteredTasks;
 		let isEditMode;
 		if (taskNum !== this.state.editTask.taskNum) isEditMode = true;
-		else isEditMode = !this.state.isEditMode;
+		else isEditMode = false;
 
 		let editTask = {
 			taskNum: taskNum,
-			task_id: filterTasks[taskNum].task.task_id,
-			time: filterTasks[taskNum].task.time,
-			date: moment(filterTasks[taskNum].task.date, 'MM/DD/YYYY'),
-			description: filterTasks[taskNum].task.description,
+			task_id: filteredTasks[taskNum].task.task_id,
+			time: filteredTasks[taskNum].task.time,
+			date: moment(filteredTasks[taskNum].task.date, 'MM/DD/YYYY'),
+			description: filteredTasks[taskNum].task.description,
 		};
 
 		this.setState({
@@ -241,12 +254,12 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getTaskTime(taskNum) {
-		var filterTasks = this.getFilteredTasks();
+		var filteredTasks = this.state.filteredTasks;
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ? 
 			(<td>
 				{this.render__getTaskTime__timeValues()}
 			</td>) :
-			<td className={this.isOverdueClassName(taskNum)}><div className="AllTasks__table__view-mode__input">{filterTasks[taskNum].task.time}</div></td>
+			<td className={this.isOverdueClassName(taskNum)}><div className="AllTasks__table__view-mode__input">{filteredTasks[taskNum].task.time}</div></td>
 	}
 	
 	/* ============================================================================================================ */	
@@ -260,7 +273,7 @@ class AllTasks extends Component {
 	
 	/* ============================================================================================================ */	
 	getTaskDate(taskNum) {
-		var filterTasks = this.getFilteredTasks();
+		var filteredTasks = this.state.filteredTasks;
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ?
 			(
 				<td>
@@ -273,7 +286,7 @@ class AllTasks extends Component {
 			(
 
 				<td className={this.isOverdueClassName(taskNum)}>
-					{filterTasks[taskNum].task.date}
+					{filteredTasks[taskNum].task.date}
 					<p className={this.isOverdueClassName__smallWarning(taskNum)}>
 						{this.isOverdueText(taskNum)}
 					</p>
@@ -292,12 +305,12 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getTaskDescription(taskNum) {
-		var filterTasks = this.getFilteredTasks();
+		var filteredTasks = this.state.filteredTasks;
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ?
 		(
 			<textarea className="AllTasks__table__edit-mode__textarea" value={this.state.editTask.description} onChange={this.getTaskDescription__handleChange}></textarea> 
 		) :
-			<div className="AllTasks__table__view-mode__textarea">{filterTasks[taskNum].task.description}</div>;
+			<div className="AllTasks__table__view-mode__textarea">{filteredTasks[taskNum].task.description}</div>;
 	}
 
 	/* ============================================================================================================ */	
@@ -315,41 +328,36 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getTaskNumByTaskId(taskId) {
-		var filterTasks = this.getFilteredTasks();
-		// var tasks = this.state.tasks
-		for (let i = 0; i < filterTasks.length; i++) {
-			console.warn("filterTasks[i].task==",filterTasks[i].task);
-			console.warn("filterTasks[i].task.task_id==",filterTasks[i].task.task_id, "taskId==",taskId);
-			
-			if (filterTasks[i].task.task_id === taskId) return i;
+		var filteredTasks = this.state.filteredTasks;
+		for (let i = 0; i < filteredTasks.length; i++) {
+			if (filteredTasks[i].task.task_id === taskId) return i;
 		}
 	}
 
 	/* ============================================================================================================ */	
 	markTaskAsDone(taskId) {
-		var filterTasks = this.getFilteredTasks();
+		var filteredTasks = this.state.filteredTasks;
 		var users = this.state.users;
 		var taskNumToMarkAsDone = this.getTaskNumByTaskId(taskId);
-		console.warn("taskNumToMarkAsDone===",taskNumToMarkAsDone);
 		for (let user of users) {
 			user.tasks = user.tasks.filter(task => task.task_id !== taskId);
 		}
 		
-		var taskToDelete = JSON.stringify(filterTasks[taskNumToMarkAsDone].task);
+		var taskToDelete = JSON.stringify(filteredTasks[taskNumToMarkAsDone].task);
 		taskToDelete = JSON.stringify({task_id : taskId});
 		
-		console.warn("this.state.tasks[taskNumToMarkAsDone].task" , filterTasks[taskNumToMarkAsDone].task);
 		this.props.action__deleteTaskFromDB(taskToDelete);
 		this.props.action__clearModalState(); 
 	}
 
 	/* ============================================================================================================ */	
 	saveTask() {
-		var this_state_users = this.state.users;
+		if (!this.state.isEditMode) return;
+		var _this = this;
 
 		// ************************
 		function updateUsersArray() {
-			for (let user of this_state_users) {
+			for (let user of _this.state.users) {
 				for (let task of user.tasks) {
 					if (task.task_id === taskToUpdate.task_id) {
 						task.time = taskToUpdate.time;
@@ -359,35 +367,49 @@ class AllTasks extends Component {
 				}
 			}
 		}
+
 		// ************************
+		function updateUserToEdit() {
+			if (!_this.state.userToEdit.tasks) return;
+			var userToEdit;
+			for (let user of _this.state.users) {
+				for (let i=0; i < user.tasks.length; i++) {
+					if (user.tasks[i].task_id === taskToUpdate.task_id) {
+						userToEdit = Object.assign({}, user);
+						userToEdit.tasks[i] = taskToUpdate;
+					}	
+				}
+			}
+			_this.props.action__updateUserToEdit(userToEdit);
+		}
+		// ************************		
 
 		let taskNum = this.state.editTask.taskNum;
-		var tasks = this.state.tasks;
-		tasks[taskNum].task = {
+		var filteredTasks = this.state.filteredTasks;
+
+		filteredTasks[taskNum].task = {
 			task_id : this.state.editTask.task_id,
 			time : this.state.editTask.time,
 			date : this.state.editTask.date.format("MM/DD/YYYY"),
 			description: this.state.editTask.description
 		}
-		var taskToUpdate = tasks[taskNum].task;
+		var taskToUpdate = filteredTasks[taskNum].task;
+		updateUserToEdit();
 		this.props.action_updateOneTaskDB(taskToUpdate);
 		updateUsersArray();
-
 		let editTask = this.emptyEditTaskObj();
 		this.setState({
-			tasks,
-			editTask
+				editTask,
+				isEditMode : false
 		});
 	}
 	/* ============================================================================================================ */	
 	setUserToEdit(taskID) {
-		console.log("setUserToEdit");
 		var userToEdit;
 		for (let user of this.state.users) {
 			for (let task of user.tasks) {
 				if (task.task_id === taskID) {
 					userToEdit = user;
-					console.log("task.task_id===",task.task_id);
 				}	
 			}
 		}
@@ -396,59 +418,28 @@ class AllTasks extends Component {
 
 	/* ============================================================================================================ */	
 	getSmallIcons(taskNum) {
-		var filterTasks = this.getFilteredTasks();
+		var filteredTasks = this.state.filteredTasks;
 		return (this.state.isEditMode && this.state.editTask.taskNum === taskNum) ? 
 			(
 				<td>
-					<img onClick={ () => this.props.action_showModal({ type : "MODAL::SaveChanges", taskId : filterTasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
+					<img onClick={ () => this.props.action_showModal({ type : "MODAL::SaveChanges", taskId : filteredTasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
 					<img onClick={this.cancelTask} className="AllTasks__table__img" src={allTasks__cancel} alt="" />
 				</td>
 			) :
 			(
 				<td>
 					<img onClick={this.editTask.bind(this,taskNum)} className="AllTasks__table__img" src={allTasks__edit} alt="" />
-					<img onClick={ () => this.setUserToEdit(filterTasks[taskNum].task.task_id) } className="AllTasks__table__img" src={allTasks__profile} alt="" />
-					<img onClick={ () => this.props.action_showModal({ type : "MODAL::MarkAsDone", taskId : filterTasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
+					<img onClick={ () => this.setUserToEdit(filteredTasks[taskNum].task.task_id) } className="AllTasks__table__img" src={allTasks__profile} alt="" />
+					<img onClick={ () => this.props.action_showModal({ type : "MODAL::MarkAsDone", taskId : filteredTasks[taskNum].task.task_id }) } className="AllTasks__table__img" src={allTasks__done} alt="" />
 				</td>
 			);
 	}
 
 	/* ============================================================================================================ */	
-	filterTasks(event) {
-		var tasks_untouched;
-		if (!this.state.tasks_untouched.length) {
-			tasks_untouched = this.state.tasks;
-		} 
-		else tasks_untouched = this.state.tasks_untouched;
-		// console.log(tasks_untouched);
-		let searchFilter = event.target.value;
-		var tasks = tasks_untouched.filter(element => {
-			return (element.task.description.toUpperCase().search(searchFilter.toUpperCase()) !== -1);
-	 	});
-
-		this.setState({
-			searchFilter,
-			tasks_untouched,
-			tasks
-		});
-	}
-
 	setFilter(e) {
 		var searchFilter = e.target.value;
-		this.setState({ searchFilter });
-	}
-
-	/* ============================================================================================================ */	
-	getFilteredTasks() {
-		var this_state = this.state;
-		var filteredTasks = this.state.tasks.filter(task => {
-			let found = false;
-			if ((task.task.description.toUpperCase().search(this_state.searchFilter.toUpperCase()) !== -1) ||
-				(task.user.email.toUpperCase().search(this_state.searchFilter.toUpperCase()) !== -1) ||
-				(task.user.name.toUpperCase().search(this_state.searchFilter.toUpperCase()) !== -1)) found = true; 
-			return found;
-		});
-		return filteredTasks;
+		var filteredTasks = this.getFilteredTasks(this.state.allTasks, searchFilter);
+		this.setState({ searchFilter, filteredTasks });
 	}
 
 	/* ============================================================================================================ */	
@@ -461,9 +452,9 @@ class AllTasks extends Component {
 
 		var tasksTable = [];
 
-		var filteredTasks = this.getFilteredTasks();
+		var filteredTasks = this.state.filteredTasks;
 		// var tasks = filteredTasks;
-		if (filteredTasks) {
+		if (filteredTasks.length) {
 			for (let i=0; i<filteredTasks.length; i++) {
 				tasksTable.push(
 							<tr key={"tablerow"+i}>

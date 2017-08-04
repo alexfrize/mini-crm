@@ -33,14 +33,12 @@ class Modal extends Component {
 	// =======================================================================================================
 	componentWillReceiveProps(nextProps) {
 		var { modal } = nextProps;
-		// console.log("MODAL::nextProps", nextProps);
 		this.setState( { modal });
 		if (modal.answer) console.log("Answer is ", modal.answer);
 	}
 
 	// =======================================================================================================
 	setModalAnswer(answer) {
-		
 		var { modal } = this.state;
 		modal.answer = answer;
 		this.props.action_hideModal(modal);
