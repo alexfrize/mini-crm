@@ -9,6 +9,7 @@ import AllUsers__progress__newLead from './img/all-users__progress__new-lead.svg
 import AllUsers__progress__phoneCall from './img/all-users__progress__phone-call.svg';
 import AllUsers__progress__presentation from './img/all-users__progress__presentation.svg';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { action__updateUserToEdit, action__deleteUserFromDB } from '../actions';
 import { action_showModal, action__clearModalState } from '../actions/modal';
@@ -31,12 +32,11 @@ class AllUsers extends Component {
 
 	/* ============================================================================================================ */	
 	componentDidMount() {
-
+		this.componentWillReceiveProps(this.props)
 	}
 
 	componentWillReceiveProps(newProps){
 		if (newProps.modal) {
-			
 			if (newProps.modal.answer === "MODAL::DeleteUser::Yes") { 
 				console.warn("newProps.modal.answer:==",newProps.modal.answer);
 				this.deleteUser(newProps.modal.userId); 
@@ -181,4 +181,4 @@ function mapDispatchToProps(dispatch) {
 	return bindActionCreators({ action__updateUserToEdit, action__deleteUserFromDB, action_showModal, action__clearModalState }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllUsers);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AllUsers));

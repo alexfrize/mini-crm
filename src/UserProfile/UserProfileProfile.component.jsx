@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './UserProfileProfile.component.css';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { action_createNewUserDB } from '../actions';
 import { action_updateUserDB } from '../actions';
@@ -24,6 +25,10 @@ class UserProfileProfile extends Component {
 				phone : "",
 				description: ""
 			};
+	}
+
+	componentDidMount() {
+		this.componentWillReceiveProps(this.props)
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -148,4 +153,4 @@ function mapDispatchToProps(dispatch) {
 	return bindActionCreators( { action_createNewUserDB, action_updateUserDB }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserProfileProfile);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserProfileProfile));

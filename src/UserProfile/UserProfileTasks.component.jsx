@@ -45,6 +45,11 @@ class UserProfileTasks extends Component {
 		if (isLocal === _LOCAL)	emptyTask._date__Moment = moment();
 		return emptyTask;
 	}
+
+	componentDidMount() {
+		this.componentWillReceiveProps(this.props)
+	}
+	
 	/* ============================================================================================================ */
 	componentWillReceiveProps(nextProps) {
 		var userToEdit_local = JSON.parse(JSON.stringify(nextProps.userToEdit));

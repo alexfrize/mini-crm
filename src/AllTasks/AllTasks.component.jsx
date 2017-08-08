@@ -6,6 +6,7 @@ import allTasks__profile from './img/all-tasks__profile.svg';
 import allTasks__cancel from './img/all-tasks__cancel.svg';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router-dom';
 import { action__deleteTaskFromDB } from '../actions';
 import { action_updateOneTaskDB } from '../actions';
 import { action__updateUserToEdit } from '../actions';
@@ -97,6 +98,10 @@ class AllTasks extends Component {
 			return found;
 		});
 		return filteredTasks;
+	}
+
+	componentDidMount() {
+		this.componentWillReceiveProps(this.props)
 	}
 
 	/* ============================================================================================================ */	
@@ -513,4 +518,4 @@ function mapStateToProps(data) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllTasks);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AllTasks));

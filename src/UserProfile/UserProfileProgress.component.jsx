@@ -34,8 +34,15 @@ class UserProfileProgress extends Component {
 		};
 	}
 
+
+	componentDidMount() {
+		this.componentWillReceiveProps(this.props);
+	}
+
 	/* ============================================================================================================ */	
 	componentWillReceiveProps(nextProps) {
+		let obj = nextProps.userToEdit;
+		if ( Object.keys(obj).length === 0 && obj.constructor === Object ) return;
 		var activeProgressStep = nextProps.userToEdit.progress.length - 1;
 		var progressDescription = [];
 		for (let p of nextProps.userToEdit.progress) {

@@ -5,8 +5,10 @@ import './UserProfile.component.css';
 import UserProfileProgress from './UserProfileProgress.component.jsx';
 import UserProfileProfile from './UserProfileProfile.component.jsx';
 import UserProfileTasks from './UserProfileTasks.component.jsx';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-export default class UserProfile extends Component {
+class UserProfile extends Component {
 	
 	render() {
 		return (
@@ -20,3 +22,5 @@ export default class UserProfile extends Component {
 		);
 	}
 }
+
+export default withRouter(connect(null,null)(UserProfile));
