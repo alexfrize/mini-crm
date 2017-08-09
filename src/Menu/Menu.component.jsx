@@ -25,4 +25,4 @@ class Menu extends Component {
 	}
 }
 
-export default withRouter(connect(null,null)(Menu));
+export default Menu;

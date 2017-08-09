@@ -23,7 +23,7 @@ class AllUsers extends Component {
 			userToEdit: {},
 			modal : {}
 		};
-		this.editUser = this.editUser.bind(this);
+		//this.editUser = this.editUser.bind(this);
 	}
 
 	/* ============================================================================================================ */	
@@ -52,23 +52,29 @@ class AllUsers extends Component {
 	}	
 
 	/* ============================================================================================================ */	
-	editUser(userNum, event) {
+	editUser(userID, filteredUsers) {
+		var userToEdit;
+		for (let i = 0; i < filteredUsers.length; i++) {
+			if (filteredUsers[i]._id === userID) userToEdit = filteredUsers[i];
+		} 
 		this.setState({
-			userToEdit : this.state.users[userNum]
+			userToEdit
 		});
-
-		this.props.action__updateUserToEdit(this.state.users[userNum])
+		console.warn("userNum==",userToEdit);
+		console.warn("filteredUsers==",filteredUsers);
+		this.props.action__updateUserToEdit(userToEdit);
 	}
+
 	deleteUser(userId) {
 		console.log("Deleting user ", userId);
 		this.props.action__deleteUserFromDB({ _id : userId });
 	}
 	/* ============================================================================================================ */	
-	getSmallIcons(userNum) {
+	getSmallIcons(userNum, filteredUsers) {
 			return (
 				<td>
-					<img onClick={this.editUser.bind(this,userNum)} className="AllUsers__table__img" src={AllUsers__edit} alt="" />
-					<img onClick={() => this.props.action_showModal({ type: "MODAL::DeleteUser", userId: this.state.users[userNum]._id }) } className="AllUsers__table__img" src={AllUsers__delete} alt="" />
+					<img onClick={() => this.editUser(filteredUsers[userNum]._id, filteredUsers)} className="AllUsers__table__img" src={AllUsers__edit} alt="" />
+					<img onClick={() => this.props.action_showModal({ type: "MODAL::DeleteUser", userId: filteredUsers[userNum]._id }) } className="AllUsers__table__img" src={AllUsers__delete} alt="" />
 				</td>
 			);
 	}
@@ -142,7 +148,7 @@ class AllUsers extends Component {
 									</table>
 								</td>
 
-								{this.getSmallIcons(i)}
+								{this.getSmallIcons(i, filteredUsers)}
 							</tr>
 				)
 			}

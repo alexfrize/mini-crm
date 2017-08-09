@@ -1,0 +1,2 @@
+export const REDIRECT_TO = 'REDIRECT_TO';
+export const REDIRECT_CLEAR = 'REDIRECT_CLEAR';
