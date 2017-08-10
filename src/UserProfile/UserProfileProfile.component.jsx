@@ -96,7 +96,6 @@ class UserProfileProfile extends Component {
 		if (!this.checkValuesOnSubmit()) return;
 		
 		var profile = this.state.profile;
-		console.warn("SAVE::profile2 ==",profile);
 		var { userID } = this.state;
 		var users = JSON.parse(JSON.stringify(this.state.users));
 		if (!userID) {
@@ -115,8 +114,6 @@ class UserProfileProfile extends Component {
 			let userToEdit = this.state.userToEdit;
 			userToEdit._id = userID;
 			userToEdit.profile = profile;
-			console.warn("userToEdit ==", userToEdit);
-			console.warn("profile ==", profile);
 			this.props.action_updateUserDB(users, userToEdit);
 		}
 	}

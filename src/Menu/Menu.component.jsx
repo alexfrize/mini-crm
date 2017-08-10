@@ -6,17 +6,30 @@ import menu__tasks from './img/menu__tasks.svg';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { action__updateUserToEdit } from '../actions';
+import { EMPTY_USER } from '../constants/emptyuser';
 
 class Menu extends Component {
 	constructor(props) {
 		super(props);
 	}
 
+	componentWillReceiveProps(nextProps) {
+		console.log("MENU::nextProps => ", nextProps);
+	}
+
+	addNewUserAndRedirect() {
+		var userToEdit = Object.assign({}, EMPTY_USER);
+		console.log(userToEdit);
+		this.props.action__updateUserToEdit(userToEdit);
+		this.props.history.push("/userprofile");
+	}
 	render() {
 		return (
 			<div>
 				<ul className="Menu">
-					<Link to="/userprofile"><li><img src={menu__addUser} alt="icon" />Add user</li></Link>
+					<li onClick={() => this.addNewUserAndRedirect()} ><img src={menu__addUser} alt="icon" />Add user</li>
 					<Link to="/"><li><img src={menu__allUsers} alt="icon" />All users</li></Link>
 					<Link to="/alltasks"><li><img src={menu__tasks} alt="icon" />Tasks</li></Link>
 				</ul>
@@ -25,4 +38,8 @@ class Menu extends Component {
 	}
 }
 
-export default Menu;
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({ action__updateUserToEdit }, dispatch)
+}
+
+export default withRouter(connect(null, mapDispatchToProps)(Menu));

@@ -38,7 +38,6 @@ class AllUsers extends Component {
 	componentWillReceiveProps(newProps){
 		if (newProps.modal) {
 			if (newProps.modal.answer === "MODAL::DeleteUser::Yes") { 
-				console.warn("newProps.modal.answer:==",newProps.modal.answer);
 				this.deleteUser(newProps.modal.userId); 
 				this.props.action__clearModalState();
 			}
@@ -60,9 +59,8 @@ class AllUsers extends Component {
 		this.setState({
 			userToEdit
 		});
-		console.warn("userNum==",userToEdit);
-		console.warn("filteredUsers==",filteredUsers);
 		this.props.action__updateUserToEdit(userToEdit);
+		this.props.history.push("/userprofile");
 	}
 
 	deleteUser(userId) {

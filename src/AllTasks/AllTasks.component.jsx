@@ -419,6 +419,7 @@ class AllTasks extends Component {
 			}
 		}
 		this.props.action__updateUserToEdit(userToEdit);
+		this.props.history.push("/userprofile");
 	}
 
 	/* ============================================================================================================ */	

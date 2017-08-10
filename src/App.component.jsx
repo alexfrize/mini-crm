@@ -42,11 +42,11 @@ class App extends Component {
       <div className="App">
         <Modal />
         <Menu />
-        <div>  
+        <Switch>  
           <Route exact path="/" component={AllUsers} />
           <Route path="/alltasks" component={AllTasks} />
           <Route path="/userprofile" component={UserProfile} />
-        </div>
+        </Switch>
       </div>
     );
   }
