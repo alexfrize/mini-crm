@@ -17,6 +17,10 @@
 
 		}
 		.AllTasks__header__overdue-tasks {
+			display: flex;
+			@include breakpoint($smSize) {
+				display: inherit;
+			}
 			color: $warningTextColor;
 		}
 	}
@@ -26,7 +30,10 @@
 		width: 100%;
 		tr {
 			td {
-				padding: 20px;
+				padding: 5px;
+				@include breakpoint($mdSize) {
+					padding: 20px;
+				}				
 				&:nth-child(1) {
 					width: 13%;
 				}
@@ -41,13 +48,25 @@
 							background: transparent;
 							text-align: center;
 							width: 33%;
-							font-size: 14px;
+							font-size: $subSmallFontSize;
+							&:nth-child(2),&:nth-child(3) {
+								display: none;
+							}							
+							@include breakpoint($mdSize) {
+								font-size: $subMainFontSize;
+								&:nth-child(2),&:nth-child(3) {
+									display: table-cell;
+								}
+							}
 						}
 					}
 				}				
 				&:nth-child(4) {
 					text-align: center;
-					width: 15%;
+					width: 20%;
+					@include breakpoint($mdSize) {
+						width: 15%;
+					}					
 					@include breakpoint($lgSize) {
 						width: 10%;
 					}
@@ -79,6 +98,14 @@
 				cursor: pointer;
 			}
 		}
+
+		.AllTasks__table__date {
+			font-size: $smallFontSize;
+			@include breakpoint($mdSize) {
+				font-size: $mainFontSize;
+			}
+		}
+
 		.AllTasks__table__overdue {
 			color: $warningTextColor;
 		}
@@ -90,7 +117,7 @@
 		.AllTasks__table__small-warning {
 			color: $warningTextColor;
 			text-align: center;
-			font-size: 10px;
+			font-size: $smallWarningSize;
 		}
 
 		.AllTasks__table__edit-mode__input {

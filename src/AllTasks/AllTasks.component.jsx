@@ -146,13 +146,13 @@ class AllTasks extends Component {
 	isOverdue(taskNum) {
 		var filteredTasks = this.state.filteredTasks;
 		var timeNow = moment();
-		let taskDate = moment(filteredTasks[taskNum].task.date + " " + filteredTasks[taskNum].task.time, 'MM/DD/YYYY hh:mm');
+		let taskDate = moment(filteredTasks[taskNum].task.date + " " + filteredTasks[taskNum].task.time, 'MM/DD/YYYY hh:mm A');
 		return (moment(timeNow).isAfter(taskDate));
 	}
 
 	/* ============================================================================================================ */	
 	isOverdueClassName(taskNum) {
-		return this.isOverdue(taskNum) ? "AllTasks__table__overdue" : "";
+		return this.isOverdue(taskNum) ? "AllTasks__table__date AllTasks__table__overdue" : "AllTasks__table__date";
 	}
 
 	/* ============================================================================================================ */	

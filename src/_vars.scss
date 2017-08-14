@@ -1,3 +1,4 @@
+@import 'breakpoints';
 
 // ============== Colors ==============  
 
@@ -25,6 +26,10 @@ $warningTextColor: #b35c7a;
 
 //============== Sizes ============== 
 $mainFontSize: 18px;
+$smallFontSize: 14px;
+$subMainFontSize: 14px;
+$subSmallFontSize: 12px;
+$smallWarningSize: 10px;
 
 // ============== Modal Window Constants ============== 
 $modalWidth: 500px;
@@ -37,8 +42,15 @@ $modalTextColor: #7e4759;
 //============== Title styles ============== 
 .h2 {
 	color: $mainTextColor;
-	font-size: 28px;
+	font-size: 14px;
+	@include breakpoint($xsSize) {
+		font-size: 18px;
+	}	
+	@include breakpoint($mdSize) {
+		font-size: 28px;
+	}
 }
+
 .button-container {
 	display: flex;
 	justify-content: flex-end;
@@ -49,7 +61,7 @@ $modalTextColor: #7e4759;
 	background: $buttonMainColor;
 	color: $buttonTextColor;
 	border: 1px solid $buttonBorderColor;
-	font-size: 18px;
+	font-size: $mainFontSize;
 	width: 125px;
 	height: 35px;
 	&:hover {
@@ -67,7 +79,10 @@ $modalTextColor: #7e4759;
 	padding: 8px;
 	background: $inputMainColor;
 	border: 1px solid $inputBorderColor;
-	font-size: 18px;
+	font-size: $smallFontSize;
+	@include breakpoint ($mdSize) {
+		font-size: $mainFontSize;
+	}
 	color: $inputTextColor;
 	&::placeholder {
 		color: $inputPlaceholderColor;
@@ -80,7 +95,10 @@ $modalTextColor: #7e4759;
 	padding: 8px;
 	background: none;
 	border: 1px solid transparent;
-	font-size: 18px;
+	font-size: $smallFontSize;
+	@include breakpoint($mdSize) {
+		font-size: $mainFontSize;
+	}
 }
 
 .display-none {

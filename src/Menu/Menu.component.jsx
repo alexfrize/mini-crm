@@ -11,9 +11,6 @@ import { action__updateUserToEdit } from '../actions';
 import { EMPTY_USER } from '../constants/emptyuser';
 
 class Menu extends Component {
-	constructor(props) {
-		super(props);
-	}
 
 	componentWillReceiveProps(nextProps) {
 		console.log("MENU::nextProps => ", nextProps);

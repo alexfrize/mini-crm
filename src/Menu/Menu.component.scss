@@ -1,17 +1,34 @@
 @import '../vars';
 .Menu {
+
 	float: right;
 	display: flex;
+	a {
+		text-decoration: none;
+	}	
 	li {
+
 		transition: 0.5s;
 		display: flex;
 		align-items: center;
-		padding: 10px 30px;
+		
 		color: $menuTextColor;
+		font-size: $smallFontSize;
+		padding: 0 5px;
+		width: 86px;
+		@include breakpoint($xsSize) {
+			font-size: $mainFontSize;
+			padding: 10px 30px;
+			width: inherit;
+		}
 		img {
 			padding-right: 6px;
 			display: inline-block;
-			height: $mainFontSize*1.4;
+			
+			height: $smallFontSize*1.4;
+			@include breakpoint($xsSize) {
+				height: $mainFontSize*1.4;
+			}
 		}
 		&:hover {
 			opacity: 0.6;

@@ -1,6 +1,12 @@
 .h2 {
   color: #382941;
-  font-size: 28px; }
+  font-size: 14px; }
+  @media (min-width: 544px) {
+    .h2 {
+      font-size: 18px; } }
+  @media (min-width: 992px) {
+    .h2 {
+      font-size: 28px; } }
 
 .button-container {
   display: flex;
@@ -28,8 +34,11 @@
   padding: 8px;
   background: #fbf6e3;
   border: 1px solid #efe5dd;
-  font-size: 18px;
+  font-size: 14px;
   color: #7e4759; }
+  @media (min-width: 992px) {
+    .input {
+      font-size: 18px; } }
   .input::placeholder {
     color: #c9a98d; }
 
@@ -39,7 +48,10 @@
   padding: 8px;
   background: none;
   border: 1px solid transparent;
-  font-size: 18px; }
+  font-size: 14px; }
+  @media (min-width: 992px) {
+    .input_view-mode {
+      font-size: 18px; } }
 
 .display-none {
   display: none; }
