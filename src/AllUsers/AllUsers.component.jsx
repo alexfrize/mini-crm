@@ -85,7 +85,7 @@ class AllUsers extends Component {
 			return (userProgress.length <= iconNum) ? op40 : op100;
 		}
 		return 	(
-				<td>
+				<td className="AllUsers__table__progress-icons">
 					<img style={ getImgStyle(0) } className="AllUsers__table__progress-img" src={AllUsers__progress__newLead} alt="" />
 					<img style={ getImgStyle(1) } className="AllUsers__table__progress-img-arrow" src={AllUsers__progress__arrow} alt="" />
 					<img style={ getImgStyle(1) } className="AllUsers__table__progress-img" src={AllUsers__progress__phoneCall} alt="" />
@@ -134,7 +134,7 @@ class AllUsers extends Component {
 													<td>{filteredUsers[i].profile.name}</td>
 													<td>{filteredUsers[i].profile.phone}</td>
 													<td>{filteredUsers[i].profile.email}</td>
-													<td>Tasks: {filteredUsers[i].tasks.length}</td>
+													<td className="AllUsers__table__td__total-tasks">Tasks: {filteredUsers[i].tasks.length}</td>
 												</tr>
 												<tr>
 													<td colSpan="3" className="AllUsers__table__sub-table__description">

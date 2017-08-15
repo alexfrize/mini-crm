@@ -3,7 +3,9 @@
 .UserProfile__tasks {
 	width: 100%;
 	box-sizing: border-box;
-	padding-left: 5%;
+	@include breakpoint ($smSize) {
+		padding-left: 5%;
+	}
 	.UserProfile__tasks__task {
 		display:flex;
 		flex-direction: row;
@@ -11,8 +13,19 @@
 		.UserProfile__tasks__task__input-group {
 			display: flex;
 			flex-direction: column;
-			width: 25%;
-			//height: 80px;
+			width: 33%;
+			@include breakpoint ($xsSize) {
+				width: 20%;
+			}			
+			@include breakpoint ($smSize) {
+				width: 30%;
+			}
+			@include breakpoint ($mdSize) {
+				width: 26%;
+			}
+			@include breakpoint ($lgSize) {
+				width: 24%;
+			}						
 			.UserProfile__tasks__task__input {
 				@extend .input;
 				width: 100%;
@@ -24,9 +37,25 @@
 		.UserProfile__tasks__task__task-description {
 			@extend .input;
 			margin-left: 5%;
-			width: 70%;
+			width: 62%;
+			@include breakpoint ($xsSize) {
+				width: 75%;
+			}			
+			@include breakpoint ($smSize) {
+				width: 65%;
+			}
+			@include breakpoint ($mdSize) {
+				width: 69%;
+			}
+			@include breakpoint ($lgSize) {
+				width: 71%;
+			}						
+
 			resize: none;
 			height: 80px;
+			@include breakpoint ($mdSize) {
+				height: 89px;	
+			}
 		}				
 	}
 	.UserProfile__tasks__form__button-container {

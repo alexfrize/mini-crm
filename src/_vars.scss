@@ -33,6 +33,7 @@ $smallWarningSize: 10px;
 
 // ============== Modal Window Constants ============== 
 $modalWidth: 500px;
+$modalSmallWidth: 240px;
 $modalMinHeight: 100px;
 $modalContentPadding: 30px;
 $modalMainColor: #fbf6e3;
@@ -61,7 +62,10 @@ $modalTextColor: #7e4759;
 	background: $buttonMainColor;
 	color: $buttonTextColor;
 	border: 1px solid $buttonBorderColor;
-	font-size: $mainFontSize;
+	font-size: $smallFontSize;
+	@include breakpoint ($mdSize) {
+		font-size: $mainFontSize;
+	}
 	width: 125px;
 	height: 35px;
 	&:hover {
@@ -117,11 +121,18 @@ $modalTextColor: #7e4759;
 
 .modal {
 	position: fixed;
-	width: $modalWidth;
 	min-height: $modalMinHeight;
 	top: 50%;
 	left: 50%;
-	margin-left: -$modalWidth/2 - $modalContentPadding;
+	margin-left: -$modalSmallWidth/2 - $modalContentPadding;
+	width: $modalSmallWidth;
+	font-size: $smallFontSize;
+	@include breakpoint($mdSize) {
+		font-size: $mainFontSize;
+		width: $modalWidth;
+		margin-left: -$modalWidth/2 - $modalContentPadding;		
+	}	
+
 	margin-top: -$modalMinHeight - $modalContentPadding;
 	background: $modalMainColor;
 	border: 1px solid $modalBorderColor;
@@ -137,5 +148,11 @@ $modalTextColor: #7e4759;
 	}
 	.modal__button {
 		@extend .button;
+		width: 90px;
+		height: 30px;
+		@include breakpoint ($mdSize) {
+			width: 125px;
+			height: 35px;
+		}
 	}
 }

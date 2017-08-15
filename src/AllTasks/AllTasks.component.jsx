@@ -178,7 +178,7 @@ class AllTasks extends Component {
 				<span>{filteredTasks.length}
 					&nbsp;&nbsp;&nbsp;
 					<span className="AllTasks__header__overdue-tasks">
-						Overdue tasks: {overdueTasks}
+						Overdue: {overdueTasks}
 					</span>
 				</span>
 			) :

@@ -3,12 +3,18 @@
 .UserProfile {
 	clear: both;
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
+	@include breakpoint ($smSize) {
+		flex-direction: row;
+	}
 	margin-bottom: 30px;
 
 	/* --------- Column 2 --------- */
 	.UserProfile__column2 {
-		width: 50%;
+		width: 100%;
+		@include breakpoint ($smSize) {
+			width: 50%;
+		}
 		box-sizing: border-box;
 	}
 }

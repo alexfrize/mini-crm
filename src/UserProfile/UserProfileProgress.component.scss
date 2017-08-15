@@ -1,7 +1,10 @@
 @import '../vars';
 
 .UserProfile__progress {
-	width: 50%;
+	width: 100%;
+	@include breakpoint ($smSize) {
+		width: 50%;
+	}
 	clear: both;
 	display: flex;
 	flex-direction: column;
@@ -13,6 +16,7 @@
 		flex-direction: row;
 		justify-content: center;
 		border: 1px solid $inputBorderColor;
+		box-sizing: border-box;
 		background: $inputMainColor;
 		margin-bottom: 30px;
 		
@@ -23,21 +27,52 @@
 			transition: 0.5s;
 
 			.UserProfile__progress__progress-scheme__item__figure {
-				padding: 10px;
+				padding: 2px;
+				@include breakpoint($xsSize) {
+					padding: 10px;
+				}
+				@include breakpoint($smSize) {
+					padding: 3px;
+				}
+				@include breakpoint($mdSize) {
+					padding: 10px;
+				}
 				
 				.UserProfile__progress__progress-scheme__item__figure__img {
 					margin: 0 auto ;
 					display: block;
-					width: 50px;
+					width: 30px;
+					@include breakpoint($xsSize) {
+						width: 50px;
+					}					
+					@include breakpoint($smSize) {
+						width: 30px;
+					}
+					@include breakpoint($mdSize) {
+						width: 50px;
+					}
 				}
 				.UserProfile__progress__progress-scheme__item__figure__text {
 					text-align: center;
-					font-size: 12px;
+					font-size: 10px;
+					@include breakpoint($xsSize) {
+						font-size: 12px;
+					}
 				}
 			}
 
 			.UserProfile__progress__progress-scheme__item__arrow {
-				max-width: 20px;
+				max-width: 12px;
+				@include breakpoint($xsSize) {
+					max-width: 20px;
+				}				
+				@include breakpoint($smSize) {
+					max-width: 15px;
+				}
+				@include breakpoint($mdSize) {
+					max-width: 20px;
+				}
+				
 
 			}
 			&:hover {
@@ -63,8 +98,12 @@
 			flex-direction: column;
 			align-items: center;
 			.ProgressItem__img {
-				height: 60px;
-				width: 60px;
+				height: 40px;
+				width: 40px;
+				@include breakpoint ($xsSize) {
+					height: 60px;
+					width: 60px;
+				}
 				display: flex;
 				flex-direction: column;
 			}
@@ -73,7 +112,10 @@
 				text-align: center;
 				display: flex;
 				flex-direction: column;
-				font-size: 14px;
+				font-size: 12px;
+				@include breakpoint ($xsSize) {
+					font-size: 14px;
+				}
 			}
 		}
 		.ProgressItem__comment-textarea {
@@ -83,6 +125,7 @@
 			background: $inputMainColor;
 			border: 1px solid $inputBorderColor;
 			font-size: 14px;
+			font-family: sans-serif;
 			color: $inputTextColor;
 			&::placeholder {
 				color: $inputPlaceholderColor;

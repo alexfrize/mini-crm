@@ -2,7 +2,7 @@
 
 .App {
   margin: 0 auto;
-  width: 320px;
+  width: 300px;
   @include breakpoint($xsSize) {
   	width: $xsSize; 
   }    

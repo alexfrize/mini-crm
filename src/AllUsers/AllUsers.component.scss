@@ -3,6 +3,7 @@
 
 .AllUsers {
 	.AllUsers__header {
+		padding: 2px;
 		clear: both;
 		display: flex;
 		justify-content: space-between;
@@ -24,34 +25,55 @@
 	.AllUsers__table {
 		display: table;
 		width: 100%;
-
 		tr {
 			td {
 				&:nth-child(1) {
-					width: 90%;
+					width: 80%;
 					.AllUsers__table__sub-table {
 						width: 100%;
 						td {
-							padding: 20px;
 							background: transparent;
 							text-align: center;
 							width: 25%;
-							font-size: 18px;
 							background: $tableRowColor1;
+							font-size: $smallFontSize;
+							font-size: $subSmallFontSize;
+							padding: 5px;
+							@include breakpoint ($mdSize) {
+								font-size: $mainFontSize;
+								padding: 20px;
+							}
 						}
 						.AllUsers__table__sub-table__description {
 							padding: 20px;
-							font-size: 14px;
+							font-size: $subSmallFontSize;
+							@include breakpoint ($mdSize) {
+								font-size: $subMainFontSize;
+							}
 							text-align: justify;
 						}
 					}					
 				}
 				&:nth-child(2) {
-					padding: 0;
-					width: 10%;
 					text-align: center;
+					padding: 10px;
+					width: 20%;
+					@include breakpoint($mdSize) {
+						width: 15%;
+					}					
+					@include breakpoint($lgSize) {
+						width: 10%;
+					}
 				}
+				
+				.AllUsers__table__td__total-tasks {
+					display: none;
+					@include breakpoint($smSize) {
+						display: table-cell;
+					}
+				}				
 			}
+
 			&:nth-child(2n+1) {
 				background: $tableRowColor1;
 			}
@@ -69,6 +91,36 @@
 			}
 		}
 
+
+		.AllUsers__table__progress-icons {
+			display: none;
+			@include breakpoint($smSize) {
+				display: table-cell;
+			}			
+			.AllUsers__table__progress-img {
+				vertical-align: middle;
+				transition: 0.5s;
+				padding: 2px;
+				width: 16px;
+				@include breakpoint($mdSize) {
+					padding: 1px;
+					width: 20px;
+				}				
+				@include breakpoint($lgSize) {
+					padding: 3px;
+					width: 20px;
+				}
+			}
+
+			.AllUsers__table__progress-img-arrow {
+				@extend .AllUsers__table__progress-img;
+				width: 5px;
+				@include breakpoint($mdSize) {
+					width: 10px;
+				}
+			}
+		}
+
 		.AllUsers__table__img {
 			transition: 0.5s;
 			padding: 3px;
@@ -77,18 +129,6 @@
 				opacity: 0.6;
 				cursor: pointer;
 			}
-		}
-
-		.AllUsers__table__progress-img {
-			vertical-align: middle;
-			transition: 0.5s;
-			padding: 3px;
-			width: 20px;
-		}
-
-		.AllUsers__table__progress-img-arrow {
-			@extend .AllUsers__table__progress-img;
-			width: 10px;
 		}
 
 		.AllUsers__table__overdue {
@@ -102,7 +142,7 @@
 		.AllUsers__table__small-warning {
 			color: $warningTextColor;
 			text-align: center;
-			font-size: 10px;
+			font-size: $smallWarningSize;
 		}
 
 		.AllUsers__table__edit-mode__input {

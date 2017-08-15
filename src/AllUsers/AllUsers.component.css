@@ -18,9 +18,12 @@
   background: #fbf6e3;
   color: #7e4759;
   border: 1px solid #d8c7cd;
-  font-size: 18px;
+  font-size: 14px;
   width: 125px;
   height: 35px; }
+  @media (min-width: 992px) {
+    .button, .modal .modal__button {
+      font-size: 18px; } }
   .button:hover, .modal .modal__button:hover {
     background: #d8c7cd;
     color: #7e4759;
@@ -67,11 +70,12 @@
 
 .modal {
   position: fixed;
-  width: 500px;
   min-height: 100px;
   top: 50%;
   left: 50%;
-  margin-left: -280px;
+  margin-left: -150px;
+  width: 240px;
+  font-size: 14px;
   margin-top: -130px;
   background: #fbf6e3;
   border: 1px solid #efe5dd;
@@ -79,12 +83,25 @@
   z-index: 151;
   text-align: justify;
   padding: 30px; }
+  @media (min-width: 992px) {
+    .modal {
+      font-size: 18px;
+      width: 500px;
+      margin-left: -280px; } }
   .modal .modal__button-container {
     margin-top: 60px;
     display: flex;
     justify-content: space-around; }
+  .modal .modal__button {
+    width: 90px;
+    height: 30px; }
+    @media (min-width: 992px) {
+      .modal .modal__button {
+        width: 125px;
+        height: 35px; } }
 
 .AllUsers .AllUsers__header {
+  padding: 2px;
   clear: both;
   display: flex;
   justify-content: space-between;
@@ -101,30 +118,72 @@
   display: table;
   width: 100%; }
   .AllUsers .AllUsers__table tr td:nth-child(1) {
-    width: 90%; }
+    width: 80%; }
     .AllUsers .AllUsers__table tr td:nth-child(1) .AllUsers__table__sub-table {
       width: 100%; }
       .AllUsers .AllUsers__table tr td:nth-child(1) .AllUsers__table__sub-table td {
-        padding: 20px;
         background: transparent;
         text-align: center;
         width: 25%;
-        font-size: 18px;
-        background: #efe5dd; }
+        background: #efe5dd;
+        font-size: 14px;
+        font-size: 12px;
+        padding: 5px; }
+        @media (min-width: 992px) {
+          .AllUsers .AllUsers__table tr td:nth-child(1) .AllUsers__table__sub-table td {
+            font-size: 18px;
+            padding: 20px; } }
       .AllUsers .AllUsers__table tr td:nth-child(1) .AllUsers__table__sub-table .AllUsers__table__sub-table__description {
         padding: 20px;
-        font-size: 14px;
+        font-size: 12px;
         text-align: justify; }
+        @media (min-width: 992px) {
+          .AllUsers .AllUsers__table tr td:nth-child(1) .AllUsers__table__sub-table .AllUsers__table__sub-table__description {
+            font-size: 14px; } }
   .AllUsers .AllUsers__table tr td:nth-child(2) {
-    padding: 0;
-    width: 10%;
-    text-align: center; }
+    text-align: center;
+    padding: 10px;
+    width: 20%; }
+    @media (min-width: 992px) {
+      .AllUsers .AllUsers__table tr td:nth-child(2) {
+        width: 15%; } }
+    @media (min-width: 1200px) {
+      .AllUsers .AllUsers__table tr td:nth-child(2) {
+        width: 10%; } }
+  .AllUsers .AllUsers__table tr td .AllUsers__table__td__total-tasks {
+    display: none; }
+    @media (min-width: 768px) {
+      .AllUsers .AllUsers__table tr td .AllUsers__table__td__total-tasks {
+        display: table-cell; } }
   .AllUsers .AllUsers__table tr:nth-child(2n+1) {
     background: #efe5dd; }
   .AllUsers .AllUsers__table tr:nth-child(2n) {
     background: #fbf6e3; }
     .AllUsers .AllUsers__table tr:nth-child(2n) td:nth-child(1) .AllUsers__table__sub-table td {
       background: #fbf6e3; }
+  .AllUsers .AllUsers__table .AllUsers__table__progress-icons {
+    display: none; }
+    @media (min-width: 768px) {
+      .AllUsers .AllUsers__table .AllUsers__table__progress-icons {
+        display: table-cell; } }
+    .AllUsers .AllUsers__table .AllUsers__table__progress-icons .AllUsers__table__progress-img, .AllUsers .AllUsers__table .AllUsers__table__progress-icons .AllUsers__table__progress-img-arrow {
+      vertical-align: middle;
+      transition: 0.5s;
+      padding: 2px;
+      width: 16px; }
+      @media (min-width: 992px) {
+        .AllUsers .AllUsers__table .AllUsers__table__progress-icons .AllUsers__table__progress-img, .AllUsers .AllUsers__table .AllUsers__table__progress-icons .AllUsers__table__progress-img-arrow {
+          padding: 1px;
+          width: 20px; } }
+      @media (min-width: 1200px) {
+        .AllUsers .AllUsers__table .AllUsers__table__progress-icons .AllUsers__table__progress-img, .AllUsers .AllUsers__table .AllUsers__table__progress-icons .AllUsers__table__progress-img-arrow {
+          padding: 3px;
+          width: 20px; } }
+    .AllUsers .AllUsers__table .AllUsers__table__progress-icons .AllUsers__table__progress-img-arrow {
+      width: 5px; }
+      @media (min-width: 992px) {
+        .AllUsers .AllUsers__table .AllUsers__table__progress-icons .AllUsers__table__progress-img-arrow {
+          width: 10px; } }
   .AllUsers .AllUsers__table .AllUsers__table__img {
     transition: 0.5s;
     padding: 3px;
@@ -132,13 +191,6 @@
     .AllUsers .AllUsers__table .AllUsers__table__img:hover {
       opacity: 0.6;
       cursor: pointer; }
-  .AllUsers .AllUsers__table .AllUsers__table__progress-img, .AllUsers .AllUsers__table .AllUsers__table__progress-img-arrow {
-    vertical-align: middle;
-    transition: 0.5s;
-    padding: 3px;
-    width: 20px; }
-  .AllUsers .AllUsers__table .AllUsers__table__progress-img-arrow {
-    width: 10px; }
   .AllUsers .AllUsers__table .AllUsers__table__overdue {
     color: #b35c7a; }
   .AllUsers .AllUsers__table .AllUsers__table__display-none {
