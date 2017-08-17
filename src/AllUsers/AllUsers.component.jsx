@@ -150,7 +150,7 @@ class AllUsers extends Component {
 							</tr>
 				)
 			}
-		} else usersTable.push(<tr key={"not_found"}><td>Sorry, no results found for «{this.state.searchFilter}»</td></tr>);
+		} else usersTable.push(<tr key={"not_found"}><td className="AllUsers__table__search-result">Sorry, no results found for «{this.state.searchFilter}»</td></tr>);
 
 		return (
 			<div className="AllUsers">

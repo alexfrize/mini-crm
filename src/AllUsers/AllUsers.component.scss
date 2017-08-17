@@ -26,7 +26,15 @@
 		display: table;
 		width: 100%;
 		tr {
+			td.AllUsers__table__search-result {
+				padding: 10px;
+				font-size: $smallFontSize;
+				@include breakpoint ($smSize) {
+					font-size: $mainFontSize;
+				}
+			}			
 			td {
+
 				&:nth-child(1) {
 					width: 80%;
 					.AllUsers__table__sub-table {
@@ -44,6 +52,7 @@
 								padding: 20px;
 							}
 						}
+
 						.AllUsers__table__sub-table__description {
 							padding: 20px;
 							font-size: $subSmallFontSize;

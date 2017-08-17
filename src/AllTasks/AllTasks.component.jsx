@@ -483,7 +483,7 @@ class AllTasks extends Component {
 				)
 			}
 		}
-		else tasksTable.push(<tr key={"not_found"}><td>Sorry, no results found for «{this.state.searchFilter}»</td></tr>);
+		else tasksTable.push(<tr key={"not_found"}><td className="AllTasks__table__search-result">Sorry, no results found for «{this.state.searchFilter}»</td></tr>);
 
 		return (
 			

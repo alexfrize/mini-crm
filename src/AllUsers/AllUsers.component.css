@@ -117,6 +117,12 @@
 .AllUsers .AllUsers__table {
   display: table;
   width: 100%; }
+  .AllUsers .AllUsers__table tr td.AllUsers__table__search-result {
+    padding: 10px;
+    font-size: 14px; }
+    @media (min-width: 768px) {
+      .AllUsers .AllUsers__table tr td.AllUsers__table__search-result {
+        font-size: 18px; } }
   .AllUsers .AllUsers__table tr td:nth-child(1) {
     width: 80%; }
     .AllUsers .AllUsers__table tr td:nth-child(1) .AllUsers__table__sub-table {

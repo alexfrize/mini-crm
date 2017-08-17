@@ -30,6 +30,13 @@
 		display: table;
 		width: 100%;
 		tr {
+			td.AllTasks__table__search-result {
+				padding: 10px;
+				font-size: $smallFontSize;
+				@include breakpoint ($smSize) {
+					font-size: $mainFontSize;
+				}
+			}			
 			td {
 				padding: 5px;
 				@include breakpoint($mdSize) {

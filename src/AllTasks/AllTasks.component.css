@@ -121,6 +121,12 @@
 .AllTasks .AllTasks__table {
   display: table;
   width: 100%; }
+  .AllTasks .AllTasks__table tr td.AllTasks__table__search-result {
+    padding: 10px;
+    font-size: 14px; }
+    @media (min-width: 768px) {
+      .AllTasks .AllTasks__table tr td.AllTasks__table__search-result {
+        font-size: 18px; } }
   .AllTasks .AllTasks__table tr td {
     padding: 5px; }
     @media (min-width: 992px) {
