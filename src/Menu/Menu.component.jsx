@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import { action__updateUserToEdit } from '../actions';
 import { EMPTY_USER } from '../constants/emptyuser';
 
-class Menu extends Component {
+export class Menu extends Component {
 
 	componentWillReceiveProps(nextProps) {
 		console.log("MENU::nextProps => ", nextProps);
@@ -30,6 +30,10 @@ class Menu extends Component {
 					<Link to="/"><li><img src={menu__allUsers} alt="icon" />All users</li></Link>
 					<Link to="/alltasks"><li><img src={menu__tasks} alt="icon" />Tasks</li></Link>
 				</ul>
+				<div>
+				<ul className="I_ADDED_THIS_CLASS_FOR_TEST"></ul>
+
+				</div>
 			</div>
 		);
 	}

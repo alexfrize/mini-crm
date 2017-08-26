@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { action_createNewUserDB } from '../actions';
 import { action_updateUserDB } from '../actions';
 
-class UserProfileProfile extends Component {
+export class UserProfileProfile extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
