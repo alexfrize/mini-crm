@@ -92,6 +92,7 @@ export class UserProfileProfile extends Component {
 	}
 
 	saveUserData(e) {
+		
 		e.preventDefault();
 		if (!this.checkValuesOnSubmit()) return;
 		
@@ -131,7 +132,8 @@ export class UserProfileProfile extends Component {
 								{this.state.errorsDescription}
 							</div>
 							<div className="UserProfile__profile__form__button-container">
-								<button className="UserProfile__profile__form__button" onClick={(e) => this.saveUserData(e)} >Save</button>
+								<button id="btnsk" className="UserProfile__profile__form__button" onClick={(e) => this.saveUserData(e)} >Save</button>
+
 							</div>
 						</form>
 					</div>
