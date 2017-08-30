@@ -32,11 +32,9 @@ export class UserProfileProfile extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		console.log("USERPROFILE::nextProps === ", nextProps);
 		var { users } = nextProps;
 		var { userToEdit } = nextProps;
 		var profile = nextProps.userToEdit.profile ? JSON.parse(JSON.stringify(nextProps.userToEdit.profile)) : this.emptyProfile();
-		console.log("CWRP::profile ===", profile);
 		var userID;
 		if (profile !== undefined) {
 			userID = nextProps.userToEdit._id;
@@ -80,7 +78,7 @@ export class UserProfileProfile extends Component {
 		 else {
 			errorsDescription = _ERRORS_IN;
 			if (this.state.profile.name === "") errorsDescription += "name, ";
-			if (!this.state.profile.email.match(/^[a-zA-Z0-9.-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,3}$/ig)) errorsDescription += "email, ";
+			if (!this.state.profile.email.match(/^[a-zA-Z_\'0-9.-]+@[a-zA-Z_\'0-9-]+\.[a-zA-Z]{2,4}$/ig)) errorsDescription += "email, ";
 			if (!this.state.profile.phone.match(/^\+*[0-9-]{9,15}[0-9]$/ig))  errorsDescription += "phone";
 			let _ed = errorsDescription;
 			let _edl = errorsDescription.length;
