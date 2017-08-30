@@ -17,7 +17,7 @@ export class UserProfileProfile extends Component {
 			errorsDescription : ""
 		}
 	}
-	
+
 	emptyProfile() {
 		return {
 				name : "",
